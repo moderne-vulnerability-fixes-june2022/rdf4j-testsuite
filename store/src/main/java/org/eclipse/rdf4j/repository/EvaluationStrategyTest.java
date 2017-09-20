@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.ValueFactory;
@@ -21,6 +20,7 @@ import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.query.algebra.evaluation.impl.ExtendedEvaluationStrategy;
 import org.eclipse.rdf4j.query.algebra.evaluation.impl.ExtendedEvaluationStrategyFactory;
+import org.eclipse.rdf4j.query.algebra.evaluation.impl.StrictEvaluationStrategy;
 import org.eclipse.rdf4j.query.algebra.evaluation.impl.StrictEvaluationStrategyFactory;
 import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.config.RepositoryImplConfig;
@@ -30,7 +30,9 @@ import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
 import org.eclipse.rdf4j.sail.base.config.BaseSailConfig;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test cases for behavior of {@link StrictEvaluationStrategy} and {@link ExtendedEvaluationStrategy} on base
@@ -47,6 +49,9 @@ public abstract class EvaluationStrategyTest {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
+	@Rule
+	public TemporaryFolder tempDir = new TemporaryFolder();
+
 	private Repository strictRepo;
 
 	private Repository extendedRepo;
@@ -60,7 +65,7 @@ public abstract class EvaluationStrategyTest {
 	public void setUp()
 		throws Exception
 	{
-		manager = RepositoryProvider.getRepositoryManager(FileUtils.getTempDirectory());
+		manager = RepositoryProvider.getRepositoryManager(tempDir.newFolder());
 
 		BaseSailConfig strictStoreConfig = getBaseSailConfig();
 		strictStoreConfig.setEvaluationStrategyFactoryClassName(
