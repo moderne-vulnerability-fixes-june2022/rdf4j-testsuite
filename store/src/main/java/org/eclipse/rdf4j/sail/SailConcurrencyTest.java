@@ -9,37 +9,20 @@ package org.eclipse.rdf4j.sail;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.rdf4j.common.iteration.CloseableIteration;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.vocabulary.DC;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.RepositoryException;
-import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.rio.RDFParseException;
-import org.eclipse.rdf4j.sail.Sail;
-import org.eclipse.rdf4j.sail.SailConnection;
-import org.eclipse.rdf4j.sail.SailException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +38,8 @@ public abstract class SailConcurrencyTest {
 	/*-----------*
 	 * Constants *
 	 *-----------*/
+
+	private static final int MAX_STATEMENTS = 200000;
 
 	private static final int MAX_STATEMENT_IDX = 1000;
 
@@ -99,16 +84,17 @@ public abstract class SailConcurrencyTest {
 
 		private final IRI context;
 
-		private int txnSize; 
+		private int txnSize;
 		
 		private final CountDownLatch completed;
 
 		private final CountDownLatch otherTxnCommitted;
 
+		private AtomicInteger targetSize = new AtomicInteger(MAX_STATEMENTS);
+
 		private final boolean rollback;
 
-		public UploadTransaction(int txnSize, CountDownLatch completed, CountDownLatch otherTxnCommitted, IRI context, boolean rollback) {
-			this.txnSize = txnSize;
+		public UploadTransaction(CountDownLatch completed, CountDownLatch otherTxnCommitted, IRI context, boolean rollback) {
 			this.completed = completed;
 			this.otherTxnCommitted = otherTxnCommitted;
 			this.context = context;
@@ -121,13 +107,16 @@ public abstract class SailConcurrencyTest {
 				final SailConnection conn = store.getConnection();
 				try {
 					conn.begin();
-					for (int i = 0; i < txnSize / 2; i++) {
-						IRI subject = vf.createIRI("urn:instance-" + i);
-						conn.addStatement(subject, RDFS.LABEL, vf.createLiteral("li" + i), context);
-						conn.addStatement(subject, RDFS.COMMENT, vf.createLiteral("ci" + i), context);
+					while (txnSize < targetSize.get()) {
+						IRI subject = vf.createIRI("urn:instance-" + txnSize);
+						conn.addStatement(subject, RDFS.LABEL, vf.createLiteral("li" + txnSize), context);
+						conn.addStatement(subject, RDFS.COMMENT, vf.createLiteral("ci" + txnSize), context);
+						txnSize+= 2;
 					}
+					logger.info("Uploaded " + txnSize + " statements");
 					if (rollback) {
 						otherTxnCommitted.await();
+						logger.info("Testing rollback of " + txnSize + " statements");
 						conn.rollback();
 					}
 					else {
@@ -145,6 +134,14 @@ public abstract class SailConcurrencyTest {
 			finally {
 				completed.countDown();
 			}
+		}
+
+		public void stopAt(int target) {
+			targetSize.set(target);
+		}
+
+		public int getSize() {
+			return txnSize;
 		}
 
 	}
@@ -166,26 +163,32 @@ public abstract class SailConcurrencyTest {
 		
 		final IRI context1 = vf.createIRI("urn:context1");
 		final IRI context2 = vf.createIRI("urn:context2");
-		final int transactionSize = 200000;
-		UploadTransaction runner1 = new UploadTransaction(transactionSize, runnersDone, otherTxnCommitted, context1, false);
-		UploadTransaction runner2 = new UploadTransaction(transactionSize, runnersDone, otherTxnCommitted, context2, false);
+		UploadTransaction runner1 = new UploadTransaction(runnersDone, otherTxnCommitted, context1, false);
+		UploadTransaction runner2 = new UploadTransaction(runnersDone, otherTxnCommitted, context2, false);
 
 		final long start = System.currentTimeMillis();
 		new Thread(runner1).start();
 		new Thread(runner2).start();
 
-		runnersDone.await();
+		if (!runnersDone.await(MAX_TEST_TIME / 2, TimeUnit.MILLISECONDS)) {
+			// time to wrap up
+			int targetSize = Math.max(runner1.getSize(), runner2.getSize());
+			runner1.stopAt(targetSize);
+			runner2.stopAt(targetSize);
+		}
+		while (!runnersDone.await(5, TimeUnit.MINUTES)) {
+			logger.info("Still waiting for transactions to commit");
+		}
 		final long finish = System.currentTimeMillis();
-
-		logger.info("completed both txns in " + (finish - start) + " ms");
+		logger.info("committed both txns in " + (finish - start)/1000 + "s");
 
 		SailConnection conn = store.getConnection();
 		try {
 			long size1 = conn.size(context1);
 			long size2 = conn.size(context2);
 			logger.debug("size 1 = {}, size 2 = {}", size1, size2);
-			assertEquals("upload into context 1 should have been fully committed", transactionSize, size1);
-			assertEquals("upload into context 2 should have been fully committed", transactionSize, size2);
+			assertEquals("upload into context 1 should have been fully committed", runner1.getSize(), size1);
+			assertEquals("upload into context 2 should have been fully committed", runner2.getSize(), size2);
 		}
 		finally {
 			conn.close();
@@ -207,29 +210,35 @@ public abstract class SailConcurrencyTest {
 		
 		final IRI context1 = vf.createIRI("urn:context1");
 		final IRI context2 = vf.createIRI("urn:context2");
-		final int transactionSize = 200000;
 		
 		// transaction into context 1 will commit
-		UploadTransaction runner1 = new UploadTransaction(transactionSize, runnersDone, otherTxnCommitted, context1, false);
+		UploadTransaction runner1 = new UploadTransaction(runnersDone, otherTxnCommitted, context1, false);
 		
 		// transaction into context 2 will rollback
-		UploadTransaction runner2 = new UploadTransaction(transactionSize, runnersDone, otherTxnCommitted, context2, true);
+		UploadTransaction runner2 = new UploadTransaction(runnersDone, otherTxnCommitted, context2, true);
 
 		final long start = System.currentTimeMillis();
 		new Thread(runner1).start();
 		new Thread(runner2).start();
 
-		runnersDone.await();
+		if (!runnersDone.await(MAX_TEST_TIME / 2, TimeUnit.MILLISECONDS)) {
+			// time to wrap up
+			int targetSize = Math.max(runner1.getSize(), runner2.getSize());
+			runner1.stopAt(targetSize);
+			runner2.stopAt(targetSize);
+		}
+		while (!runnersDone.await(5, TimeUnit.MINUTES)) {
+			logger.info("Still waiting for transaction to rollback");
+		}
 		final long finish = System.currentTimeMillis();
-
-		logger.info("completed both txns in " + (finish - start) + " ms");
+		logger.info("completed both txns in " + (finish - start)/1000 + "s");
 
 		SailConnection conn = store.getConnection();
 		try {
 			long size1 = conn.size(context1);
 			long size2 = conn.size(context2);
 			logger.debug("size 1 = {}, size 2 = {}", size1, size2);
-			assertEquals("upload into context 1 should have been fully committed", transactionSize, size1);
+			assertEquals("upload into context 1 should have been fully committed", runner1.getSize(), size1);
 			assertEquals("upload into context 2 should have been rolled back", 0, size2);
 		}
 		finally {
@@ -287,13 +296,10 @@ public abstract class SailConcurrencyTest {
 						while (continueRunning) {
 							CloseableIteration<? extends Resource, SailException> contextIter = connection.getContextIDs();
 							try {
-								int contextCount = 0;
 								while (contextIter.hasNext()) {
 									Resource context = contextIter.next();
 									assertNotNull(context);
-									contextCount++;
 								}
-								//								 System.out.println("Found " + contextCount + " contexts");
 							}
 							finally {
 								contextIter.close();
