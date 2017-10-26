@@ -7,10 +7,10 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.repository;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.is;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,9 +24,6 @@ import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.query.resultio.QueryResultIO;
 import org.eclipse.rdf4j.query.resultio.TupleQueryResultFormat;
 import org.eclipse.rdf4j.query.resultio.TupleQueryResultWriter;
-import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
 import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
@@ -34,8 +31,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class TupleQueryResultTest {
+
+	private final Logger logger = LoggerFactory.getLogger(TupleQueryResultTest.class);
 
 	@BeforeClass
 	public static void setUpClass()
@@ -232,6 +233,43 @@ public abstract class TupleQueryResultTest {
 						"SELECT ?s ?p ?o WHERE { ?s ?p ?o . }");
 				tupleQuery.setIncludeInferred(false);
 				tupleQuery.evaluate(sparqlWriter);
+			}
+		}
+	}
+
+	@Test
+	public void testNotClosingResult() {
+		ValueFactory vf = con.getValueFactory();
+		int subjectIndex = 0;
+		int predicateIndex = 100;
+		int objectIndex = 1000;
+		int testStatementCount = 1000;
+		int count = 0;
+		con.begin();
+		while (count < testStatementCount) {
+			con.add(vf.createIRI("urn:test:" + subjectIndex), vf.createIRI("urn:test:" + predicateIndex),
+					vf.createIRI("urn:test:" + objectIndex));
+			if(Math.round(Math.random()) > 0) {
+				subjectIndex++;
+			}
+			if(Math.round(Math.random()) > 0) {
+				predicateIndex++;
+			}
+			if(Math.round(Math.random()) > 0) {
+				objectIndex++;
+			}
+			count++;
+		}
+		con.commit();
+
+		logger.info("Open lots of TupleQueryResults without closing them");
+		for (int i = 0; i < 100; i++) {
+			try (RepositoryConnection repCon = rep.getConnection()) {
+				String queryString = "select * where {?s ?p ?o}";
+				TupleQuery tupleQuery = repCon.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+
+				// see if open results hangs test
+				tupleQuery.evaluate();
 			}
 		}
 	}
