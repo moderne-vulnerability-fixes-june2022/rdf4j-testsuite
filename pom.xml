@@ -124,7 +124,7 @@
 		<profile>
 			<id>doclint-java8-disable</id>
 			<activation>
-				<jdk>[1.8,)</jdk>
+				<jdk>[1.8,9,)</jdk>
 			</activation>
 			<properties>
 				<javadoc.opts>-Xdoclint:none</javadoc.opts>
@@ -173,7 +173,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.6.0</version>
+					<version>3.7.0</version>
 					<configuration>
 						<fork>true</fork>
 						<source>1.8</source>
