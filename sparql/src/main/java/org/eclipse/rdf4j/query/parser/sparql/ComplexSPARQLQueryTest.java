@@ -1083,6 +1083,22 @@ public abstract class ComplexSPARQLQueryTest {
 	}
 
 	@Test
+	public void test27NormalizeIRIFunction()
+		throws Exception
+	{
+		String query = "SELECT (IRI(\"../bar\") as ?Iri) WHERE {}";
+		TupleQuery tq = conn.prepareTupleQuery(QueryLanguage.SPARQL, query, "http://example.com/foo/");
+		try (TupleQueryResult result = tq.evaluate();) {
+			assertNotNull(result);
+			assertTrue(result.hasNext());
+			BindingSet bs = result.next();
+			IRI actual = (IRI)bs.getValue("Iri");
+			IRI expected = f.createIRI("http://example.com/bar");
+			assertEquals("IRI result for relative IRI should be normalized", expected, actual);
+		}
+	}
+
+	@Test
 	public void testSES869ValueOfNow()
 		throws Exception
 	{
