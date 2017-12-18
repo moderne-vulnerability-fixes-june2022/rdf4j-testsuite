@@ -57,6 +57,7 @@
 		<module>geosparql</module>
 		<module>store</module>
 		<module>lucene</module>
+		<module>benchmark</module>
 	</modules>
 
 	<profiles>
