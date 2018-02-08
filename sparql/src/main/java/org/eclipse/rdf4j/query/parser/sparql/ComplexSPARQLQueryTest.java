@@ -2391,6 +2391,21 @@ public abstract class ComplexSPARQLQueryTest {
 		}
 	}
 
+	@Test
+	public void testEmptyUnion()
+		throws Exception
+	{
+		String query = "PREFIX : <http://example.org/> "
+				+ "SELECT ?visibility WHERE {"
+				+ "OPTIONAL { SELECT ?var WHERE { :s a :MyType . BIND (:s as ?var ) .} } ."
+				+ "BIND (IF(BOUND(?var), 'VISIBLE', 'HIDDEN') as ?visibility)"
+				+ "}";
+		try (TupleQueryResult result = conn.prepareTupleQuery(QueryLanguage.SPARQL, query).evaluate();) {
+			assertNotNull(result);
+			assertFalse(result.hasNext());
+		}
+	}
+
 	private boolean containsSolution(List<BindingSet> result, Binding... solution) {
 		final MapBindingSet bs = new MapBindingSet();
 		for (Binding b : solution) {
