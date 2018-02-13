@@ -54,6 +54,7 @@ import org.eclipse.rdf4j.model.vocabulary.SPIN;
 import org.eclipse.rdf4j.rio.helpers.BasicParserSettings;
 import org.eclipse.rdf4j.rio.helpers.JSONLDMode;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -1852,6 +1853,32 @@ public abstract class RDFWriterTest {
 		rdfParser.setRDFHandler(new StatementCollector(parsedOutput));
 		rdfParser.parse(inputReader, "");
 		assertSameModel(input, parsedOutput);
+	}
+
+	@Test
+	public void testBogusIRICharacters() throws Exception
+	{
+		Model model = new LinkedHashModel();
+		String illegal = " <>^|\t\n\r\"`";
+		for (int i=0; i<illegal.length(); i++) {
+			model.add(vf.createIRI("urn:test:char" + illegal.charAt(i)), RDF.TYPE, RDFS.RESOURCE);
+		}
+		ByteArrayOutputStream outputWriter = new ByteArrayOutputStream();
+		RDFWriter rdfWriter = rdfWriterFactory.getWriter(outputWriter);
+		setupWriterConfig(rdfWriter.getWriterConfig());
+		rdfWriter.startRDF();
+		model.forEach(st-> rdfWriter.handleStatement(st));
+		rdfWriter.endRDF();
+		ByteArrayInputStream inputReader = new ByteArrayInputStream(outputWriter.toByteArray());
+		RDFParser rdfParser = rdfParserFactory.getParser();
+		setupParserConfig(rdfParser.getParserConfig().set(BasicParserSettings.VERIFY_URI_SYNTAX, false));
+		Model parsedOutput = new LinkedHashModel();
+		rdfParser.setRDFHandler(new StatementCollector(parsedOutput));
+		rdfParser.parse(inputReader, "");
+		Assert.assertEquals(model.size(), parsedOutput.size());
+		ByteArrayInputStream inputReader2 = new ByteArrayInputStream(outputWriter.toByteArray());
+		rdfParser.parse(inputReader2, "");
+		Assert.assertEquals(model.size(), parsedOutput.size());
 	}
 
 	private void assertSameModel(Model expected, Model actual) {
