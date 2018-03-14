@@ -8,28 +8,30 @@
 package org.eclipse.rdf4j.rio;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 
+import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.DC;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
-import org.eclipse.rdf4j.rio.DatatypeHandler;
-import org.eclipse.rdf4j.rio.ParserConfig;
-import org.eclipse.rdf4j.rio.RDFParseException;
-import org.eclipse.rdf4j.rio.RDFParser;
-import org.eclipse.rdf4j.rio.RioSetting;
 import org.eclipse.rdf4j.rio.helpers.BasicParserSettings;
 import org.eclipse.rdf4j.rio.helpers.ParseErrorCollector;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
@@ -112,8 +114,11 @@ public abstract class AbstractParserHandlingTest {
 	 *        A {@link Model} containing statements which all contain unknown datatypes.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected abstract InputStream getUnknownDatatypeStream(Model unknownDatatypeStatements)
-		throws Exception;
+	protected InputStream getUnknownDatatypeStream(Model model)
+		throws Exception
+	{
+		return serialize(model);
+	}
 
 	/**
 	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
@@ -123,8 +128,11 @@ public abstract class AbstractParserHandlingTest {
 	 *        A {@link Model} containing statements which all contain known datatypes.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected abstract InputStream getKnownDatatypeStream(Model knownDatatypeStatements)
-		throws Exception;
+	protected InputStream getKnownDatatypeStream(Model model)
+		throws Exception
+	{
+		return serialize(model);
+	}
 
 	/**
 	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
@@ -134,8 +142,11 @@ public abstract class AbstractParserHandlingTest {
 	 *        A {@link Model} containing statements which all contain unknown language tags.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected abstract InputStream getUnknownLanguageStream(Model unknownLanguageStatements)
-		throws Exception;
+	protected InputStream getUnknownLanguageStream(Model model)
+		throws Exception
+	{
+		return serialize(model);
+	}
 
 	/**
 	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
@@ -145,16 +156,50 @@ public abstract class AbstractParserHandlingTest {
 	 *        A {@link Model} containing statements which all contain known language tags.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected abstract InputStream getKnownLanguageStream(Model knownLanguageStatements)
-		throws Exception;
+	protected InputStream getKnownLanguageStream(Model model)
+		throws Exception
+	{
+		return serialize(model);
+	}
 
 	/**
-	 * Concrete test classes must override this to return a new instance of the RDFParser that is being
-	 * tested.
+	 * Concrete test classes can override this to return a new instance of the RDFParser that is being tested.
 	 * 
 	 * @return A new instance of the RDFParser that is being tested.
 	 */
 	protected abstract RDFParser getParser();
+
+	/**
+	 * Helper method to write the given model to and return an InputStream containing the results.
+	 *
+	 * @param statements
+	 * @return An {@link InputStream} containing the results.
+	 * @throws RDFHandlerException
+	 */
+	private InputStream serialize(Model statements)
+		throws RDFHandlerException
+	{
+		ByteArrayOutputStream output = new ByteArrayOutputStream(8096);
+
+		RDFWriter writer = createWriter(output);
+		writer.startRDF();
+		for (Statement nextStatement : statements) {
+			writer.handleStatement(nextStatement);
+		}
+		writer.endRDF();
+
+		return new ByteArrayInputStream(output.toByteArray());
+	}
+
+	/**
+	 * Creates an {@link RDFWriter} that is capable of producing an InputStream that can be parsed by
+	 * {@link #getParser()}.
+	 *
+	 * @since 2.3
+	 */
+	protected RDFWriter createWriter(OutputStream output) {
+		throw new IllegalStateException("Subclasses must implement createWriter(OutputStream)");
+	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -918,6 +963,28 @@ public abstract class AbstractParserHandlingTest {
 
 		assertErrorListener(0, 0, 0);
 		assertModel(expectedModel);
+	}
+
+	@Test
+	public final void testSkolemization()
+		throws Exception
+	{
+		Model expectedModel = new LinkedHashModel();
+		BNode subj = vf.createBNode();
+		expectedModel.add(vf.createStatement(subj, RDF.VALUE,
+				vf.createLiteral(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI)));
+		expectedModel.add(vf.createStatement(subj, RDF.VALUE,
+				vf.createLiteral(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG)));
+		InputStream input = getKnownDatatypeStream(expectedModel);
+
+		testParser.getParserConfig().set(BasicParserSettings.SKOLEMIZE_ORIGIN, "http://example.com");
+
+		testParser.parse(input, BASE_URI);
+
+		assertErrorListener(0, 0, 0);
+		assertModel(expectedModel); // isomorphic
+		assertNotEquals(new HashSet<>(expectedModel), new HashSet<>(testStatements)); // blank nodes not preserved
+		assertTrue(Models.subjectBNodes(testStatements).isEmpty()); // skolemized
 	}
 
 	private void assertModel(Model expectedModel) {
