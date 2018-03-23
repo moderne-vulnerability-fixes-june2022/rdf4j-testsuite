@@ -1228,6 +1228,22 @@ public abstract class RDFWriterTest {
 	}
 
 	@Test
+	public void testWriteTwoStatementsWithDifferentLanguage()
+		throws Exception
+	{
+		Model input = new LinkedHashModel();
+		input.setNamespace("ex", exNs);
+		input.add(vf.createStatement(uri1, uri1, vf.createLiteral("hello", "nl")));
+		input.add(vf.createStatement(uri1, uri1, vf.createLiteral("hello", "en")));
+		ByteArrayOutputStream outputWriter = new ByteArrayOutputStream();
+		write(input, outputWriter);
+		ByteArrayInputStream inputReader = new ByteArrayInputStream(outputWriter.toByteArray());
+		Model parsedOutput = parse(inputReader, "");
+		assertEquals(2, parsedOutput.size());
+		assertSameModel(input, parsedOutput);
+	}
+
+	@Test
 	public void testWriteOneStatementsObjectBNodeSinglePredicateSingleContextBNodeReusedWithNamespace()
 		throws Exception
 	{
