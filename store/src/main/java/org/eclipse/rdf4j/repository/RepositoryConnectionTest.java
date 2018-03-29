@@ -2014,34 +2014,6 @@ public abstract class RepositoryConnectionTest {
 	}
 
 	@Test
-	public void testOrderByQueriesAreInterruptable()
-		throws Exception
-	{
-		testCon.begin();
-		for (int index = 0; index < 512; index++) {
-			testCon.add(RDFS.CLASS, RDFS.COMMENT, testCon.getValueFactory().createBNode());
-		}
-		testCon.commit();
-
-		TupleQuery query = testCon.prepareTupleQuery(QueryLanguage.SPARQL,
-				"SELECT * WHERE { ?s ?p ?o . ?s1 ?p1 ?o1 . ?s2 ?p2 ?o2 . ?s3 ?p3 ?o3 } ORDER BY ?s1 ?p1 ?o1 LIMIT 1000");
-		query.setMaxQueryTime(2);
-
-		long startTime = System.currentTimeMillis();
-		try (TupleQueryResult result = query.evaluate();) {
-			result.hasNext();
-			fail("Query should have been interrupted");
-		}
-		catch (QueryEvaluationException e) {
-			// Expected
-			long duration = System.currentTimeMillis() - startTime;
-
-			assertTrue("Query not interrupted quickly enough, should have been ~2s, but was "
-					+ (duration / 1000) + "s", duration < 5000);
-		}
-	}
-
-	@Test
 	public void testQueryDefaultGraph()
 		throws Exception
 	{
