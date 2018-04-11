@@ -49,7 +49,6 @@ public abstract class AbstractSHACLTest extends TestCase {
 	 *-----------*/
 
 	protected Repository dataRep;
-	protected SailRepository shapesRep;
 
 	/*--------------*
 	 * Constructors *
@@ -75,29 +74,13 @@ public abstract class AbstractSHACLTest extends TestCase {
 	public void setUp()
 		throws Exception
 	{
-		shapesRep = createShapesRepository();
-		if (shapesGraph != null) {
-			try {
-				upload(shapesRep, shapesGraph);
-			}
-			catch (Exception exc) {
-				try {
-					shapesRep.shutDown();
-					shapesRep = null;
-				}
-				catch (Exception e2) {
-					logger.error(e2.toString(), e2);
-				}
-				throw exc;
-			}
-		}
-		dataRep = createDataRepository(shapesRep);
+		dataRep = createRepository(shapesGraph);
 	}
 
-	protected SailRepository createShapesRepository()
+	protected Repository createRepository(Model shapesGraph)
 		throws Exception
 	{
-		SailRepository repo = new SailRepository(newSail());
+		Repository repo = new SailRepository(newSail(shapesGraph));
 		repo.initialize();
 		RepositoryConnection con = repo.getConnection();
 		try {
@@ -110,25 +93,7 @@ public abstract class AbstractSHACLTest extends TestCase {
 		return repo;
 	}
 
-	protected Repository createDataRepository(SailRepository shapesRep)
-		throws Exception
-	{
-		Repository repo = new SailRepository(newShaclSail(shapesRep));
-		repo.initialize();
-		RepositoryConnection con = repo.getConnection();
-		try {
-			con.clear();
-			con.clearNamespaces();
-		}
-		finally {
-			con.close();
-		}
-		return repo;
-	}
-
-	protected abstract Sail newSail();
-
-	protected abstract Sail newShaclSail(SailRepository shapesRep);
+	protected abstract Sail newSail(Model shapesGraph);
 
 	@Override
 	public void tearDown()
