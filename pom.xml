@@ -3,42 +3,17 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.eclipse.rdf4j</groupId>
+	<parent>
+		<groupId>org.eclipse.rdf4j</groupId>
+		<artifactId>rdf4j-client-parent</artifactId>
+		<version>2.4-SNAPSHOT</version>
+	</parent>
+
 	<artifactId>rdf4j-testsuites</artifactId>
-	<version>2.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>RDF4J: Test Suites</name>
 	<description>Test suites and benchmarks for RDF4J, an extensible framework for RDF.</description>
-	<url>http://www.rdf4j.org/</url>
-	<inceptionYear>2015</inceptionYear>
-
-	<organization>
-		<name>Eclipse Foundation</name>
-		<url>https://www.eclipse.org/</url>
-	</organization>
-
-	<developers>
-		<developer>
-			<id>jeenbroekstra</id>
-			<name>Jeen Broekstra</name>
-			<email>jeen.broekstra@gmail.com</email>
-			<timezone>GMT+12</timezone>
-		</developer>
-		<developer>
-			<id>james_leigh</id>
-			<name>James Leigh</name>
-			<email>james@ontotext.com</email>
-		</developer>
-		<developer>
-			<id>ansell</id>
-			<name>Peter Ansell</name>
-			<email>p_ansell@yahoo.com</email>
-			<url>https://github.com/ansell</url>
-			<timezone>GMT+10</timezone>
-		</developer>
-	</developers>
-
 	<licenses>
 		<license>
 			<name>Eclipse Distribution License v1.0</name>
@@ -61,91 +36,6 @@
 		<module>benchmark</module>
 	</modules>
 
-	<profiles>
-		<profile>
-			<id>ossrh</id>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>ossrh</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-				</snapshotRepository>
-			</distributionManagement>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>doclint-java8-disable</id>
-			<activation>
-				<jdk>[1.8,9,)</jdk>
-			</activation>
-			<properties>
-				<javadoc.opts>-Xdoclint:none</javadoc.opts>
-			</properties>
-		</profile>
-	</profiles>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<slf4j.version>1.7.10</slf4j.version>
-		<logback.version>1.1.2</logback.version>
-		<spring.version>4.2.1.RELEASE</spring.version>
-		<httpclient.version>4.5.2</httpclient.version>
-		<httpcore.version>4.4.4</httpcore.version>
-		<jackson.version>2.8.2</jackson.version>
-		<last.japicmp.compare.version>2.0</last.japicmp.compare.version>
-	</properties>
-
 	<dependencyManagement>
 		<dependencies>
 			<!-- Logging: SLF4J and logback -->
@@ -163,169 +53,10 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.0.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
-					<configuration>
-						<fork>true</fork>
-						<source>1.8</source>
-						<target>1.8</target>
-						<encoding>utf8</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.8</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.5</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>1.6</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.9</version>
-					<configuration>
-						<useProjectReferences>true</useProjectReferences>
-						<downloadSources>true</downloadSources>
-						<downloadJavadocs>true</downloadJavadocs>
-						<additionalConfig>
-							<file>
-								<name>.settings/org.eclipse.core.resources.prefs</name>
-								<content>
-									<![CDATA[eclipse.preferences.version=1${line.separator}encoding/<project>=${project.build.sourceEncoding}${line.separator}]]>
-								</content>
-							</file>
-						</additionalConfig>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3.1</version>
-					<configuration>
-						<archive>
-							<manifestEntries>
-								<Implementation-Title>${project.name}</Implementation-Title>
-								<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
-								<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-								<Implementation-Version>${project.version}+${buildNumber}</Implementation-Version>
-								<Implementation-Build>${buildNumber}</Implementation-Build>
-							</manifestEntries>
-						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.8.1</version>
-					<configuration>
-						<additionalparam>${javadoc.opts}</additionalparam>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.5</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>2.4</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.19.1</version>
-					<configuration>
-						<encoding>UTF-8</encoding>
-						<argLine>-Xmx1024M</argLine>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>2.19.1</version>
-					<configuration>
-						<encoding>UTF-8</encoding>
-						<forkCount>1</forkCount>
-						<reuseForks>false</reuseForks>
-						<argLine>-Xmx1024M</argLine>
-						<includes>
-							<include>**/*Test.java</include>
-						</includes>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<shortRevisionLength>7</shortRevisionLength>
-				</configuration>
-			</plugin>
-
-		</plugins>
-
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>
-				<version>2.8</version>
-			</extension>
-		</extensions>
-	</build>
-
-	<repositories>
-		<repository>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>oss-sonatype-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</repository>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>https://maven.restlet.com</url>
-		</repository>
-	</repositories>
-
 	<scm>
-		<connection>scm:git:git://github.com:eclipse/rdf4j.git</connection>
-		<developerConnection>scm:git:git@github.com:eclipse/rdf4j.git</developerConnection>
-		<url>https://github.com/eclipse/rdf4j</url>
+		<connection>scm:git:git://github.com:eclipse/rdf4j-testsuite.git</connection>
+		<developerConnection>scm:git:git@github.com:eclipse/rdf4j-testsuite.git</developerConnection>
+		<url>https://github.com/eclipse/rdf4j-testsuite</url>
 	</scm>
 
 </project>
