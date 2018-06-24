@@ -12,7 +12,9 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
@@ -427,6 +429,148 @@ public abstract class AbstractNTriplesParserUnitTest {
 		assertEquals(0, model.subjects().size());
 		assertEquals(0, model.predicates().size());
 		assertEquals(0, model.objects().size());
+	}
+
+	@Test public void testBlankNodeIdentifiersWithUnderScore()
+		throws Exception
+	{
+		//The characters _ and [0-9] may appear anywhere in a blank node label.
+		RDFParser ntriplesParser = new NTriplesParser();
+		Model model = new LinkedHashModel();
+		ntriplesParser.setRDFHandler(new StatementCollector(model));
+		ntriplesParser.parse(new StringReader("_:123_ <urn:test:predicate> _:_456 ."), NTRIPLES_TEST_URL);
+
+		assertEquals(1, model.size());
+		assertEquals(1, model.subjects().size());
+		assertEquals(1, model.predicates().size());
+		assertEquals(1, model.objects().size());
+	}
+
+	@Test public void testBlankNodeIdentifiersWithDot()
+		throws Exception
+	{
+		//The character . may appear anywhere except the first or last character.
+		RDFParser ntriplesParser = new NTriplesParser();
+		Model model = new LinkedHashModel();
+		ntriplesParser.setRDFHandler(new StatementCollector(model));
+		ntriplesParser.parse(new StringReader("_:1.23 <urn:test:predicate> _:45.6 ."), NTRIPLES_TEST_URL);
+
+		assertEquals(1, model.size());
+		assertEquals(1, model.subjects().size());
+		assertEquals(1, model.predicates().size());
+		assertEquals(1, model.objects().size());
+	}
+
+	@Test public void testBlankNodeIdentifiersWithDotAsFirstCahracter()
+		throws Exception
+	{
+		//The character . may appear anywhere except the first or last character.
+		RDFParser ntriplesParser = new NTriplesParser();
+		Model model = new LinkedHashModel();
+		ntriplesParser.setRDFHandler(new StatementCollector(model));
+		try {
+			ntriplesParser.parse(new StringReader("_:123 <urn:test:predicate> _:.456 ."), NTRIPLES_TEST_URL);
+			fail("Should have failed to parse invalid N-Triples bnode with '.' at the begining of the bnode label");
+		}
+		catch (Exception e) {
+		}
+
+		assertEquals(0, model.size());
+		assertEquals(0, model.subjects().size());
+		assertEquals(0, model.predicates().size());
+		assertEquals(0, model.objects().size());
+	}
+
+	@Test(expected = RDFParseException.class) public void testBlankNodeIdentifiersWithDotAsLastCahracter()
+		throws Exception
+	{
+		//The character . may appear anywhere except the first or last character.
+		RDFParser ntriplesParser = new NTriplesParser();
+		Model model = new LinkedHashModel();
+		ntriplesParser.setRDFHandler(new StatementCollector(model));
+		try {
+			ntriplesParser.parse(new StringReader("_:123 <urn:test:predicate> _:456. ."), NTRIPLES_TEST_URL);
+		}
+		catch (RDFParseException e) {
+			assertEquals(0, model.size());
+			assertEquals(0, model.subjects().size());
+			assertEquals(0, model.predicates().size());
+			assertEquals(0, model.objects().size());
+			throw e;
+		}
+		fail("Should have failed to parse invalid N-Triples bnode with '.' at the end of the bnode label");
+	}
+
+	@Test public void testBlankNodeIdentifiersWithOtherCharacters()
+		throws Exception
+	{
+		//The characters -, U+00B7, U+0300 to U+036F and U+203F to U+2040 are permitted anywhere except the first character.
+		List<Character> charactersList = new ArrayList<>();
+		charactersList.add('-');
+		charactersList.add('\u00B7');
+		charactersList.add('\u0300');
+		charactersList.add('\u036F');
+		charactersList.add('\u0301');
+		charactersList.add('\u203F');
+
+		for (int i = 0; i < charactersList.size(); i++) {
+			Character character = charactersList.get(i);
+			RDFParser ntriplesParser = new NTriplesParser();
+			Model model = new LinkedHashModel();
+			ntriplesParser.setRDFHandler(new StatementCollector(model));
+
+			String triple = "<urn:test:subject> <urn:test:predicate> _:1" + character + " . ";
+			try {
+				ntriplesParser.parse(new StringReader(triple), NTRIPLES_TEST_URL);
+			}
+			catch (Exception e) {
+				fail(" Failed to parse triple : " + triple + " containing character '" + character
+						+ "' at index " + i + " in charactersList");
+			}
+
+			assertEquals("Should parse '" + character + "'", 1, model.size());
+			assertEquals("Should have subject when triple has character : '" + character + "'", 1,
+					model.subjects().size());
+			assertEquals("Should have predicate when triple has character : '" + character + "'", 1,
+					model.predicates().size());
+			assertEquals("Should have object when triple has character : '" + character + "'", 1,
+					model.objects().size());
+		}
+
+	}
+
+	@Test(expected = RDFParseException.class) public void testBlankNodeIdentifiersWithOtherCharactersAsFirstCharacter()
+		throws Exception
+	{
+		//The characters -, U+00B7, U+0300 to U+036F and U+203F to U+2040 are permitted anywhere except the first character.
+		List<Character> charactersList = new ArrayList<>();
+		charactersList.add('-');
+		charactersList.add('\u00B7');
+		charactersList.add('\u0300');
+		charactersList.add('\u036F');
+		charactersList.add('\u0301');
+		charactersList.add('\u203F');
+
+		for (Character character : charactersList) {
+			RDFParser ntriplesParser = new NTriplesParser();
+			Model model = new LinkedHashModel();
+			ntriplesParser.setRDFHandler(new StatementCollector(model));
+
+			try {
+				ntriplesParser.parse(
+						new StringReader("<urn:test:subject> <urn:test:predicate> _:" + character + "1 . "),
+						NTRIPLES_TEST_URL);
+			}
+			catch (RDFParseException e) {
+				assertEquals(0, model.size());
+				assertEquals(0, model.subjects().size());
+				assertEquals(0, model.predicates().size());
+				assertEquals(0, model.objects().size());
+				throw e;
+			}
+			fail("Should have failed to parse invalid N-Triples bnode with '" + character
+					+ "' at the begining of the bnode label");
+		}
 	}
 
 	protected abstract RDFParser createRDFParser();
