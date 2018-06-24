@@ -7,19 +7,11 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.repository;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.core.AnyOf.anyOf;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -111,7 +103,7 @@ public abstract class RepositoryConnectionTest {
 	public static void setUpClass()
 		throws Exception
 	{
-		// Turn off debugging for this test, as the cleanup processes are working correctly, 
+		// Turn off debugging for this test, as the cleanup processes are working correctly,
 		// but they debug a lot of information in testOrderByQueriesAreInterrupable
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "false");
 	}
@@ -271,7 +263,7 @@ public abstract class RepositoryConnectionTest {
 
 	/**
 	 * Gets an (uninitialized) instance of the repository that should be tested.
-	 * 
+	 *
 	 * @return an uninitialized repository.
 	 */
 	protected abstract Repository createRepository()
@@ -336,11 +328,11 @@ public abstract class RepositoryConnectionTest {
 		}
 		testCon.begin();
 		testCon.add(bob, name, nameBob);
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(true)));
-		assertThat(testCon2.hasStatement(bob, name, nameBob, false), is(equalTo(false)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isTrue();
+		assertThat(testCon2.hasStatement(bob, name, nameBob, false)).isFalse();
 		testCon.commit();
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(true)));
-		assertThat(testCon2.hasStatement(bob, name, nameBob, false), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isTrue();
+		assertThat(testCon2.hasStatement(bob, name, nameBob, false)).isTrue();
 	}
 
 	@Test
@@ -645,16 +637,16 @@ public abstract class RepositoryConnectionTest {
 		try (TupleQueryResult result = testCon.prepareTupleQuery(QueryLanguage.SERQL,
 				queryBuilder.toString()).evaluate();)
 		{
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 			while (result.hasNext()) {
 				BindingSet solution = result.next();
-				assertThat(solution.hasBinding(NAME), is(equalTo(true)));
-				assertThat(solution.hasBinding(MBOX), is(equalTo(true)));
+				assertThat(solution.hasBinding(NAME)).isTrue();
+				assertThat(solution.hasBinding(MBOX)).isTrue();
 				Value nameResult = solution.getValue(NAME);
 				Value mboxResult = solution.getValue(MBOX);
-				assertThat(nameResult, anyOf(is(equalTo((Value)nameAlice)), is(equalTo((Value)nameBob))));
-				assertThat(mboxResult, anyOf(is(equalTo((Value)mboxAlice)), is(equalTo((Value)mboxBob))));
+				assertThat(nameResult).isIn(nameAlice, nameBob);
+				assertThat(mboxResult).isIn(mboxAlice, mboxBob);
 			}
 		}
 	}
@@ -749,12 +741,12 @@ public abstract class RepositoryConnectionTest {
 		try (TupleQueryResult result = testCon.prepareTupleQuery(QueryLanguage.SERQL,
 				queryBuilder.toString()).evaluate();)
 		{
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 			while (result.hasNext()) {
 				BindingSet solution = result.next();
-				assertThat(solution.hasBinding(PERSON), is(equalTo(true)));
-				assertThat(solution.getValue(PERSON), is(equalTo((Value)alexander)));
+				assertThat(solution.hasBinding(PERSON)).isTrue();
+				assertThat(solution.getValue(PERSON)).isEqualTo(alexander);
 			}
 		}
 	}
@@ -778,12 +770,12 @@ public abstract class RepositoryConnectionTest {
 		query.setBinding(NAME, nameBob);
 
 		try (TupleQueryResult result = query.evaluate();) {
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 			while (result.hasNext()) {
 				BindingSet solution = result.next();
-				assertThat(solution.hasBinding(NAME), is(equalTo(true)));
-				assertThat(solution.hasBinding(MBOX), is(equalTo(true)));
+				assertThat(solution.hasBinding(NAME)).isTrue();
+				assertThat(solution.hasBinding(MBOX)).isTrue();
 				Value nameResult = solution.getValue(NAME);
 				Value mboxResult = solution.getValue(MBOX);
 				assertEquals("unexpected value for name: " + nameResult, nameBob, nameResult);
@@ -812,12 +804,12 @@ public abstract class RepositoryConnectionTest {
 		query.setBinding("VAR", bob);
 
 		try (TupleQueryResult result = query.evaluate();) {
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 			while (result.hasNext()) {
 				BindingSet solution = result.next();
-				assertThat(solution.hasBinding(NAME), is(equalTo(true)));
-				assertThat(solution.hasBinding(MBOX), is(equalTo(true)));
+				assertThat(solution.hasBinding(NAME)).isTrue();
+				assertThat(solution.hasBinding(MBOX)).isTrue();
 				Value nameResult = solution.getValue(NAME);
 				Value mboxResult = solution.getValue(MBOX);
 				assertEquals("unexpected value for name: " + nameResult, nameBob, nameResult);
@@ -841,13 +833,13 @@ public abstract class RepositoryConnectionTest {
 		query.setBinding(NAME, Александър);
 
 		try (TupleQueryResult result = query.evaluate();) {
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 
 			while (result.hasNext()) {
 				BindingSet solution = result.next();
-				assertThat(solution.hasBinding(PERSON), is(equalTo(true)));
-				assertThat(solution.getValue(PERSON), is(equalTo((Value)alexander)));
+				assertThat(solution.hasBinding(PERSON)).isTrue();
+				assertThat(solution.getValue(PERSON)).isEqualTo(alexander);
 			}
 		}
 	}
@@ -873,19 +865,17 @@ public abstract class RepositoryConnectionTest {
 		try (GraphQueryResult result = testCon.prepareGraphQuery(QueryLanguage.SERQL,
 				queryBuilder.toString()).evaluate();)
 		{
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 
 			while (result.hasNext()) {
 				Statement st = result.next();
 				if (name.equals(st.getPredicate())) {
-					assertThat(st.getObject(),
-							anyOf(is(equalTo((Value)nameAlice)), is(equalTo((Value)nameBob))));
+					assertThat(st.getObject()).isIn(nameAlice, nameBob);
 				}
 				else {
-					assertThat(st.getPredicate(), is(equalTo(mbox)));
-					assertThat(st.getObject(),
-							anyOf(is(equalTo((Value)mboxAlice)), is(equalTo((Value)mboxBob))));
+					assertThat(st.getPredicate()).isEqualTo(mbox);
+					assertThat(st.getObject()).isIn(mboxAlice, mboxBob);
 				}
 			}
 		}
@@ -912,18 +902,18 @@ public abstract class RepositoryConnectionTest {
 		query.setBinding(NAME, nameBob);
 
 		try (GraphQueryResult result = query.evaluate();) {
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(true)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isTrue();
 			while (result.hasNext()) {
 				Statement st = result.next();
 				IRI predicate = st.getPredicate();
-				assertThat(predicate, anyOf(is(equalTo(name)), is(equalTo(mbox))));
+				assertThat(predicate).isIn(name, mbox);
 				Value object = st.getObject();
 				if (name.equals(predicate)) {
 					assertEquals("unexpected value for name: " + object, nameBob, object);
 				}
 				else {
-					assertThat(predicate, is(equalTo(mbox)));
+					assertThat(predicate).isEqualTo(mbox);
 					assertEquals("unexpected value for mbox: " + object, mboxBob, object);
 				}
 			}
@@ -950,7 +940,7 @@ public abstract class RepositoryConnectionTest {
 		boolean exists = testCon.prepareBooleanQuery(QueryLanguage.SPARQL,
 				queryBuilder.toString()).evaluate();
 
-		assertThat(exists, is(equalTo(true)));
+		assertThat(exists).isTrue();
 	}
 
 	@Test
@@ -973,7 +963,7 @@ public abstract class RepositoryConnectionTest {
 		BooleanQuery query = testCon.prepareBooleanQuery(QueryLanguage.SPARQL, queryBuilder.toString());
 		query.setBinding(NAME, nameBob);
 
-		assertThat(query.evaluate(), is(equalTo(true)));
+		assertThat(query.evaluate()).isTrue();
 	}
 
 	@Test
@@ -992,23 +982,23 @@ public abstract class RepositoryConnectionTest {
 		queryBuilder.append("{ ?p foaf:name ?name }");
 		BooleanQuery query = testCon.prepareBooleanQuery(QueryLanguage.SPARQL, queryBuilder.toString());
 		query.setBinding(NAME, nameBob);
-		assertThat(query.evaluate(), is(equalTo(true)));
+		assertThat(query.evaluate()).isTrue();
 		SimpleDataset dataset = new SimpleDataset();
 
 		// default graph: {context1}
 		dataset.addDefaultGraph(context1);
 		query.setDataset(dataset);
-		assertThat(query.evaluate(), is(equalTo(true)));
+		assertThat(query.evaluate()).isTrue();
 
 		// default graph: {context1, context2}
 		dataset.addDefaultGraph(context2);
 		query.setDataset(dataset);
-		assertThat(query.evaluate(), is(equalTo(true)));
+		assertThat(query.evaluate()).isTrue();
 
 		// default graph: {context2}
 		dataset.removeDefaultGraph(context1);
 		query.setDataset(dataset);
-		assertThat(query.evaluate(), is(equalTo(false)));
+		assertThat(query.evaluate()).isFalse();
 		queryBuilder.setLength(0);
 		queryBuilder.append(PREFIX_FOAF + FOAF_NS + "> ");
 		queryBuilder.append(ASK);
@@ -1018,19 +1008,19 @@ public abstract class RepositoryConnectionTest {
 
 		// default graph: {context2}; named graph: {}
 		query.setDataset(dataset);
-		assertThat(query.evaluate(), is(equalTo(false)));
+		assertThat(query.evaluate()).isFalse();
 
 		// default graph: {context1, context2}; named graph: {context2}
 		dataset.addDefaultGraph(context1);
 		dataset.addNamedGraph(context2);
 		query.setDataset(dataset);
-		assertThat(query.evaluate(), is(equalTo(false)));
+		assertThat(query.evaluate()).isFalse();
 
 		// default graph: {context1, context2}; named graph: {context1,
 		// context2}
 		dataset.addNamedGraph(context1);
 		query.setDataset(dataset);
-		assertThat(query.evaluate(), is(equalTo(true)));
+		assertThat(query.evaluate()).isTrue();
 	}
 
 	@Test
@@ -1128,10 +1118,10 @@ public abstract class RepositoryConnectionTest {
 		try (RepositoryResult<Statement> result = testCon.getStatements(bob, name, null, false);) {
 			while (result.hasNext()) {
 				Statement st = result.next();
-				assertThat(st.getSubject(), is(equalTo((Resource)bob)));
-				assertThat(st.getPredicate(), is(equalTo(name)));
-				assertThat(st.getObject(), is(equalTo((Value)nameBob)));
-				assertThat(st.getContext(), is(equalTo((Resource)context1)));
+				assertThat(st.getSubject()).isEqualTo(bob);
+				assertThat(st.getPredicate()).isEqualTo(name);
+				assertThat(st.getObject()).isEqualTo(nameBob);
+				assertThat(st.getContext()).isEqualTo(context1);
 			}
 		}
 
@@ -1139,7 +1129,7 @@ public abstract class RepositoryConnectionTest {
 		try (RepositoryResult<Statement> result = testCon.getStatements(null, null, null, false, context1);) {
 			while (result.hasNext()) {
 				Statement st = result.next();
-				assertThat(st.getContext(), is(equalTo((Resource)context1)));
+				assertThat(st.getContext()).isEqualTo(context1);
 			}
 		}
 
@@ -1147,8 +1137,8 @@ public abstract class RepositoryConnectionTest {
 		try (RepositoryResult<Statement> result = testCon.getStatements(null, null, null, false,
 				unknownContext);)
 		{
-			assertThat(result, is(notNullValue()));
-			assertThat(result.hasNext(), is(equalTo(false)));
+			assertThat(result).isNotNull();
+			assertThat(result.hasNext()).isFalse();
 		}
 
 		try (RepositoryResult<Statement> result = testCon.getStatements(null, name, null, false, context1);) {
@@ -1178,8 +1168,7 @@ public abstract class RepositoryConnectionTest {
 			while (iter.hasNext()) {
 				count++;
 				Statement st = iter.next();
-				assertThat(st.getContext(),
-						anyOf(is(nullValue(Resource.class)), is(equalTo((Resource)context2))));
+				assertThat(st.getContext()).isIn(null, context2);
 			}
 
 			assertEquals("there should be three statements", 3, count);
@@ -1197,7 +1186,7 @@ public abstract class RepositoryConnectionTest {
 				count++;
 				Statement st = iter.next();
 				// we should have _only_ statements from context2
-				assertThat(st.getContext(), is(equalTo((Resource)context2)));
+				assertThat(st.getContext()).isEqualTo(context2);
 			}
 			assertEquals("there should be two statements", 2, count);
 		}
@@ -1211,7 +1200,7 @@ public abstract class RepositoryConnectionTest {
 				count++;
 				Statement st = iter.next();
 				// we should have _only_ statements from context2
-				assertThat(st.getContext(), is(equalTo((Resource)context2)));
+				assertThat(st.getContext()).isEqualTo(context2);
 			}
 			assertEquals("there should be two statements", 2, count);
 		}
@@ -1224,8 +1213,8 @@ public abstract class RepositoryConnectionTest {
 		testCon.commit();
 
 		try (RepositoryResult<Statement> iter = testCon.getStatements(null, null, null, false, context1);) {
-			assertThat(iter, is(notNullValue()));
-			assertThat(iter.hasNext(), is(equalTo(true)));
+			assertThat(iter).isNotNull();
+			assertThat(iter.hasNext()).isTrue();
 		}
 
 		// get statements with either no context or context2
@@ -1238,8 +1227,7 @@ public abstract class RepositoryConnectionTest {
 				Statement st = iter.next();
 				// we should have _only_ statements from context2, or without
 				// context
-				assertThat(st.getContext(),
-						anyOf(is(nullValue(Resource.class)), is(equalTo((Resource)context2))));
+				assertThat(st.getContext()).isIn(null, context2);
 			}
 			assertEquals("there should be four statements", 4, count);
 		}
@@ -1252,8 +1240,7 @@ public abstract class RepositoryConnectionTest {
 			while (iter.hasNext()) {
 				count++;
 				Statement st = iter.next();
-				assertThat(st.getContext(),
-						anyOf(is(equalTo((Resource)context1)), is(equalTo((Resource)context2))));
+				assertThat(st.getContext()).isIn(context1, context2);
 			}
 			assertEquals("there should be four statements", 4, count);
 		}
@@ -1276,10 +1263,10 @@ public abstract class RepositoryConnectionTest {
 				result.next();
 				count++;
 			}
-			// TODO now that statement.equals includes context, the above three statements are considered distinct. 
+			// TODO now that statement.equals includes context, the above three statements are considered distinct.
 			// This duplicate filter test has become meaningless since it is _expected_ that nothing gets filtered out.
 			// We should look into reimplementing/renaming the enableDuplicateFilter to ignore context.
-			assertThat(count, is(equalTo(3)));
+			assertThat(count).isEqualTo(3);
 		}
 	}
 
@@ -1292,17 +1279,17 @@ public abstract class RepositoryConnectionTest {
 		testCon.add(alice, name, nameAlice);
 		testCon.commit();
 
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(true)));
-		assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isTrue();
+		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isTrue();
 
 		testCon.remove(bob, name, nameBob);
 
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(false)));
-		assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isFalse();
+		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isTrue();
 
 		testCon.remove(alice, null, null);
-		assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(false)));
-		assertThat(testCon.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isFalse();
+		assertThat(testCon.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -1314,16 +1301,16 @@ public abstract class RepositoryConnectionTest {
 		testCon.add(bob, name, nameBob);
 		testCon.commit();
 
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(true)));
-		assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isTrue();
+		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isTrue();
 
 		try (RepositoryResult<Statement> result = testCon.getStatements(null, null, null, false);) {
 			Collection<Statement> c = Iterations.addAll(result, new ArrayList<Statement>());
 
 			testCon.remove(c);
 
-			assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(false)));
-			assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(false)));
+			assertThat(testCon.hasStatement(bob, name, nameBob, false)).isFalse();
+			assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isFalse();
 		}
 	}
 
@@ -1336,8 +1323,8 @@ public abstract class RepositoryConnectionTest {
 		testCon.add(bob, name, nameBob);
 		testCon.commit();
 
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(true)));
-		assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isTrue();
+		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isTrue();
 
 		try (CloseableIteration<? extends Statement, RepositoryException> iter = testCon.getStatements(null,
 				null, null, false);)
@@ -1345,8 +1332,8 @@ public abstract class RepositoryConnectionTest {
 			testCon.remove(iter);
 		}
 
-		assertThat(testCon.hasStatement(bob, name, nameBob, false), is(equalTo(false)));
-		assertThat(testCon.hasStatement(alice, name, nameAlice, false), is(equalTo(false)));
+		assertThat(testCon.hasStatement(bob, name, nameBob, false)).isFalse();
+		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isFalse();
 	}
 
 	@Test
@@ -1354,11 +1341,10 @@ public abstract class RepositoryConnectionTest {
 		throws Exception
 	{
 		setupNamespaces();
-		assertThat(testCon.getNamespace(EXAMPLE), is(equalTo(EXAMPLE_NS)));
-		assertThat(testCon.getNamespace(RDFS_PREFIX), is(equalTo(RDFS_NS)));
-		assertThat(testCon.getNamespace(RDF_PREFIX),
-				is(equalTo("http://www.w3.org/1999/02/22-rdf-syntax-ns#")));
-		assertThat(testCon.getNamespace("undefined"), is(nullValue()));
+		assertThat(testCon.getNamespace(EXAMPLE)).isEqualTo(EXAMPLE_NS);
+		assertThat(testCon.getNamespace(RDFS_PREFIX)).isEqualTo(RDFS_NS);
+		assertThat(testCon.getNamespace(RDF_PREFIX)).isEqualTo("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		assertThat(testCon.getNamespace("undefined")).isNull();
 	}
 
 	@Test
@@ -1367,11 +1353,11 @@ public abstract class RepositoryConnectionTest {
 	{
 		setupNamespaces();
 		Map<String, String> map = Namespaces.asMap(Iterations.asSet(testCon.getNamespaces()));
-		assertThat(map.size(), is(equalTo(3)));
-		assertThat(map.keySet(), hasItems(EXAMPLE, RDFS_PREFIX, RDF_PREFIX));
-		assertThat(map.get(EXAMPLE), is(equalTo(EXAMPLE_NS)));
-		assertThat(map.get(RDFS_PREFIX), is(equalTo(RDFS_NS)));
-		assertThat(map.get(RDF_PREFIX), is(equalTo("http://www.w3.org/1999/02/22-rdf-syntax-ns#")));
+		assertThat(map.size()).isEqualTo(3);
+		assertThat(map.keySet()).contains(EXAMPLE, RDFS_PREFIX, RDF_PREFIX);
+		assertThat(map.get(EXAMPLE)).isEqualTo(EXAMPLE_NS);
+		assertThat(map.get(RDFS_PREFIX)).isEqualTo(RDFS_NS);
+		assertThat(map.get(RDF_PREFIX)).isEqualTo("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 	}
 
 	private void setupNamespaces()
@@ -1391,9 +1377,9 @@ public abstract class RepositoryConnectionTest {
 		throws Exception
 	{
 		testCon.add(bob, name, nameBob);
-		assertThat(testCon.hasStatement(null, name, nameBob, false), is(equalTo(true)));
+		assertThat(testCon.hasStatement(null, name, nameBob, false)).isTrue();
 		testCon.clear();
-		assertThat(testCon.hasStatement(null, name, nameBob, false), is(equalTo(false)));
+		assertThat(testCon.hasStatement(null, name, nameBob, false)).isFalse();
 	}
 
 	@Test
@@ -1443,10 +1429,10 @@ public abstract class RepositoryConnectionTest {
 		Statement deserialized = (Statement)in.readObject();
 		in.close();
 
-		assertThat(deserialized, is(equalTo(st)));
+		assertThat(deserialized).isEqualTo(st);
 
-		assertThat(testCon.hasStatement(st, true), is(equalTo(true)));
-		assertThat(testCon.hasStatement(deserialized, true), is(equalTo(true)));
+		assertThat(testCon.hasStatement(st, true)).isTrue();
+		assertThat(testCon.hasStatement(deserialized, true)).isTrue();
 	}
 
 	@Test
@@ -1472,10 +1458,10 @@ public abstract class RepositoryConnectionTest {
 		BNode deserializedBNode = (BNode)in.readObject();
 		in.close();
 
-		assertThat(deserializedBNode, is(equalTo(bnode)));
+		assertThat(deserializedBNode).isEqualTo(bnode);
 
-		assertThat(testCon.hasStatement(bnode, name, nameBob, true), is(equalTo(true)));
-		assertThat(testCon.hasStatement(deserializedBNode, name, nameBob, true), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bnode, name, nameBob, true)).isTrue();
+		assertThat(testCon.hasStatement(deserializedBNode, name, nameBob, true)).isTrue();
 	}
 
 	@Test
@@ -1501,10 +1487,10 @@ public abstract class RepositoryConnectionTest {
 		IRI deserializedURI = (IRI)in.readObject();
 		in.close();
 
-		assertThat(deserializedURI, is(equalTo(uri)));
+		assertThat(deserializedURI).isEqualTo(uri);
 
-		assertThat(testCon.hasStatement(bob, uri, nameBob, true), is(equalTo(true)));
-		assertThat(testCon.hasStatement(bob, deserializedURI, nameBob, true), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, uri, nameBob, true)).isTrue();
+		assertThat(testCon.hasStatement(bob, deserializedURI, nameBob, true)).isTrue();
 	}
 
 	@Test
@@ -1530,10 +1516,10 @@ public abstract class RepositoryConnectionTest {
 		Literal deserialized = (Literal)in.readObject();
 		in.close();
 
-		assertThat(deserialized, is(equalTo(literal)));
+		assertThat(deserialized).isEqualTo(literal);
 
-		assertThat(testCon.hasStatement(bob, name, literal, true), is(equalTo(true)));
-		assertThat(testCon.hasStatement(bob, name, deserialized, true), is(equalTo(true)));
+		assertThat(testCon.hasStatement(bob, name, literal, true)).isTrue();
+		assertThat(testCon.hasStatement(bob, name, deserialized, true)).isTrue();
 	}
 
 	@Test
@@ -1556,11 +1542,11 @@ public abstract class RepositoryConnectionTest {
 			Model deserializedGraph = (Model)in.readObject();
 			in.close();
 
-			assertThat(deserializedGraph.isEmpty(), is(equalTo(false)));
-			assertThat(deserializedGraph.size(), is(equalTo(graph.size())));
+			assertThat(deserializedGraph.isEmpty()).isFalse();
+			assertThat(deserializedGraph).hasSameSizeAs(graph);
 			for (Statement st : deserializedGraph) {
-				assertThat(graph, hasItem(st));
-				assertThat(testCon.hasStatement(st, true), is(equalTo(true)));
+				assertThat(graph).contains(st);
+				assertThat(testCon.hasStatement(st, true)).isTrue();
 			}
 		}
 	}
@@ -1572,15 +1558,15 @@ public abstract class RepositoryConnectionTest {
 		if (IsolationLevels.NONE.isCompatibleWith(level)) {
 			return;
 		}
-		assertThat(testCon.isEmpty(), is(equalTo(true)));
-		assertThat(testCon2.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.isEmpty()).isTrue();
+		assertThat(testCon2.isEmpty()).isTrue();
 		testCon.begin();
 		testCon.add(vf.createBNode(), vf.createIRI(URN_PRED), vf.createBNode());
-		assertThat(testCon.isEmpty(), is(equalTo(false)));
-		assertThat(testCon2.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.isEmpty()).isFalse();
+		assertThat(testCon2.isEmpty()).isTrue();
 		testCon.rollback();
-		assertThat(testCon.isEmpty(), is(equalTo(true)));
-		assertThat(testCon2.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.isEmpty()).isTrue();
+		assertThat(testCon2.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -1590,26 +1576,26 @@ public abstract class RepositoryConnectionTest {
 		if (IsolationLevels.NONE.isCompatibleWith(level)) {
 			return;
 		}
-		assertThat(testCon.isEmpty(), is(equalTo(true)));
-		assertThat(testCon2.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.isEmpty()).isTrue();
+		assertThat(testCon2.isEmpty()).isTrue();
 		testCon.begin();
 		testCon.add(vf.createBNode(), vf.createIRI(URN_PRED), vf.createBNode());
-		assertThat(testCon.isEmpty(), is(equalTo(false)));
-		assertThat(testCon2.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.isEmpty()).isFalse();
+		assertThat(testCon2.isEmpty()).isTrue();
 		testCon.commit();
-		assertThat(testCon.isEmpty(), is(equalTo(false)));
-		assertThat(testCon2.isEmpty(), is(equalTo(false)));
+		assertThat(testCon.isEmpty()).isFalse();
+		assertThat(testCon2.isEmpty()).isFalse();
 	}
 
 	@Test
 	public void testOpen()
 		throws Exception
 	{
-		assertThat(testCon.isOpen(), is(equalTo(true)));
-		assertThat(testCon2.isOpen(), is(equalTo(true)));
+		assertThat(testCon.isOpen()).isTrue();
+		assertThat(testCon2.isOpen()).isTrue();
 		testCon.close();
-		assertThat(testCon.isOpen(), is(equalTo(false)));
-		assertThat(testCon2.isOpen(), is(equalTo(true)));
+		assertThat(testCon.isOpen()).isFalse();
+		assertThat(testCon2.isOpen()).isTrue();
 	}
 
 	@Test
@@ -1619,18 +1605,18 @@ public abstract class RepositoryConnectionTest {
 		if (IsolationLevels.NONE.isCompatibleWith(level)) {
 			return;
 		}
-		assertThat(testCon.size(), is(equalTo(0L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(0L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 		testCon.begin();
 		testCon.add(vf.createBNode(), vf.createIRI(URN_PRED), vf.createBNode());
-		assertThat(testCon.size(), is(equalTo(1L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(1L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 		testCon.add(vf.createBNode(), vf.createIRI(URN_PRED), vf.createBNode());
-		assertThat(testCon.size(), is(equalTo(2L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(2L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 		testCon.rollback();
-		assertThat(testCon.size(), is(equalTo(0L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(0L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 	}
 
 	@Test
@@ -1640,18 +1626,18 @@ public abstract class RepositoryConnectionTest {
 		if (IsolationLevels.NONE.isCompatibleWith(level)) {
 			return;
 		}
-		assertThat(testCon.size(), is(equalTo(0L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(0L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 		testCon.begin();
 		testCon.add(vf.createBNode(), vf.createIRI(URN_PRED), vf.createBNode());
-		assertThat(testCon.size(), is(equalTo(1L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(1L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 		testCon.add(vf.createBNode(), vf.createIRI(URN_PRED), vf.createBNode());
-		assertThat(testCon.size(), is(equalTo(2L)));
-		assertThat(testCon2.size(), is(equalTo(0L)));
+		assertThat(testCon.size()).isEqualTo(2L);
+		assertThat(testCon2.size()).isEqualTo(0L);
 		testCon.commit();
-		assertThat(testCon.size(), is(equalTo(2L)));
-		assertThat(testCon2.size(), is(equalTo(2L)));
+		assertThat(testCon.size()).isEqualTo(2L);
+		assertThat(testCon2.size()).isEqualTo(2L);
 	}
 
 	@Test
@@ -1684,7 +1670,7 @@ public abstract class RepositoryConnectionTest {
 			public void handleStatement(Statement st)
 				throws RDFHandlerException
 			{
-				assertThat(st, is(not(equalTo(stmt))));
+				assertThat(st).isNotEqualTo(stmt);
 			}
 		});
 	}
@@ -1707,7 +1693,7 @@ public abstract class RepositoryConnectionTest {
 			public void handleStatement(Statement st)
 				throws RDFHandlerException
 			{
-				assertThat(st, is(not(equalTo(stmt))));
+				assertThat(st).isNotEqualTo(stmt);
 			}
 		});
 	}
@@ -1730,7 +1716,7 @@ public abstract class RepositoryConnectionTest {
 			public void handleStatement(Statement st)
 				throws RDFHandlerException
 			{
-				assertThat(st, is(not(equalTo(stmt))));
+				assertThat(st).isNotEqualTo(stmt);
 			}
 		});
 	}
@@ -1754,7 +1740,7 @@ public abstract class RepositoryConnectionTest {
 			public void handleStatement(Statement st)
 				throws RDFHandlerException
 			{
-				assertThat(st, is(not(equalTo(stmt))));
+				assertThat(st).isNotEqualTo(stmt);
 			}
 		});
 	}
@@ -1854,7 +1840,7 @@ public abstract class RepositoryConnectionTest {
 	public void testInferredStatementCount()
 		throws Exception
 	{
-		assertThat(testCon.isEmpty(), is(equalTo(true)));
+		assertThat(testCon.isEmpty()).isTrue();
 		int inferred = getTotalStatementCount(testCon);
 
 		IRI root = vf.createIRI("urn:root");
@@ -1862,27 +1848,25 @@ public abstract class RepositoryConnectionTest {
 		testCon.add(root, RDF.TYPE, RDF.LIST);
 		testCon.remove(root, RDF.TYPE, RDF.LIST);
 
-		assertThat(testCon.isEmpty(), is(equalTo(true)));
-		assertThat(getTotalStatementCount(testCon), is(equalTo(inferred)));
+		assertThat(testCon.isEmpty()).isTrue();
+		assertThat(getTotalStatementCount(testCon)).isEqualTo(inferred);
 	}
 
 	@Test
 	public void testGetContextIDs()
 		throws Exception
 	{
-		assertThat(Iterations.asList(testCon.getContextIDs()).size(), is(equalTo(0)));
+		assertThat(Iterations.asList(testCon.getContextIDs())).isEmpty();
 
 		// load data
 		testCon.add(bob, name, nameBob, context1);
-		assertThat(Iterations.asList(testCon.getContextIDs()),
-				is(equalTo(Arrays.asList((Resource)context1))));
+		assertThat(Iterations.asList(testCon.getContextIDs())).isEqualTo(Arrays.asList((Resource) context1));
 
 		testCon.remove(bob, name, nameBob, context1);
-		assertThat(Iterations.asList(testCon.getContextIDs()).size(), is(equalTo(0)));
+		assertThat(Iterations.asList(testCon.getContextIDs())).isEmpty();
 
 		testCon.add(bob, name, nameBob, context2);
-		assertThat(Iterations.asList(testCon.getContextIDs()),
-				is(equalTo(Arrays.asList((Resource)context2))));
+		assertThat(Iterations.asList(testCon.getContextIDs())).isEqualTo(Arrays.asList((Resource) context2));
 	}
 
 	@Test
@@ -1921,7 +1905,7 @@ public abstract class RepositoryConnectionTest {
 		while (result.hasNext()) {
 			list.add(result.next());
 		}
-		assertThat(list.size(), is(equalTo(7)));
+		assertThat(list).hasSize(7);
 	}
 
 	@Test
@@ -1946,8 +1930,8 @@ public abstract class RepositoryConnectionTest {
 				BindingSet bindings = result.next();
 				set.add(Arrays.asList(bindings.getValue("v1"), bindings.getValue("v2")));
 			}
-			assertThat(set, hasItem(Arrays.asList(v1, v2)));
-			assertThat(set, hasItem(Arrays.asList(v3, null)));
+			assertThat(set).contains(Arrays.asList(v1, v2));
+			assertThat(set).contains(Arrays.asList(v3, null));
 		}
 	}
 
@@ -1970,8 +1954,8 @@ public abstract class RepositoryConnectionTest {
 				BindingSet bindings = result.next();
 				list.add(bindings.getValue("p"));
 			}
-			assertThat(list, hasItem(p1));
-			assertThat(list, hasItem(p2));
+			assertThat(list).contains(p1);
+			assertThat(list).contains(p2);
 		}
 	}
 
@@ -2019,10 +2003,10 @@ public abstract class RepositoryConnectionTest {
 	{
 		IRI graph = vf.createIRI("urn:test:default");
 		testCon.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
-		assertThat(size(graph), is(equalTo(0)));
+		assertThat(size(graph)).isEqualTo(0);
 		testCon.add(vf.createIRI("urn:test:s2"), vf.createIRI(URN_TEST_P2), vf.createIRI("urn:test:o2"),
 				graph);
-		assertThat(size(graph), is(equalTo(1)));
+		assertThat(size(graph)).isEqualTo(1);
 	}
 
 	@Test
@@ -2033,7 +2017,7 @@ public abstract class RepositoryConnectionTest {
 		try (TupleQueryResult rs = testCon.prepareTupleQuery(QueryLanguage.SPARQL, "SELECT * { <> ?p ?o }",
 				URN_TEST_S1).evaluate();)
 		{
-			assertThat(rs.hasNext(), is(equalTo(true)));
+			assertThat(rs.hasNext()).isTrue();
 		}
 	}
 
@@ -2042,7 +2026,7 @@ public abstract class RepositoryConnectionTest {
 		throws Exception
 	{
 		testCon.prepareUpdate(QueryLanguage.SPARQL, "INSERT DATA { <> a <> }", URN_TEST_S1).execute();
-		assertThat(testCon.size(), is(equalTo(1L)));
+		assertThat(testCon.size()).isEqualTo(1L);
 	}
 
 	@Test
@@ -2059,8 +2043,8 @@ public abstract class RepositoryConnectionTest {
 		ds.addDefaultRemoveGraph(g1);
 		up.setDataset(ds);
 		up.execute();
-		assertThat(size(g1), is(equalTo(0)));
-		assertThat(size(g2), is(equalTo(1)));
+		assertThat(size(g1)).isEqualTo(0);
+		assertThat(size(g2)).isEqualTo(1);
 	}
 
 	@Test
@@ -2074,25 +2058,22 @@ public abstract class RepositoryConnectionTest {
 			con.setRemoveContexts(defaultGraph);
 			con.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
 			con.prepareUpdate("INSERT DATA { <urn:test:s2> <urn:test:p2> \"l2\" }").execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(2)));
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph)).size(),
-					is(equalTo(2)));
-			assertThat(size(defaultGraph), is(equalTo(2)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(2);
+			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(2);
+			assertThat(size(defaultGraph)).isEqualTo(2);
 			con.add(vf.createIRI("urn:test:s3"), vf.createIRI("urn:test:p3"), vf.createIRI("urn:test:o3"),
 					(Resource)null);
 			con.add(vf.createIRI("urn:test:s4"), vf.createIRI("urn:test:p4"), vf.createIRI("urn:test:o4"),
 					vf.createIRI(URN_TEST_OTHER));
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(3)));
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true)).size(),
-					is(equalTo(4)));
-			assertThat(size(defaultGraph), is(equalTo(3)));
-			assertThat(size(vf.createIRI(URN_TEST_OTHER)), is(equalTo(1)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(3);
+			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(4);
+			assertThat(size(defaultGraph)).isEqualTo(3);
+			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
 			con.prepareUpdate(SPARQL_DEL_ALL).execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(0)));
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true)).size(),
-					is(equalTo(1)));
-			assertThat(size(defaultGraph), is(equalTo(0)));
-			assertThat(size(vf.createIRI(URN_TEST_OTHER)), is(equalTo(1)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).isEmpty();
+			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(1);
+			assertThat(size(defaultGraph)).isEqualTo(0);
+			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
 		}
 	}
 
@@ -2105,27 +2086,23 @@ public abstract class RepositoryConnectionTest {
 			con.setInsertContext(defaultGraph);
 			con.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
 			con.prepareUpdate("INSERT DATA { <urn:test:s2> <urn:test:p2> \"l2\" }").execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(2)));
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph)).size(),
-					is(equalTo(2)));
-			assertThat(size(defaultGraph), is(equalTo(2)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(2);
+			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(2);
+			assertThat(size(defaultGraph)).isEqualTo(2);
 			con.add(vf.createIRI("urn:test:s3"), vf.createIRI("urn:test:p3"), vf.createIRI("urn:test:o3"),
 					(Resource)null);
 			con.add(vf.createIRI("urn:test:s4"), vf.createIRI("urn:test:p4"), vf.createIRI("urn:test:o4"),
 					vf.createIRI(URN_TEST_OTHER));
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(4)));
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph)).size(),
-					is(equalTo(3)));
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true)).size(),
-					is(equalTo(4)));
-			assertThat(size(defaultGraph), is(equalTo(3)));
-			assertThat(size(vf.createIRI(URN_TEST_OTHER)), is(equalTo(1)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(4);
+			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(3);
+			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(4);
+			assertThat(size(defaultGraph)).isEqualTo(3);
+			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
 			con.prepareUpdate(SPARQL_DEL_ALL).execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(0)));
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true)).size(),
-					is(equalTo(0)));
-			assertThat(size(defaultGraph), is(equalTo(0)));
-			assertThat(size(vf.createIRI(URN_TEST_OTHER)), is(equalTo(0)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).isEmpty();
+			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).isEmpty();
+			assertThat(size(defaultGraph)).isEqualTo(0);
+			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(0);
 		}
 	}
 
@@ -2140,26 +2117,23 @@ public abstract class RepositoryConnectionTest {
 			con.setRemoveContexts(defaultGraph);
 			con.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
 			con.prepareUpdate("INSERT DATA { <urn:test:s2> <urn:test:p2> \"l2\" }").execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(2)));
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph)).size(),
-					is(equalTo(2)));
-			assertThat(size(defaultGraph), is(equalTo(2)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(2);
+			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(2);
+			assertThat(size(defaultGraph)).isEqualTo(2);
 			con.add(vf.createIRI("urn:test:s3"), vf.createIRI("urn:test:p3"), vf.createIRI("urn:test:o3"),
 					(Resource)null);
 			con.add(vf.createIRI("urn:test:s4"), vf.createIRI("urn:test:p4"), vf.createIRI("urn:test:o4"),
 
 					vf.createIRI(URN_TEST_OTHER));
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(3)));
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true)).size(),
-					is(equalTo(4)));
-			assertThat(size(defaultGraph), is(equalTo(3)));
-			assertThat(size(vf.createIRI(URN_TEST_OTHER)), is(equalTo(1)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(3);
+			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(4);
+			assertThat(size(defaultGraph)).isEqualTo(3);
+			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
 			con.prepareUpdate(SPARQL_DEL_ALL).execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null)).size(), is(equalTo(0)));
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true)).size(),
-					is(equalTo(1)));
-			assertThat(size(defaultGraph), is(equalTo(0)));
-			assertThat(size(vf.createIRI(URN_TEST_OTHER)), is(equalTo(1)));
+			assertThat(Iterations.asList(con.getStatements(null, null, null))).isEmpty();
+			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(1);
+			assertThat(size(defaultGraph)).isEqualTo(0);
+			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
 		}
 	}
 

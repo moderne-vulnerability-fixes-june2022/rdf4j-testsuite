@@ -7,9 +7,8 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.repository;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -147,8 +146,8 @@ public abstract class TupleQueryResultTest {
 		try {
 			List<String> headers = result.getBindingNames();
 
-			assertThat("first header element", headers.get(0), is("P"));
-			assertThat("second header element", headers.get(1), is("D"));
+			assertThat(headers.get(0)).isEqualTo("P").as("first header element");
+			assertThat(headers.get(1)).isEqualTo("D").as("second header element");
 		}
 		finally {
 			result.close();
@@ -223,7 +222,7 @@ public abstract class TupleQueryResultTest {
 			count++;
 		}
 		con.commit();
-		
+
 		for(int evaluateCount = 0; evaluateCount < 1000; evaluateCount++) {
 			try (ByteArrayOutputStream stream = new ByteArrayOutputStream();
 					RepositoryConnection nextCon = rep.getConnection();) {

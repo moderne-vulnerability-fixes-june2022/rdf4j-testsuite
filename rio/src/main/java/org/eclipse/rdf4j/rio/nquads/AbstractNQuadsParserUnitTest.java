@@ -7,8 +7,7 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.rio.nquads;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -144,7 +143,7 @@ public abstract class AbstractNQuadsParserUnitTest {
 
 	/**
 	 * Tests the behaviour with non-whitespace characters after a period character without a context.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 * @throws RDFParseException
@@ -168,7 +167,7 @@ public abstract class AbstractNQuadsParserUnitTest {
 
 	/**
 	 * Tests the behaviour with non-whitespace characters after a period character without a context.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 * @throws RDFParseException
@@ -229,7 +228,7 @@ public abstract class AbstractNQuadsParserUnitTest {
 		final TestRDFHandler rdfHandler = new TestRDFHandler();
 		parser.setRDFHandler(rdfHandler);
 		parser.parse(bais, "http://test.base.uri");
-		Assert.assertThat(rdfHandler.getStatements().size(), is(1));
+		assertThat(rdfHandler.getStatements()).hasSize(1);
 		final Statement statement = rdfHandler.getStatements().iterator().next();
 		Assert.assertEquals("http://www.v/dat/4b", statement.getSubject().stringValue());
 		Assert.assertEquals("http://www.w3.org/20/ica#dtend", statement.getPredicate().stringValue());
@@ -250,7 +249,7 @@ public abstract class AbstractNQuadsParserUnitTest {
 		final TestRDFHandler rdfHandler = new TestRDFHandler();
 		parser.setRDFHandler(rdfHandler);
 		parser.parse(bais, "http://test.base.uri");
-		Assert.assertThat(rdfHandler.getStatements().size(), is(1));
+		assertThat(rdfHandler.getStatements()).hasSize(1);
 		final Statement statement = rdfHandler.getStatements().iterator().next();
 		Assert.assertTrue(statement.getSubject() instanceof BNode);
 		Assert.assertEquals("http://www.w3.org/20/ica#dtend", statement.getPredicate().stringValue());
@@ -271,7 +270,7 @@ public abstract class AbstractNQuadsParserUnitTest {
 		final TestRDFHandler rdfHandler = new TestRDFHandler();
 		parser.setRDFHandler(rdfHandler);
 		parser.parse(bais, "http://test.base.uri");
-		Assert.assertThat(rdfHandler.getStatements().size(), is(1));
+		assertThat(rdfHandler.getStatements()).hasSize(1);
 		final Statement statement = rdfHandler.getStatements().iterator().next();
 		Assert.assertTrue(statement.getSubject() instanceof BNode);
 		Assert.assertEquals("http://www.w3.org/20/ica#dtend", statement.getPredicate().stringValue());
@@ -709,7 +708,7 @@ public abstract class AbstractNQuadsParserUnitTest {
 	public void testSupportedSettings()
 		throws Exception
 	{
-		assertEquals(13, parser.getSupportedSettings().size());
+		assertThat(parser.getSupportedSettings()).hasSize(13);
 	}
 
 	protected abstract RDFParser createRDFParser();
