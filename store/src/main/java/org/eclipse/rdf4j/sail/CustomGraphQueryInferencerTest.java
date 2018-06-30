@@ -7,9 +7,7 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.sail;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -105,33 +103,31 @@ public abstract class CustomGraphQueryInferencerTest {
 
 			// Test initial inferencer state
 			Collection<Value> watchPredicates = inferencer.getWatchPredicates();
-			assertThat(watchPredicates.size(), is(equalTo(testData.predCount)));
+			assertThat(watchPredicates).hasSameSizeAs(testData);
 			Collection<Value> watchObjects = inferencer.getWatchObjects();
-			assertThat(watchObjects.size(), is(equalTo(testData.objCount)));
+			assertThat(watchObjects).hasSameSizeAs(testData);
 			Collection<Value> watchSubjects = inferencer.getWatchSubjects();
-			assertThat(watchSubjects.size(), is(equalTo(testData.subjCount)));
+			assertThat(watchSubjects).hasSameSizeAs(testData);
 			ValueFactory factory = connection.getValueFactory();
 			if (resourceFolder.startsWith(PREDICATE)) {
-				assertThat(watchPredicates.contains(factory.createIRI(BASE, "brotherOf")), is(equalTo(true)));
-				assertThat(watchPredicates.contains(factory.createIRI(BASE, "parentOf")), is(equalTo(true)));
+				assertThat(watchPredicates.contains(factory.createIRI(BASE, "brotherOf"))).isTrue();
+				assertThat(watchPredicates.contains(factory.createIRI(BASE, "parentOf"))).isTrue();
 			}
 			else {
 				IRI bob = factory.createIRI(BASE, "Bob");
 				IRI alice = factory.createIRI(BASE, "Alice");
-				assertThat(watchSubjects.contains(bob), is(equalTo(true)));
-				assertThat(watchSubjects.contains(alice), is(equalTo(true)));
-				assertThat(watchObjects.contains(bob), is(equalTo(true)));
-				assertThat(watchObjects.contains(alice), is(equalTo(true)));
+				assertThat(watchSubjects).contains(bob, alice);
+				assertThat(watchObjects).contains(bob, alice);
 			}
 
 			// Test initial inferencing results
-			assertThat(Iterations.asSet(connection.getStatements(null, null, null, true)).size(),
-					is(equalTo(testData.initialCount)));
+			assertThat(Iterations.asSet(connection.getStatements(null, null, null, true)))
+				.hasSize(testData.initialCount);
 
 			// Test results after removing some statements
 			connection.prepareUpdate(QueryLanguage.SPARQL, delete).execute();
-			assertThat(Iterations.asSet(connection.getStatements(null, null, null, true)).size(),
-					is(equalTo(testData.countAfterRemove)));
+			assertThat(Iterations.asSet(connection.getStatements(null, null, null, true)))
+				.hasSize(testData.countAfterRemove);
 
 			// Tidy up. Storage gets re-used for subsequent tests, so must clear here,
 			// in order to properly clear out any inferred statements.
@@ -169,7 +165,7 @@ public abstract class CustomGraphQueryInferencerTest {
 
 	/**
 	 * Gets an instance of the Sail that should be tested. The returned repository must not be initialized.
-	 * 
+	 *
 	 * @return an uninitialized NotifyingSail.
 	 */
 	protected abstract NotifyingSail newSail();
