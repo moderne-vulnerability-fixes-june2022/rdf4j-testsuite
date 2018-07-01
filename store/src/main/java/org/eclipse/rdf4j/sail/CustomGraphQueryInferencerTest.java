@@ -103,11 +103,11 @@ public abstract class CustomGraphQueryInferencerTest {
 
 			// Test initial inferencer state
 			Collection<Value> watchPredicates = inferencer.getWatchPredicates();
-			assertThat(watchPredicates).hasSameSizeAs(testData);
+			assertThat(watchPredicates).hasSize(testData.predCount);
 			Collection<Value> watchObjects = inferencer.getWatchObjects();
-			assertThat(watchObjects).hasSameSizeAs(testData);
+			assertThat(watchObjects).hasSize(testData.objCount);
 			Collection<Value> watchSubjects = inferencer.getWatchSubjects();
-			assertThat(watchSubjects).hasSameSizeAs(testData);
+			assertThat(watchSubjects).hasSize(testData.subjCount);
 			ValueFactory factory = connection.getValueFactory();
 			if (resourceFolder.startsWith(PREDICATE)) {
 				assertThat(watchPredicates.contains(factory.createIRI(BASE, "brotherOf"))).isTrue();
