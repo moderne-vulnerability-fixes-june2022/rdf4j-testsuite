@@ -2405,6 +2405,34 @@ public abstract class ComplexSPARQLQueryTest {
 			assertFalse(result.hasNext());
 		}
 	}
+	
+	/**
+	 * https://github.com/eclipse/rdf4j/issues/1026
+	 */
+	@Test
+	public void testFilterExistsExternalValuesClause() throws Exception
+	{
+		StringBuilder ub = new StringBuilder();
+		ub.append("insert data {\n");
+		ub.append("  <http://subj1> a <http://type> .\n"); 
+		ub.append("  <http://subj2> a <http://type> .\n");
+		ub.append("  <http://subj1> <http://predicate> <http://obj1> .\n"); 
+		ub.append("  <http://subj2> <http://predicate> <http://obj2> .\n"); 
+		ub.append("}");
+		conn.prepareUpdate(QueryLanguage.SPARQL, ub.toString()).execute();
+
+		StringBuilder qb = new StringBuilder();
+		qb.append("select ?s  {\n" + 
+				"    ?s a* <http://type> .\n" + 
+				"    FILTER EXISTS {?s <http://predicate> ?o}\n" + 
+				"} limit 100 values ?o {<http://obj1>}");
+
+		TupleQuery tq = conn.prepareTupleQuery(QueryLanguage.SPARQL, qb.toString());
+		
+		List<BindingSet> result = QueryResults.asList(tq.evaluate());
+		assertEquals("single result expected", 1, result.size());
+		assertEquals("http://subj1", result.get(0).getValue("s").stringValue());
+	}
 
 	private boolean containsSolution(List<BindingSet> result, Binding... solution) {
 		final MapBindingSet bs = new MapBindingSet();
