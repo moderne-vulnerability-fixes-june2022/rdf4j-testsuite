@@ -2421,8 +2421,6 @@ public abstract class ComplexSPARQLQueryTest {
 		ub.append("}");
 		conn.prepareUpdate(QueryLanguage.SPARQL, ub.toString()).execute();
 
-		conn.prepareUpdate(QueryLanguage.SPARQL, ub.toString()).execute();
-
 		StringBuilder qb = new StringBuilder();
 		qb.append("select ?s  {\n" + 
 				"    ?s a* <http://type> .\n" + 
