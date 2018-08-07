@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rdf4j.model.IRI;
@@ -26,6 +27,7 @@ import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.MalformedQueryException;
 import org.eclipse.rdf4j.query.QueryEvaluationException;
 import org.eclipse.rdf4j.query.QueryLanguage;
+import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.Repository;
@@ -242,16 +244,16 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 		TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
 		query.setBinding("from", TEST_POINT);
 		query.setBinding("units", GEOF.UOM_METRE);
-		query.setBinding("range", sail.getValueFactory().createLiteral(1500.0));
+		query.setBinding("range", sail.getValueFactory().createLiteral(1.5));
 
-		TupleQueryResult result = query.evaluate();
+		List<BindingSet> result = QueryResults.asList(query.evaluate());
 
 		// check the results
 		Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
 		expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0 / 1000.0));
 
-		while (result.hasNext()) {
-			BindingSet bindings = result.next();
+		for (BindingSet bindings: result) {
+			System.out.println(bindings);
 			IRI subj = (IRI)bindings.getValue("toUri");
 			// check ordering
 			IRI expectedUri = expected.keySet().iterator().next();
@@ -264,7 +266,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 			assertNotNull(bindings.getValue("g"));
 		}
 		assertTrue(expected.isEmpty());
-		result.close();
+
 	}
 
 	public void testIntersectionQuery()
