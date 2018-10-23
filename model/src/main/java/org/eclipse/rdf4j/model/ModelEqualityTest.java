@@ -15,8 +15,6 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParser;

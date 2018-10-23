@@ -9,9 +9,6 @@ package org.eclipse.rdf4j.query.resultio;
 
 import java.util.Arrays;
 
-import org.eclipse.rdf4j.query.resultio.BooleanQueryResultFormat;
-import org.eclipse.rdf4j.query.resultio.QueryResultFormat;
-import org.eclipse.rdf4j.query.resultio.TupleQueryResultFormat;
 import org.junit.Test;
 
 /**

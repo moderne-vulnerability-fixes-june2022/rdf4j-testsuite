@@ -7,18 +7,13 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.rio.ntriples;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.io.StringReader;
 
 import junit.framework.TestSuite;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryLanguage;
 import org.eclipse.rdf4j.query.TupleQueryResult;
@@ -29,13 +24,8 @@ import org.eclipse.rdf4j.rio.FailureMode;
 import org.eclipse.rdf4j.rio.NegativeParserTest;
 import org.eclipse.rdf4j.rio.PositiveParserTest;
 import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.rio.RDFParseException;
 import org.eclipse.rdf4j.rio.RDFParser;
-import org.eclipse.rdf4j.rio.helpers.NTriplesParserSettings;
-import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * JUnit test for the N-Triples parser that uses the tests that are available

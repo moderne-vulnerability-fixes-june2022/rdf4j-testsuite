@@ -29,8 +29,6 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
-import org.eclipse.rdf4j.sail.NotifyingSail;
-import org.eclipse.rdf4j.sail.SailException;
 import org.eclipse.rdf4j.sail.inferencer.fc.CustomGraphQueryInferencer;
 import org.junit.BeforeClass;
 import org.junit.Test;

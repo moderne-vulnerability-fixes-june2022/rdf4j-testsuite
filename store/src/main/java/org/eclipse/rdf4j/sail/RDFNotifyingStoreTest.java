@@ -11,10 +11,6 @@ import static org.junit.Assert.*;
 
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
-import org.eclipse.rdf4j.sail.NotifyingSail;
-import org.eclipse.rdf4j.sail.SailChangedEvent;
-import org.eclipse.rdf4j.sail.SailChangedListener;
-import org.eclipse.rdf4j.sail.SailException;
 import org.junit.Test;
 
 /**
