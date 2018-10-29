@@ -2349,6 +2349,27 @@ public abstract class ComplexSPARQLQueryTest {
 
 	}
 
+	@Test 
+	public void testRdf4j1018BindError() throws Exception {
+		StringBuilder ub = new StringBuilder();
+		ub.append("insert data { <urn:test:subj> <urn:test:pred> _:blank }");
+
+		conn.prepareUpdate(QueryLanguage.SPARQL, ub.toString()).execute();
+		
+		StringBuilder qb = new StringBuilder();
+		
+		qb.append("SELECT * \n");
+		qb.append("WHERE { \n");
+		qb.append("  VALUES (?NAValue) { (<http://null>) } \n ");
+		qb.append("  BIND(IF(?NAValue != <http://null>, ?NAValue, ?notBoundVar) as ?ValidNAValue) \n ");
+		qb.append("  { ?disjClass (owl:disjointWith|^owl:disjointWith)? ?disjClass2 . }\n");
+		qb.append("}\n"); 
+
+		List<BindingSet> result = QueryResults.asList(conn.prepareTupleQuery(qb.toString()).evaluate());
+
+		assertEquals("query should return 2 solutions", 2, result.size());
+	}
+	
 	@Test
 	public void testSES2250BindErrors() throws Exception {
 		StringBuilder ub = new StringBuilder();
