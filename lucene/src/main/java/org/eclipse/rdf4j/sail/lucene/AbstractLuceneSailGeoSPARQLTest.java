@@ -102,27 +102,23 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 		repository.initialize();
 
 		// add some statements to it
-		try (RepositoryConnection connection = repository.getConnection()) {
-			connection.begin();
-			loadPoints(connection);
-			loadPolygons(connection);
-			connection.commit();
+		loadPoints();
+		loadPolygons();
+	}
+
+	protected void loadPoints() {
+		try(RepositoryConnection connection = repository.getConnection()) {
+			connection.add(SUBJECT_1, GEO.AS_WKT, EIFFEL_TOWER, CONTEXT_1);
+			connection.add(SUBJECT_2, GEO.AS_WKT, ARC_TRIOMPHE);
+			connection.add(SUBJECT_3, GEO.AS_WKT, NOTRE_DAME, CONTEXT_2);
 		}
 	}
 
-	protected void loadPoints(RepositoryConnection connection)
-		throws RepositoryException
-	{
-		connection.add(SUBJECT_1, GEO.AS_WKT, EIFFEL_TOWER, CONTEXT_1);
-		connection.add(SUBJECT_2, GEO.AS_WKT, ARC_TRIOMPHE);
-		connection.add(SUBJECT_3, GEO.AS_WKT, NOTRE_DAME, CONTEXT_2);
-	}
-
-	protected void loadPolygons(RepositoryConnection connection)
-		throws RepositoryException
-	{
-		connection.add(SUBJECT_4, GEO.AS_WKT, POLY1);
-		connection.add(SUBJECT_5, GEO.AS_WKT, POLY2, CONTEXT_3);
+	protected void loadPolygons() {
+		try(RepositoryConnection connection = repository.getConnection()) {
+			connection.add(SUBJECT_4, GEO.AS_WKT, POLY1);
+			connection.add(SUBJECT_5, GEO.AS_WKT, POLY2, CONTEXT_3);
+		}
 	}
 
 	@After
