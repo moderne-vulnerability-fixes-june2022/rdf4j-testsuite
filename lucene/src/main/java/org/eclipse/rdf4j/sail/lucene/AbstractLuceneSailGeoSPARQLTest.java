@@ -42,7 +42,7 @@ import org.junit.Test;
 public abstract class AbstractLuceneSailGeoSPARQLTest {
 
 	private static final ValueFactory vf = SimpleValueFactory.getInstance();
-	
+
 	public static final IRI SUBJECT_1 = vf.createIRI("urn:subject1");
 
 	public static final IRI SUBJECT_2 = vf.createIRI("urn:subject2");
@@ -82,8 +82,6 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 
 	protected Repository repository;
 
-	protected RepositoryConnection connection;
-
 	protected abstract void configure(LuceneSail sail)
 		throws IOException;
 
@@ -104,14 +102,15 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 		repository.initialize();
 
 		// add some statements to it
-		connection = repository.getConnection();
-		connection.begin();
-		loadPoints();
-		loadPolygons();
-		connection.commit();
+		try (RepositoryConnection connection = repository.getConnection()) {
+			connection.begin();
+			loadPoints(connection);
+			loadPolygons(connection);
+			connection.commit();
+		}
 	}
 
-	protected void loadPoints()
+	protected void loadPoints(RepositoryConnection connection)
 		throws RepositoryException
 	{
 		connection.add(SUBJECT_1, GEO.AS_WKT, EIFFEL_TOWER, CONTEXT_1);
@@ -119,7 +118,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 		connection.add(SUBJECT_3, GEO.AS_WKT, NOTRE_DAME, CONTEXT_2);
 	}
 
-	protected void loadPolygons()
+	protected void loadPolygons(RepositoryConnection connection)
 		throws RepositoryException
 	{
 		connection.add(SUBJECT_4, GEO.AS_WKT, POLY1);
@@ -128,17 +127,11 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 
 	@After
 	public void tearDown()
-		throws IOException, RepositoryException
+		throws IOException,
+		RepositoryException
 	{
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		}
-		finally {
-			if (repository != null) {
-				repository.shutDown();
-			}
+		if (repository != null) {
+			repository.shutDown();
 		}
 	}
 
@@ -154,174 +147,199 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 	protected void checkPoints()
 		throws RepositoryException
 	{
-		assertTrue(connection.hasStatement(SUBJECT_1, GEO.AS_WKT, EIFFEL_TOWER, false, CONTEXT_1));
-		assertTrue(connection.hasStatement(SUBJECT_2, GEO.AS_WKT, ARC_TRIOMPHE, false));
-		assertTrue(connection.hasStatement(SUBJECT_3, GEO.AS_WKT, NOTRE_DAME, false, CONTEXT_2));
+		try (RepositoryConnection connection = repository.getConnection()) {
+			assertTrue(connection.hasStatement(SUBJECT_1, GEO.AS_WKT, EIFFEL_TOWER, false, CONTEXT_1));
+			assertTrue(connection.hasStatement(SUBJECT_2, GEO.AS_WKT, ARC_TRIOMPHE, false));
+			assertTrue(connection.hasStatement(SUBJECT_3, GEO.AS_WKT, NOTRE_DAME, false, CONTEXT_2));
+		}
 	}
 
 	protected void checkPolygons()
 		throws RepositoryException
 	{
-		assertTrue(connection.hasStatement(SUBJECT_4, GEO.AS_WKT, POLY1, false));
-		assertTrue(connection.hasStatement(SUBJECT_5, GEO.AS_WKT, POLY2, false, CONTEXT_3));
+		try (RepositoryConnection connection = repository.getConnection()) {
+			assertTrue(connection.hasStatement(SUBJECT_4, GEO.AS_WKT, POLY1, false));
+			assertTrue(connection.hasStatement(SUBJECT_5, GEO.AS_WKT, POLY2, false, CONTEXT_3));
+		}
 	}
 
 	@Test
 	public void testDistanceQuery()
-		throws RepositoryException, MalformedQueryException, QueryEvaluationException
+		throws RepositoryException,
+		MalformedQueryException,
+		QueryEvaluationException
 	{
-		String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
-				+ "select ?toUri ?to where { ?toUri geo:asWKT ?to. filter(geof:distance(?from, ?to, ?units) < ?range) }";
-		TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-		query.setBinding("from", TEST_POINT);
-		query.setBinding("units", GEOF.UOM_METRE);
-		query.setBinding("range", sail.getValueFactory().createLiteral(1500.0));
+		try (RepositoryConnection connection = repository.getConnection()) {
+			String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
+					+ "select ?toUri ?to where { ?toUri geo:asWKT ?to. filter(geof:distance(?from, ?to, ?units) < ?range) }";
+			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+			query.setBinding("from", TEST_POINT);
+			query.setBinding("units", GEOF.UOM_METRE);
+			query.setBinding("range", sail.getValueFactory().createLiteral(1500.0));
 
-		TupleQueryResult result = query.evaluate();
+			try (TupleQueryResult result = query.evaluate()) {
 
-		// check the results
-		Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
-		expected.put(SUBJECT_1, EIFFEL_TOWER);
-		expected.put(SUBJECT_2, ARC_TRIOMPHE);
+				// check the results
+				Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
+				expected.put(SUBJECT_1, EIFFEL_TOWER);
+				expected.put(SUBJECT_2, ARC_TRIOMPHE);
 
-		while (result.hasNext()) {
-			BindingSet bindings = result.next();
-			IRI subj = (IRI)bindings.getValue("toUri");
-			// check ordering
-			IRI expectedUri = expected.keySet().iterator().next();
-			assertEquals(expectedUri, subj);
+				while (result.hasNext()) {
+					BindingSet bindings = result.next();
+					IRI subj = (IRI)bindings.getValue("toUri");
+					// check ordering
+					IRI expectedUri = expected.keySet().iterator().next();
+					assertEquals(expectedUri, subj);
 
-			Literal location = expected.remove(subj);
-			assertNotNull(location);
-			assertEquals(location, bindings.getValue("to"));
+					Literal location = expected.remove(subj);
+					assertNotNull(location);
+					assertEquals(location, bindings.getValue("to"));
+				}
+				assertTrue(expected.isEmpty());
+			}
 		}
-		assertTrue(expected.isEmpty());
-		result.close();
 	}
 
 	@Test
 	public void testComplexDistanceQuery()
-		throws RepositoryException, MalformedQueryException, QueryEvaluationException
+		throws RepositoryException,
+		MalformedQueryException,
+		QueryEvaluationException
 	{
-		String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
-				+ "select ?toUri ?dist ?g where { graph ?g {?toUri geo:asWKT ?to.}"
-				+ " bind(geof:distance(?from, ?to, ?units) as ?dist)" + " filter(?dist < ?range)" + " }";
-		TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-		query.setBinding("from", TEST_POINT);
-		query.setBinding("units", GEOF.UOM_METRE);
-		query.setBinding("range", sail.getValueFactory().createLiteral(1500.0));
+		try (RepositoryConnection connection = repository.getConnection()) {
+			String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
+					+ "select ?toUri ?dist ?g where { graph ?g {?toUri geo:asWKT ?to.}"
+					+ " bind(geof:distance(?from, ?to, ?units) as ?dist)" + " filter(?dist < ?range)" + " }";
+			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+			query.setBinding("from", TEST_POINT);
+			query.setBinding("units", GEOF.UOM_METRE);
+			query.setBinding("range", sail.getValueFactory().createLiteral(1500.0));
 
-		TupleQueryResult result = query.evaluate();
+			try (TupleQueryResult result = query.evaluate()) {
 
-		// check the results
-		Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
-		expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0));
+				// check the results
+				Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
+				expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0));
 
-		while (result.hasNext()) {
-			BindingSet bindings = result.next();
-			IRI subj = (IRI)bindings.getValue("toUri");
-			// check ordering
-			IRI expectedUri = expected.keySet().iterator().next();
-			assertEquals(expectedUri, subj);
+				while (result.hasNext()) {
+					BindingSet bindings = result.next();
+					IRI subj = (IRI)bindings.getValue("toUri");
+					// check ordering
+					IRI expectedUri = expected.keySet().iterator().next();
+					assertEquals(expectedUri, subj);
 
-			Literal dist = expected.remove(subj);
-			assertNotNull(dist);
-			assertEquals(dist.doubleValue(), ((Literal)bindings.getValue("dist")).doubleValue(), ERROR);
+					Literal dist = expected.remove(subj);
+					assertNotNull(dist);
+					assertEquals(dist.doubleValue(), ((Literal)bindings.getValue("dist")).doubleValue(), ERROR);
 
-			assertNotNull(bindings.getValue("g"));
+					assertNotNull(bindings.getValue("g"));
+				}
+				assertTrue(expected.isEmpty());
+			}
 		}
-		assertTrue(expected.isEmpty());
-		result.close();
 	}
-	
+
 	@Test
 	public void testComplexDistanceQueryMathExpr()
-		throws RepositoryException, MalformedQueryException, QueryEvaluationException
+		throws RepositoryException,
+		MalformedQueryException,
+		QueryEvaluationException
 	{
-		String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
-				+ "select ?toUri ?dist ?g where { graph ?g {?toUri geo:asWKT ?to.}"
-				+ " bind((geof:distance(?from, ?to, ?units) / 1000) as ?dist)" + " filter(?dist < ?range)" + " }";
-		TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-		query.setBinding("from", TEST_POINT);
-		query.setBinding("units", GEOF.UOM_METRE);
-		query.setBinding("range", sail.getValueFactory().createLiteral(1.5));
+		try (RepositoryConnection connection = repository.getConnection()) {
+			String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
+					+ "select ?toUri ?dist ?g where { graph ?g {?toUri geo:asWKT ?to.}"
+					+ " bind((geof:distance(?from, ?to, ?units) / 1000) as ?dist)" + " filter(?dist < ?range)" + " }";
+			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+			query.setBinding("from", TEST_POINT);
+			query.setBinding("units", GEOF.UOM_METRE);
+			query.setBinding("range", sail.getValueFactory().createLiteral(1.5));
 
-		List<BindingSet> result = QueryResults.asList(query.evaluate());
+			List<BindingSet> result = QueryResults.asList(query.evaluate());
 
-		// check the results
-		Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
-		expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0 / 1000.0));
+			// check the results
+			Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
+			expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0 / 1000.0));
 
-		for (BindingSet bindings: result) {
-			System.out.println(bindings);
-			IRI subj = (IRI)bindings.getValue("toUri");
-			// check ordering
-			IRI expectedUri = expected.keySet().iterator().next();
-			assertEquals(expectedUri, subj);
+			for (BindingSet bindings : result) {
+				System.out.println(bindings);
+				IRI subj = (IRI)bindings.getValue("toUri");
+				// check ordering
+				IRI expectedUri = expected.keySet().iterator().next();
+				assertEquals(expectedUri, subj);
 
-			Literal dist = expected.remove(subj);
-			assertNotNull(dist);
-			assertEquals(dist.doubleValue(), ((Literal)bindings.getValue("dist")).doubleValue(), ERROR);
+				Literal dist = expected.remove(subj);
+				assertNotNull(dist);
+				assertEquals(dist.doubleValue(), ((Literal)bindings.getValue("dist")).doubleValue(), ERROR);
 
-			assertNotNull(bindings.getValue("g"));
+				assertNotNull(bindings.getValue("g"));
+			}
+			assertTrue(expected.isEmpty());
 		}
-		assertTrue(expected.isEmpty());
 
 	}
 
 	public void testIntersectionQuery()
-		throws RepositoryException, MalformedQueryException, QueryEvaluationException
+		throws RepositoryException,
+		MalformedQueryException,
+		QueryEvaluationException
 	{
-		String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
-				+ "select ?matchUri ?match where { ?matchUri geo:asWKT ?match. filter(geof:sfIntersects(?pattern, ?match)) }";
-		TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-		query.setBinding("pattern", TEST_POLY);
+		try (RepositoryConnection connection = repository.getConnection()) {
+			String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
+					+ "select ?matchUri ?match where { ?matchUri geo:asWKT ?match. filter(geof:sfIntersects(?pattern, ?match)) }";
+			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+			query.setBinding("pattern", TEST_POLY);
 
-		TupleQueryResult result = query.evaluate();
+			try (TupleQueryResult result = query.evaluate()) {
 
-		// check the results
-		Map<IRI, Literal> expected = new HashMap<IRI, Literal>();
-		expected.put(SUBJECT_4, POLY1);
-		expected.put(SUBJECT_5, POLY2);
+				// check the results
+				Map<IRI, Literal> expected = new HashMap<IRI, Literal>();
+				expected.put(SUBJECT_4, POLY1);
+				expected.put(SUBJECT_5, POLY2);
 
-		while (result.hasNext()) {
-			BindingSet bindings = result.next();
-			IRI subj = (IRI)bindings.getValue("matchUri");
+				while (result.hasNext()) {
+					BindingSet bindings = result.next();
+					IRI subj = (IRI)bindings.getValue("matchUri");
 
-			Literal location = expected.remove(subj);
-			assertNotNull(location);
-			assertEquals(location, bindings.getValue("match"));
+					Literal location = expected.remove(subj);
+					assertNotNull(location);
+					assertEquals(location, bindings.getValue("match"));
+				}
+				assertTrue(expected.isEmpty());
+			}
 		}
-		assertTrue(expected.isEmpty());
-		result.close();
 	}
 
 	public void testComplexIntersectionQuery()
-		throws RepositoryException, MalformedQueryException, QueryEvaluationException
+		throws RepositoryException,
+		MalformedQueryException,
+		QueryEvaluationException
 	{
-		String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
-				+ "select ?matchUri ?intersects ?g where { graph ?g {?matchUri geo:asWKT ?match.}"
-				+ " bind(geof:sfIntersects(?pattern, ?match) as ?intersects)" + " filter(?intersects)" + " }";
-		TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-		query.setBinding("pattern", TEST_POLY);
+		try (RepositoryConnection connection = repository.getConnection()) {
 
-		TupleQueryResult result = query.evaluate();
+			String queryStr = "prefix geo:  <" + GEO.NAMESPACE + ">" + "prefix geof: <" + GEOF.NAMESPACE + ">"
+					+ "select ?matchUri ?intersects ?g where { graph ?g {?matchUri geo:asWKT ?match.}"
+					+ " bind(geof:sfIntersects(?pattern, ?match) as ?intersects)" + " filter(?intersects)" + " }";
+			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+			query.setBinding("pattern", TEST_POLY);
 
-		// check the results
-		Map<IRI, Literal> expected = new HashMap<IRI, Literal>();
-		expected.put(SUBJECT_5, sail.getValueFactory().createLiteral(true));
+			try (TupleQueryResult result = query.evaluate()) {
 
-		while (result.hasNext()) {
-			BindingSet bindings = result.next();
-			IRI subj = (IRI)bindings.getValue("matchUri");
+				// check the results
+				Map<IRI, Literal> expected = new HashMap<IRI, Literal>();
+				expected.put(SUBJECT_5, sail.getValueFactory().createLiteral(true));
 
-			Literal location = expected.remove(subj);
-			assertNotNull("Expected subject: " + subj, location);
-			assertEquals(location.booleanValue(), ((Literal)bindings.getValue("intersects")).booleanValue());
+				while (result.hasNext()) {
+					BindingSet bindings = result.next();
+					IRI subj = (IRI)bindings.getValue("matchUri");
 
-			assertNotNull(bindings.getValue("g"));
+					Literal location = expected.remove(subj);
+					assertNotNull("Expected subject: " + subj, location);
+					assertEquals(location.booleanValue(), ((Literal)bindings.getValue("intersects")).booleanValue());
+
+					assertNotNull(bindings.getValue("g"));
+				}
+				assertTrue(expected.isEmpty());
+			}
 		}
-		assertTrue(expected.isEmpty());
-		result.close();
 	}
 }
