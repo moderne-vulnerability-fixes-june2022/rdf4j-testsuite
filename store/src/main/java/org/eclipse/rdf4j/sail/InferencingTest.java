@@ -21,12 +21,10 @@ import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.util.RepositoryUtil;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
-import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -53,7 +51,7 @@ public abstract class InferencingTest {
 	 * Methods *
 	 *---------*/
 
-	public void runTest(Sail sailStack, String subdir, String testName, boolean isPositiveTest)
+	public void runTest(String subdir, String testName, boolean isPositiveTest)
 		throws Exception
 	{
 		final String name = subdir + "/" + testName;
@@ -63,7 +61,7 @@ public abstract class InferencingTest {
 		Collection<? extends Statement> entailedStatements = new HashSet<>();
 		Collection<? extends Statement> expectedStatements = null;
 
-		Repository repository = new SailRepository(sailStack);
+		Repository repository = createRepository();
 		repository.initialize();
 
 		try (RepositoryConnection con = repository.getConnection();) {
@@ -94,7 +92,7 @@ public abstract class InferencingTest {
 			repository.shutDown();
 		}
 
-		Repository outputRepository = new SailRepository(new MemoryStore());
+		Repository outputRepository = createRepository();
 		outputRepository.initialize();
 		// Upload output data
 		try (RepositoryConnection con = outputRepository.getConnection();
@@ -169,147 +167,147 @@ public abstract class InferencingTest {
 	public void testSubClassOf001()
 		throws Exception
 	{
-		runTest(createSail(), "subclassof", "test001", true);
+		runTest( "subclassof", "test001", true);
 	}
 
 	@Test
 	public void testSubClassOf002()
 		throws Exception
 	{
-		runTest(createSail(), "subclassof", "test002", true);
+		runTest( "subclassof", "test002", true);
 	}
 
 	@Test
 	public void testSubClassOf003()
 		throws Exception
 	{
-		runTest(createSail(), "subclassof", "test003", true);
+		runTest( "subclassof", "test003", true);
 	}
 
 	@Test
 	public void testSubClassOfError001()
 		throws Exception
 	{
-		runTest(createSail(), "subclassof", "error001", false);
+		runTest( "subclassof", "error001", false);
 	}
 
 	@Test
 	public void testSubPropertyOf001()
 		throws Exception
 	{
-		runTest(createSail(), "subpropertyof", "test001", true);
+		runTest( "subpropertyof", "test001", true);
 	}
 
 	@Test
 	public void testSubPropertyOf002()
 		throws Exception
 	{
-		runTest(createSail(), "subpropertyof", "test002", true);
+		runTest( "subpropertyof", "test002", true);
 	}
 
 	@Test
 	public void testSubPropertyOf003()
 		throws Exception
 	{
-		runTest(createSail(), "subpropertyof", "test003", true);
+		runTest( "subpropertyof", "test003", true);
 	}
 
 	@Test
 	public void testSubPropertyOf004()
 		throws Exception
 	{
-		runTest(createSail(), "subpropertyof", "test004", true);
+		runTest( "subpropertyof", "test004", true);
 	}
 
 	@Test
 	public void testSubPropertyOfError001()
 		throws Exception
 	{
-		runTest(createSail(), "subpropertyof", "error001", false);
+		runTest( "subpropertyof", "error001", false);
 	}
 
 	@Test
 	public void testDomain001()
 		throws Exception
 	{
-		runTest(createSail(), "domain", "test001", true);
+		runTest( "domain", "test001", true);
 	}
 
 	@Test
 	public void testDomainError001()
 		throws Exception
 	{
-		runTest(createSail(), "domain", "error001", false);
+		runTest( "domain", "error001", false);
 	}
 
 	@Test
 	public void testRange001()
 		throws Exception
 	{
-		runTest(createSail(), "range", "test001", true);
+		runTest( "range", "test001", true);
 	}
 
 	@Test
 	public void testRangeError001()
 		throws Exception
 	{
-		runTest(createSail(), "range", "error001", false);
+		runTest( "range", "error001", false);
 	}
 
 	@Test
 	public void testType001()
 		throws Exception
 	{
-		runTest(createSail(), "type", "test001", true);
+		runTest( "type", "test001", true);
 	}
 
 	@Test
 	public void testType002()
 		throws Exception
 	{
-		runTest(createSail(), "type", "test002", true);
+		runTest( "type", "test002", true);
 	}
 
 	@Test
 	public void testType003()
 		throws Exception
 	{
-		runTest(createSail(), "type", "test003", true);
+		runTest( "type", "test003", true);
 	}
 
 	@Test
 	public void testType004()
 		throws Exception
 	{
-		runTest(createSail(), "type", "test004", true);
+		runTest( "type", "test004", true);
 	}
 
 	@Test
 	public void testType005()
 		throws Exception
 	{
-		runTest(createSail(), "type", "test005", true);
+		runTest( "type", "test005", true);
 	}
 
 	@Test
 	public void testType006()
 		throws Exception
 	{
-		runTest(createSail(), "type", "test006", true);
+		runTest( "type", "test006", true);
 	}
 
 	@Test
 	public void testTypeError001()
 		throws Exception
 	{
-		runTest(createSail(), "type", "error001", false);
+		runTest( "type", "error001", false);
 	}
 
 	@Test
 	public void testTypeError002()
 		throws Exception
 	{
-		runTest(createSail(), "type", "error002", false);
+		runTest( "type", "error002", false);
 	}
 
 
@@ -319,6 +317,6 @@ public abstract class InferencingTest {
 	 * 
 	 * @return an uninitialized Sail.
 	 */
-	protected abstract Sail createSail();
+	protected abstract Repository createRepository();
 
 }
