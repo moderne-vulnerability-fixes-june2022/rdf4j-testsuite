@@ -16,27 +16,29 @@
 	<description>Test suite for SAIL and Repository API</description>
 
 	<dependencies>
+
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>rdf4j-repository-sail</artifactId>
+			<artifactId>rdf4j-repository-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>rdf4j-repository-contextaware</artifactId>
+			<artifactId>rdf4j-queryresultio-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>rdf4j-repository-manager</artifactId>
+			<artifactId>rdf4j-queryparser-sparql</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>rdf4j-sail-memory</artifactId>
+			<artifactId>rdf4j-sail-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
