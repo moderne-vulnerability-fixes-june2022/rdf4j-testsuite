@@ -72,14 +72,11 @@ import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.query.Update;
 import org.eclipse.rdf4j.query.impl.SimpleDataset;
-import org.eclipse.rdf4j.repository.contextaware.ContextAwareConnection;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
 import org.eclipse.rdf4j.rio.RioSetting;
 import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
-import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -279,7 +276,7 @@ public abstract class RepositoryConnectionTest {
 		assertTrue(NEWLY_ADDED, testCon.hasStatement(statement, false));
 		assertTrue(NEWLY_ADDED, testCon.hasStatement(alice, name, nameAlice, false));
 
-		Repository tempRep = new SailRepository(new MemoryStore());
+		Repository tempRep = createRepository();
 		tempRep.initialize();
 		try (RepositoryConnection con = tempRep.getConnection();) {
 
@@ -2041,96 +2038,6 @@ public abstract class RepositoryConnectionTest {
 		up.execute();
 		assertThat(size(g1)).isEqualTo(0);
 		assertThat(size(g2)).isEqualTo(1);
-	}
-
-	@Test
-	public void testDefaultContext()
-		throws Exception
-	{
-		try (ContextAwareConnection con = new ContextAwareConnection(testCon);) {
-			IRI defaultGraph = vf.createIRI("urn:test:default");
-			con.setReadContexts(defaultGraph);
-			con.setInsertContext(defaultGraph);
-			con.setRemoveContexts(defaultGraph);
-			con.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
-			con.prepareUpdate("INSERT DATA { <urn:test:s2> <urn:test:p2> \"l2\" }").execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(2);
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(2);
-			assertThat(size(defaultGraph)).isEqualTo(2);
-			con.add(vf.createIRI("urn:test:s3"), vf.createIRI("urn:test:p3"), vf.createIRI("urn:test:o3"),
-					(Resource)null);
-			con.add(vf.createIRI("urn:test:s4"), vf.createIRI("urn:test:p4"), vf.createIRI("urn:test:o4"),
-					vf.createIRI(URN_TEST_OTHER));
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(3);
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(4);
-			assertThat(size(defaultGraph)).isEqualTo(3);
-			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
-			con.prepareUpdate(SPARQL_DEL_ALL).execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).isEmpty();
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(1);
-			assertThat(size(defaultGraph)).isEqualTo(0);
-			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
-		}
-	}
-
-	@Test
-	public void testDefaultInsertContext()
-		throws Exception
-	{
-		try (ContextAwareConnection con = new ContextAwareConnection(testCon);) {
-			IRI defaultGraph = vf.createIRI("urn:test:default");
-			con.setInsertContext(defaultGraph);
-			con.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
-			con.prepareUpdate("INSERT DATA { <urn:test:s2> <urn:test:p2> \"l2\" }").execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(2);
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(2);
-			assertThat(size(defaultGraph)).isEqualTo(2);
-			con.add(vf.createIRI("urn:test:s3"), vf.createIRI("urn:test:p3"), vf.createIRI("urn:test:o3"),
-					(Resource)null);
-			con.add(vf.createIRI("urn:test:s4"), vf.createIRI("urn:test:p4"), vf.createIRI("urn:test:o4"),
-					vf.createIRI(URN_TEST_OTHER));
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(4);
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(3);
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(4);
-			assertThat(size(defaultGraph)).isEqualTo(3);
-			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
-			con.prepareUpdate(SPARQL_DEL_ALL).execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).isEmpty();
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).isEmpty();
-			assertThat(size(defaultGraph)).isEqualTo(0);
-			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(0);
-		}
-	}
-
-	@Test
-	public void testExclusiveNullContext()
-		throws Exception
-	{
-		try (ContextAwareConnection con = new ContextAwareConnection(testCon);) {
-			IRI defaultGraph = null; // null context
-			con.setReadContexts(defaultGraph);
-			con.setInsertContext(defaultGraph);
-			con.setRemoveContexts(defaultGraph);
-			con.add(vf.createIRI(URN_TEST_S1), vf.createIRI(URN_TEST_P1), vf.createIRI(URN_TEST_O1));
-			con.prepareUpdate("INSERT DATA { <urn:test:s2> <urn:test:p2> \"l2\" }").execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(2);
-			assertThat(Iterations.asList(con.getStatements(null, null, null, defaultGraph))).hasSize(2);
-			assertThat(size(defaultGraph)).isEqualTo(2);
-			con.add(vf.createIRI("urn:test:s3"), vf.createIRI("urn:test:p3"), vf.createIRI("urn:test:o3"),
-					(Resource)null);
-			con.add(vf.createIRI("urn:test:s4"), vf.createIRI("urn:test:p4"), vf.createIRI("urn:test:o4"),
-
-					vf.createIRI(URN_TEST_OTHER));
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).hasSize(3);
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(4);
-			assertThat(size(defaultGraph)).isEqualTo(3);
-			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
-			con.prepareUpdate(SPARQL_DEL_ALL).execute();
-			assertThat(Iterations.asList(con.getStatements(null, null, null))).isEmpty();
-			assertThat(Iterations.asList(testCon.getStatements(null, null, null, true))).hasSize(1);
-			assertThat(size(defaultGraph)).isEqualTo(0);
-			assertThat(size(vf.createIRI(URN_TEST_OTHER))).isEqualTo(1);
-		}
 	}
 
 	private int size(IRI defaultGraph)

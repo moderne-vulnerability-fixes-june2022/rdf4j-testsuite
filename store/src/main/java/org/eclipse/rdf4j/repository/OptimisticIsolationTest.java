@@ -13,7 +13,6 @@ import java.io.IOException;
 import org.eclipse.rdf4j.RDF4JException;
 import org.eclipse.rdf4j.common.io.FileUtil;
 import org.eclipse.rdf4j.repository.config.RepositoryFactory;
-import org.eclipse.rdf4j.repository.config.RepositoryImplConfig;
 import org.eclipse.rdf4j.repository.optimistic.DeadLockTest;
 import org.eclipse.rdf4j.repository.optimistic.DeleteInsertTest;
 import org.eclipse.rdf4j.repository.optimistic.LinearTest;
@@ -23,9 +22,6 @@ import org.eclipse.rdf4j.repository.optimistic.RemoveIsolationTest;
 import org.eclipse.rdf4j.repository.optimistic.SailIsolationLevelTest;
 import org.eclipse.rdf4j.repository.optimistic.SerializableTest;
 import org.eclipse.rdf4j.repository.optimistic.SnapshotTest;
-import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
-import org.eclipse.rdf4j.repository.sail.config.SailRepositoryFactory;
-import org.eclipse.rdf4j.sail.config.SailFactory;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -66,18 +62,6 @@ public abstract class OptimisticIsolationTest {
 			dataDir = null;
 		}
 		OptimisticIsolationTest.factory = factory;
-	}
-
-	public static void setSailFactory(final SailFactory factory)
-		throws IOException
-	{
-		setRepositoryFactory(new SailRepositoryFactory() {
-
-			@Override
-			public RepositoryImplConfig getConfig() {
-				return new SailRepositoryConfig(factory.getConfig());
-			}
-		});
 	}
 
 	public static Repository getEmptyInitializedRepository(Class<?> caller)
