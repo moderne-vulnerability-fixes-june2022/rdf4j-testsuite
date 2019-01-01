@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.eclipse.rdf4j.common.iteration.Iterations;
+import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.repository.Repository;
@@ -59,7 +60,6 @@ public abstract class InferencingTest {
 		final String outputData = TEST_DIR_PREFIX + "/" + name + "-out.nt";
 
 		Collection<? extends Statement> entailedStatements = new HashSet<>();
-		Collection<? extends Statement> expectedStatements = null;
 
 		Repository repository = createRepository();
 		repository.initialize();
@@ -92,29 +92,12 @@ public abstract class InferencingTest {
 			repository.shutDown();
 		}
 
-		Repository outputRepository = createRepository();
-		outputRepository.initialize();
-		// Upload output data
-		try (RepositoryConnection con = outputRepository.getConnection();
-				InputStream stream = getClass().getResourceAsStream(outputData);)
-		{
-			try {
-				con.begin();
-				con.add(stream, outputData, RDFFormat.NTRIPLES);
-				con.commit();
+		Model expectedStatements;
 
-				expectedStatements = Iterations.addAll(con.getStatements(null, null, null, false),
-						new HashSet<Statement>());
-			}
-			catch (Exception e) {
-				if (con.isActive()) {
-					con.rollback();
-				}
-				logger.error("exception while uploading output data", e);
-			}
-		}
-		finally {
-			outputRepository.shutDown();
+		// Read output data
+		try (InputStream stream = getClass().getResourceAsStream(outputData))
+		{
+			expectedStatements = Rio.parse(stream, "", Rio.getParserFormatForFileName(outputData).orElse(RDFFormat.NTRIPLES));
 		}
 
 		// Check whether all expected statements are present in the entailment
@@ -309,8 +292,6 @@ public abstract class InferencingTest {
 	{
 		runTest( "type", "error002", false);
 	}
-
-
 
 	/**
 	 * Gets an instance of the Sail that should be tested. The returned repository must not be initialized.
