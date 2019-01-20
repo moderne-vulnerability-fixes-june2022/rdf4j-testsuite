@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eclipse RDF4J contributors, Aduna, and others.
+ * Copyright (c) 2018 Eclipse RDF4J contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Distribution License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
 package org.eclipse.rdf4j.shacl.manifest;
 
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.vocabulary.RDF4J;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
@@ -71,34 +72,31 @@ public abstract class AbstractSHACLTest extends TestCase {
 	 *---------*/
 
 	@Override
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		dataRep = createRepository(shapesGraph);
 	}
 
-	protected Repository createRepository(Model shapesGraph)
-		throws Exception
-	{
-		Repository repo = new SailRepository(newSail(shapesGraph));
+	protected Repository createRepository(Model shapesGraph) throws Exception {
+		Repository repo = new SailRepository(newSail());
 		repo.initialize();
-		RepositoryConnection con = repo.getConnection();
-		try {
-			con.clear();
-			con.clearNamespaces();
-		}
-		finally {
-			con.close();
+
+		try (RepositoryConnection conn = repo.getConnection()) {
+			conn.clear();
+			conn.clearNamespaces();
+			conn.add(shapesGraph, RDF4J.SHACL_SHAPE_GRAPH);
 		}
 		return repo;
 	}
 
-	protected abstract Sail newSail(Model shapesGraph);
+	/**
+	 * Creates a new un-initialized Sail stack
+	 * 
+	 * @return a new un-initialized Sail stack
+	 */
+	protected abstract Sail newSail();
 
 	@Override
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		if (dataRep != null) {
 			dataRep.shutDown();
 			dataRep = null;
@@ -106,9 +104,7 @@ public abstract class AbstractSHACLTest extends TestCase {
 	}
 
 	@Override
-	public void runTest()
-		throws Exception
-	{
+	public void runTest() throws Exception {
 		try {
 			upload(dataRep, dataGraph);
 			assertTrue(conforms);
