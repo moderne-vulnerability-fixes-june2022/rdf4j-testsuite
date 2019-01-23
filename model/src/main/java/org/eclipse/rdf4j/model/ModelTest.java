@@ -50,7 +50,7 @@ public abstract class ModelTest extends TestCase {
 	}
 
 	private static Set<String> getTestNames(Class<?> superClass) {
-		Set<String> names = new HashSet<String>();
+		Set<String> names = new HashSet<>();
 		while (Test.class.isAssignableFrom(superClass)) {
 			Method[] methods = superClass.getDeclaredMethods();
 			for (int i = 0; i < methods.length; i++) {
@@ -97,7 +97,7 @@ public abstract class ModelTest extends TestCase {
 				@Override
 				public Object[] convert(Object[] seeds) {
 					Random rand = new Random(0);
-					List<Statement> list = new ArrayList<Statement>();
+					List<Statement> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						IRI s = createURI(seed);
 						IRI p = createURI(seeds[rand.nextInt(seeds.length)]);
@@ -135,7 +135,7 @@ public abstract class ModelTest extends TestCase {
 				@Override
 				public Object[] convert(Object[] seeds) {
 					Random rand = new Random(0);
-					List<Statement> list = new ArrayList<Statement>();
+					List<Statement> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						IRI s = createURI(seed);
 						IRI p = createURI(seeds[rand.nextInt(seeds.length)]);
@@ -179,7 +179,7 @@ public abstract class ModelTest extends TestCase {
 				@Override
 				public Object[] convert(Object[] seeds) {
 					Random rand = new Random(0);
-					List<Statement> list = new ArrayList<Statement>();
+					List<Statement> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						IRI s = createURI(seed);
 						IRI p = createURI(seeds[rand.nextInt(seeds.length)]);
@@ -210,7 +210,7 @@ public abstract class ModelTest extends TestCase {
 
 				@Override
 				public Object[] convert(Object[] seeds) {
-					List<IRI> list = new ArrayList<IRI>();
+					List<IRI> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						list.add(createURI(seed));
 					}
@@ -239,7 +239,7 @@ public abstract class ModelTest extends TestCase {
 
 				@Override
 				public Object[] convert(Object[] seeds) {
-					List<IRI> list = new ArrayList<IRI>();
+					List<IRI> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						list.add(createURI(seed));
 					}
@@ -267,7 +267,7 @@ public abstract class ModelTest extends TestCase {
 
 				@Override
 				public Object[] convert(Object[] seeds) {
-					List<Literal> list = new ArrayList<Literal>();
+					List<Literal> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						list.add(createLiteral(seed));
 					}
@@ -296,7 +296,7 @@ public abstract class ModelTest extends TestCase {
 
 				@Override
 				public Object[] convert(Object[] seeds) {
-					List<IRI> list = new ArrayList<IRI>();
+					List<IRI> list = new ArrayList<>();
 					for (Object seed : seeds) {
 						list.add(createURI(seed));
 					}

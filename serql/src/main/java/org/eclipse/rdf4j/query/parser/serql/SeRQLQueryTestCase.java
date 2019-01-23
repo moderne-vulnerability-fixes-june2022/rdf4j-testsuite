@@ -119,7 +119,7 @@ public abstract class SeRQLQueryTestCase extends TestCase {
 
 		// Evaluate the query on the query data
 		GraphQueryResult result = dataCon.prepareGraphQuery(getQueryLanguage(), query).evaluate();
-		Collection<Statement> actualStatements = Iterations.addAll(result, new ArrayList<Statement>(1));
+		Collection<Statement> actualStatements = Iterations.addAll(result, new ArrayList<>(1));
 		result.close();
 
 		dataCon.close();
@@ -136,7 +136,7 @@ public abstract class SeRQLQueryTestCase extends TestCase {
 				Rio.getParserFormatForFileName(resultFile).orElseThrow(Rio.unsupportedFormat(resultFile)));
 
 		Collection<Statement> expectedStatements = Iterations.addAll(
-				erCon.getStatements(null, null, null, false), new ArrayList<Statement>(1));
+				erCon.getStatements(null, null, null, false), new ArrayList<>(1));
 
 		erCon.close();
 		expectedResultRep.shutDown();
@@ -309,7 +309,7 @@ public abstract class SeRQLQueryTestCase extends TestCase {
 					+ "  mf = <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>,"
 					+ "  qt = <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>";
 
-			List<String> graphNames = new ArrayList<String>();
+			List<String> graphNames = new ArrayList<>();
 
 			TupleQueryResult graphs = con.prepareTupleQuery(QueryLanguage.SERQL, query).evaluate();
 			while (graphs.hasNext()) {

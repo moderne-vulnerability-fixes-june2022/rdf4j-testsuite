@@ -724,7 +724,7 @@ public class SerializableTest {
 		throws Exception
 	{
 		try (TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, qry, NS).evaluate();) {
-			List<Value> list = new ArrayList<Value>();
+			List<Value> list = new ArrayList<>();
 			while (result.hasNext()) {
 				list.add(result.next().getValue(var));
 			}

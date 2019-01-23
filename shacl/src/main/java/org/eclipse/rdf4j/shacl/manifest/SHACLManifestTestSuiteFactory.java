@@ -205,7 +205,7 @@ public class SHACLManifestTestSuiteFactory {
 			in.close();
 		}
 		if (before < manifests.size()) {
-			for (Value included : new LinkedHashSet<Value>(manifests.filter(manifest, vf.createIRI(MF_INCLUDE), null).objects())) {
+			for (Value included : new LinkedHashSet<>(manifests.filter(manifest, vf.createIRI(MF_INCLUDE), null).objects())) {
 				String subManifestFile = included.stringValue();
 				if (includeSubManifest(subManifestFile, excludedSubdirs)) {
 					readTurtle(manifests, new URL(subManifestFile), subManifestFile, excludedSubdirs);
@@ -301,7 +301,7 @@ public class SHACLManifestTestSuiteFactory {
 
 	private List<Resource> getListEntries(Model model, Resource rdfList) {
 		if (rdfList == null || rdfList.equals(RDF.NIL)) {
-			return new ArrayList<Resource>();
+			return new ArrayList<>();
 		}
 		Resource first = Models.objectResource(model.filter(rdfList, RDF.FIRST, null)).orElse(null);
 		Resource rest = Models.objectResource(model.filter(rdfList, RDF.REST, null)).orElse(null);

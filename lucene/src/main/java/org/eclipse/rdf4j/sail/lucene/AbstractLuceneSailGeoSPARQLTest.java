@@ -176,7 +176,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				// check the results
-				Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
+				Map<IRI, Literal> expected = new LinkedHashMap<>();
 				expected.put(SUBJECT_1, EIFFEL_TOWER);
 				expected.put(SUBJECT_2, ARC_TRIOMPHE);
 
@@ -214,7 +214,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				// check the results
-				Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
+				Map<IRI, Literal> expected = new LinkedHashMap<>();
 				expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0));
 
 				while (result.hasNext()) {
@@ -253,7 +253,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 			List<BindingSet> result = QueryResults.asList(query.evaluate());
 
 			// check the results
-			Map<IRI, Literal> expected = new LinkedHashMap<IRI, Literal>();
+			Map<IRI, Literal> expected = new LinkedHashMap<>();
 			expected.put(SUBJECT_1, sail.getValueFactory().createLiteral(760.0 / 1000.0));
 
 			for (BindingSet bindings : result) {
@@ -288,7 +288,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				// check the results
-				Map<IRI, Literal> expected = new HashMap<IRI, Literal>();
+				Map<IRI, Literal> expected = new HashMap<>();
 				expected.put(SUBJECT_4, POLY1);
 				expected.put(SUBJECT_5, POLY2);
 
@@ -321,7 +321,7 @@ public abstract class AbstractLuceneSailGeoSPARQLTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				// check the results
-				Map<IRI, Literal> expected = new HashMap<IRI, Literal>();
+				Map<IRI, Literal> expected = new HashMap<>();
 				expected.put(SUBJECT_5, sail.getValueFactory().createLiteral(true));
 
 				while (result.hasNext()) {

@@ -68,7 +68,7 @@ public class PositiveParserTest extends TestCase {
 		// Parse input data
 		// targetParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
-		Set<Statement> inputCollection = new LinkedHashSet<Statement>();
+		Set<Statement> inputCollection = new LinkedHashSet<>();
 		StatementCollector inputCollector = new StatementCollector(inputCollection);
 		targetParser.setRDFHandler(inputCollector);
 
@@ -106,7 +106,7 @@ public class PositiveParserTest extends TestCase {
 			// Parse expected output data
 			ntriplesParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
-			Set<Statement> outputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> outputCollection = new LinkedHashSet<>();
 			StatementCollector outputCollector = new StatementCollector(outputCollection);
 			ntriplesParser.setRDFHandler(outputCollector);
 

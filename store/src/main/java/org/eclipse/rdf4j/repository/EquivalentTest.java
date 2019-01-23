@@ -158,7 +158,7 @@ public abstract class EquivalentTest {
 
 	@Parameters(name = "{1} {0} {2}")
 	public static Collection<Object[]> params() {
-		LinkedList<Object[]> params = new LinkedList<Object[]>();
+		LinkedList<Object[]> params = new LinkedList<>();
 		for (String row : matrix.split("\n")) {
 			if (row.contains("_:"))
 				continue;

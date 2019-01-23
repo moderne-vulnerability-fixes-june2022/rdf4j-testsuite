@@ -318,7 +318,7 @@ public abstract class AbstractParserHandlingTest {
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES, false);
-		testParser.getParserConfig().setNonFatalErrors(new HashSet<RioSetting<?>>());
+		testParser.getParserConfig().setNonFatalErrors(new HashSet<>());
 
 		testParser.parse(input, BASE_URI);
 
@@ -494,7 +494,7 @@ public abstract class AbstractParserHandlingTest {
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES, false);
-		testParser.getParserConfig().setNonFatalErrors(new HashSet<RioSetting<?>>());
+		testParser.getParserConfig().setNonFatalErrors(new HashSet<>());
 
 		testParser.parse(input, BASE_URI);
 
@@ -664,7 +664,7 @@ public abstract class AbstractParserHandlingTest {
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES, false);
-		testParser.getParserConfig().setNonFatalErrors(new HashSet<RioSetting<?>>());
+		testParser.getParserConfig().setNonFatalErrors(new HashSet<>());
 
 		testParser.parse(input, BASE_URI);
 
@@ -840,7 +840,7 @@ public abstract class AbstractParserHandlingTest {
 		InputStream input = getKnownLanguageStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES, false);
-		testParser.getParserConfig().setNonFatalErrors(new HashSet<RioSetting<?>>());
+		testParser.getParserConfig().setNonFatalErrors(new HashSet<>());
 
 		testParser.parse(input, BASE_URI);
 

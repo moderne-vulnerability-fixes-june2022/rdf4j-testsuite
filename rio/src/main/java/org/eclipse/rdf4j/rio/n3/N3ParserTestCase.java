@@ -145,7 +145,7 @@ public abstract class N3ParserTestCase {
 			RDFParser turtleParser = createRDFParser();
 			turtleParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
-			Set<Statement> inputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> inputCollection = new LinkedHashSet<>();
 			StatementCollector inputCollector = new StatementCollector(inputCollection);
 			turtleParser.setRDFHandler(inputCollector);
 
@@ -157,7 +157,7 @@ public abstract class N3ParserTestCase {
 			NTriplesParser ntriplesParser = new NTriplesParser();
 			ntriplesParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
-			Set<Statement> outputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> outputCollection = new LinkedHashSet<>();
 			StatementCollector outputCollector = new StatementCollector(outputCollection);
 			ntriplesParser.setRDFHandler(outputCollector);
 
@@ -172,10 +172,10 @@ public abstract class N3ParserTestCase {
 				// System.err.println("Actual : " + inputCollection);
 				// System.err.println("======================");
 
-				List<Statement> missing = new LinkedList<Statement>(outputCollection);
+				List<Statement> missing = new LinkedList<>(outputCollection);
 				missing.removeAll(inputCollection);
 
-				List<Statement> unexpected = new LinkedList<Statement>(inputCollection);
+				List<Statement> unexpected = new LinkedList<>(inputCollection);
 				unexpected.removeAll(outputCollection);
 
 				if (!missing.isEmpty()) {

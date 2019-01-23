@@ -116,7 +116,7 @@ public abstract class SparqlAggregatesTest {
 	public void testCountOptional()
 		throws Exception
 	{
-		Set<String> zeroOr1 = new HashSet<String>();
+		Set<String> zeroOr1 = new HashSet<>();
 		zeroOr1.add("0");
 		zeroOr1.add("1");
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, countOptionalMbox);

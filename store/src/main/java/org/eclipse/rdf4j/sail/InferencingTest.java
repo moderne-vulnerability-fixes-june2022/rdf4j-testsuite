@@ -79,7 +79,7 @@ public abstract class InferencingTest {
 				con.commit();
 
 				entailedStatements = Iterations.addAll(con.getStatements(null, null, null, true),
-						new HashSet<Statement>());
+						new HashSet<>());
 			}
 			catch (Exception e) {
 				if (con.isActive()) {

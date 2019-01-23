@@ -300,10 +300,10 @@ public abstract class SPARQLQueryTest extends TestCase {
 
 			List<BindingSet> expectedBindings = Iterations.asList(expectedResultTable);
 
-			List<BindingSet> missingBindings = new ArrayList<BindingSet>(expectedBindings);
+			List<BindingSet> missingBindings = new ArrayList<>(expectedBindings);
 			missingBindings.removeAll(queryBindings);
 
-			List<BindingSet> unexpectedBindings = new ArrayList<BindingSet>(queryBindings);
+			List<BindingSet> unexpectedBindings = new ArrayList<>(queryBindings);
 			unexpectedBindings.removeAll(expectedBindings);
 
 			StringBuilder message = new StringBuilder(128);
@@ -381,7 +381,7 @@ public abstract class SPARQLQueryTest extends TestCase {
 	}
 
 	protected final void printBindingSet(BindingSet bs, StringBuilder appendable) {
-		List<String> names = new ArrayList<String>(bs.getBindingNames());
+		List<String> names = new ArrayList<>(bs.getBindingNames());
 		Collections.sort(names);
 
 		for (String name : names) {
@@ -446,7 +446,7 @@ public abstract class SPARQLQueryTest extends TestCase {
 		RepositoryConnection con = dataRep.getConnection();
 		try {
 			// Merge default and named graphs to filter duplicates
-			Set<IRI> graphURIs = new HashSet<IRI>();
+			Set<IRI> graphURIs = new HashSet<>();
 			graphURIs.addAll(dataset.getDefaultGraphs());
 			graphURIs.addAll(dataset.getNamedGraphs());
 
@@ -570,7 +570,7 @@ public abstract class SPARQLQueryTest extends TestCase {
 		parser.setPreserveBNodeIDs(true);
 		parser.setValueFactory(dataRep.getValueFactory());
 
-		Set<Statement> result = new LinkedHashSet<Statement>();
+		Set<Statement> result = new LinkedHashSet<>();
 		parser.setRDFHandler(new StatementCollector(result));
 
 		InputStream in = new URL(resultFileURL).openStream();

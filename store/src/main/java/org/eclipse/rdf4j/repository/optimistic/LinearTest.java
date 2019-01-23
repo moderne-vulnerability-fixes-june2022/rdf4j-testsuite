@@ -410,7 +410,7 @@ public class LinearTest {
 	{
 		TupleQuery tq = con.prepareTupleQuery(QueryLanguage.SPARQL, qry, NS);
 		try (TupleQueryResult result = tq.evaluate();) {
-			List<Value> list = new ArrayList<Value>();
+			List<Value> list = new ArrayList<>();
 			while (result.hasNext()) {
 				list.add(result.next().getValue(var));
 			}

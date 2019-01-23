@@ -152,7 +152,7 @@ public class ParserConfigTest {
 		assertTrue(testConfig.getNonFatalErrors().contains(BasicParserSettings.VERIFY_DATATYPE_VALUES));
 
 		// Test with an empty set
-		testConfig.setNonFatalErrors(new HashSet<RioSetting<?>>());
+		testConfig.setNonFatalErrors(new HashSet<>());
 		assertNotNull(testConfig.getNonFatalErrors());
 		assertTrue(testConfig.getNonFatalErrors().isEmpty());
 	}
