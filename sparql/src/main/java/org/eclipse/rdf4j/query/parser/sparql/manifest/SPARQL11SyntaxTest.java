@@ -266,7 +266,7 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 		SPARQL11ManifestTest.addTurtle(con, manifest, manifestFile);
 
 		logger.info("Searching for sub-manifests");
-		List<String> subManifestList = new ArrayList<String>();
+		List<String> subManifestList = new ArrayList<>();
 
 		TupleQueryResult subManifests = con.prepareTupleQuery(QueryLanguage.SPARQL,
 				SUBMANIFEST_QUERY).evaluate();

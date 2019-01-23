@@ -179,7 +179,7 @@ public abstract class RDFXMLParserTestCase {
 			rdfxmlParser.getParserConfig().addNonFatalError(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES);
 			rdfxmlParser.getParserConfig().addNonFatalError(BasicParserSettings.VERIFY_DATATYPE_VALUES);
 
-			Set<Statement> inputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> inputCollection = new LinkedHashSet<>();
 			StatementCollector inputCollector = new StatementCollector(inputCollection);
 			rdfxmlParser.setRDFHandler(inputCollector);
 
@@ -193,7 +193,7 @@ public abstract class RDFXMLParserTestCase {
 			ntriplesParser.getParserConfig().addNonFatalError(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES);
 			ntriplesParser.getParserConfig().addNonFatalError(BasicParserSettings.VERIFY_DATATYPE_VALUES);
 
-			Set<Statement> outputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> outputCollection = new LinkedHashSet<>();
 			StatementCollector outputCollector = new StatementCollector(outputCollection);
 			ntriplesParser.setRDFHandler(outputCollector);
 

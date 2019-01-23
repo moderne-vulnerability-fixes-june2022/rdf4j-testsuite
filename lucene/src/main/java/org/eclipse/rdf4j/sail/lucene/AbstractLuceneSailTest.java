@@ -183,7 +183,7 @@ public abstract class AbstractLuceneSailTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				// check the results
-				ArrayList<IRI> uris = new ArrayList<IRI>();
+				ArrayList<IRI> uris = new ArrayList<>();
 
 				BindingSet bindings = null;
 
@@ -232,7 +232,7 @@ public abstract class AbstractLuceneSailTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				// check the results
-				List<String> results = new ArrayList<String>();
+				List<String> results = new ArrayList<>();
 				BindingSet bindings = null;
 
 				assertTrue(result.hasNext());
@@ -317,15 +317,15 @@ public abstract class AbstractLuceneSailTest {
 						+ "    <" + QUERY + "> {\"one\"}; \n" + "    <" + PROPERTY + "> {<" + PREDICATE_2 + ">}; \n"
 						+ "    <" + SCORE + "> {R2Score}" };
 
-		ArrayList<List<Map<String, String>>> results = new ArrayList<List<Map<String, String>>>();
+		ArrayList<List<Map<String, String>>> results = new ArrayList<>();
 		ArrayList<Map<String, String>> resultSet = null;
 		Map<String, String> result = null;
 
 		// create a new result set
-		resultSet = new ArrayList<Map<String, String>>();
+		resultSet = new ArrayList<>();
 
 		// one possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_3.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource2", SUBJECT_1.stringValue());
@@ -333,7 +333,7 @@ public abstract class AbstractLuceneSailTest {
 		resultSet.add(result);
 
 		// another possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_3.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource2", SUBJECT_2.stringValue());
@@ -344,10 +344,10 @@ public abstract class AbstractLuceneSailTest {
 		results.add(resultSet);
 
 		// create a new result set
-		resultSet = new ArrayList<Map<String, String>>();
+		resultSet = new ArrayList<>();
 
 		// one possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_1.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource3", SUBJECT_2.stringValue());
@@ -355,7 +355,7 @@ public abstract class AbstractLuceneSailTest {
 		resultSet.add(result);
 
 		// another possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_2.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource3", SUBJECT_1.stringValue());
@@ -366,10 +366,10 @@ public abstract class AbstractLuceneSailTest {
 		results.add(resultSet);
 
 		// create a new result set
-		resultSet = new ArrayList<Map<String, String>>();
+		resultSet = new ArrayList<>();
 
 		// one possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_2.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource3", SUBJECT_1.stringValue());
@@ -377,7 +377,7 @@ public abstract class AbstractLuceneSailTest {
 		resultSet.add(result);
 
 		// another possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_1.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource3", SUBJECT_1.stringValue());
@@ -388,10 +388,10 @@ public abstract class AbstractLuceneSailTest {
 		results.add(resultSet);
 
 		// create a new result set
-		resultSet = new ArrayList<Map<String, String>>();
+		resultSet = new ArrayList<>();
 
 		// one possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_1.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource2", SUBJECT_3.stringValue());
@@ -399,7 +399,7 @@ public abstract class AbstractLuceneSailTest {
 		resultSet.add(result);
 
 		// another possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource1", SUBJECT_2.stringValue());
 		result.put("R1Score", null); // null means: ignore the value
 		result.put("Resource2", SUBJECT_3.stringValue());
@@ -428,7 +428,7 @@ public abstract class AbstractLuceneSailTest {
 
 					// check the results
 					int actualResults = 0;
-					Set<Integer> matched = new HashSet<Integer>();
+					Set<Integer> matched = new HashSet<>();
 					while (tqr.hasNext()) {
 						BindingSet bs = tqr.next();
 						actualResults++;
@@ -443,11 +443,11 @@ public abstract class AbstractLuceneSailTest {
 							matches = true;
 
 							// get the result we compare with now
-							Map<String, String> expectedResult = new HashMap<String, String>(
+							Map<String, String> expectedResult = new HashMap<>(
 									expectedResultSet.get(resultSetID));
 
 							// get all var names
-							Collection<String> vars = new ArrayList<String>(expectedResult.keySet());
+							Collection<String> vars = new ArrayList<>(expectedResult.keySet());
 
 							// check if all actual results are expected
 							for (String var : vars) {
@@ -512,29 +512,29 @@ public abstract class AbstractLuceneSailTest {
 						+ "    <" + QUERY + "> {\"five\"}; \n" + "    <" + SCORE + "> {Score}; \n" + "    <" + SNIPPET
 						+ "> {Snippet}" };
 
-		ArrayList<List<Map<String, String>>> results = new ArrayList<List<Map<String, String>>>();
+		ArrayList<List<Map<String, String>>> results = new ArrayList<>();
 		ArrayList<Map<String, String>> resultSet = null;
 		Map<String, String> result = null;
 
 		// create a new result set
-		resultSet = new ArrayList<Map<String, String>>();
+		resultSet = new ArrayList<>();
 
 		// one possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource", SUBJECT_1.stringValue());
 		result.put("Score", null); // null means: ignore the value
 		result.put("Snippet", "<B>one</B>");
 		resultSet.add(result);
 
 		// another possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource", SUBJECT_2.stringValue());
 		result.put("Score", null); // null means: ignore the value
 		result.put("Snippet", "<B>one</B>");
 		resultSet.add(result);
 
 		// another possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource", SUBJECT_3.stringValue());
 		result.put("Score", null); // null means: ignore the value
 		result.put("Snippet", "<B>one</B>");
@@ -544,10 +544,10 @@ public abstract class AbstractLuceneSailTest {
 		results.add(resultSet);
 
 		// create a new result set
-		resultSet = new ArrayList<Map<String, String>>();
+		resultSet = new ArrayList<>();
 
 		// one possible result
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("Resource", SUBJECT_1.stringValue());
 		result.put("Score", null); // null means: ignore the value
 		result.put("Snippet", "<B>five</B>");
@@ -586,7 +586,7 @@ public abstract class AbstractLuceneSailTest {
 
 				// the first result is subject 1 and has a score
 				int results = 0;
-				Set<IRI> expectedSubject = new HashSet<IRI>();
+				Set<IRI> expectedSubject = new HashSet<>();
 				expectedSubject.add(SUBJECT_1);
 				expectedSubject.add(SUBJECT_2);
 				while (result.hasNext()) {
@@ -654,7 +654,7 @@ public abstract class AbstractLuceneSailTest {
 
 					// the first result is subject 1 and has a score
 					int results = 0;
-					Set<String> expectedSnippetPart = new HashSet<String>();
+					Set<String> expectedSnippetPart = new HashSet<>();
 					expectedSnippetPart.add("come");
 					expectedSnippetPart.add("unicorn");
 					String notexpected = "poor";
@@ -718,7 +718,7 @@ public abstract class AbstractLuceneSailTest {
 
 					// the first result is subject 1 and has a score
 					int results = 0;
-					Set<String> expectedSnippetPart = new HashSet<String>();
+					Set<String> expectedSnippetPart = new HashSet<>();
 					expectedSnippetPart.add("come");
 					expectedSnippetPart.add("unicorn");
 					expectedSnippetPart.add("poor");
@@ -1011,7 +1011,7 @@ public abstract class AbstractLuceneSailTest {
 
 				// the first result is subject 1 and has a score
 				int results = 0;
-				Set<IRI> expectedSubject = new HashSet<IRI>();
+				Set<IRI> expectedSubject = new HashSet<>();
 				expectedSubject.add(SUBJECT_1);
 				expectedSubject.add(SUBJECT_2);
 				expectedSubject.add(SUBJECT_3);
@@ -1063,7 +1063,7 @@ public abstract class AbstractLuceneSailTest {
 			try (TupleQueryResult result = query.evaluate()) {
 
 				int results = 0;
-				Map<IRI, IRI> expectedSubject = new HashMap<IRI, IRI>();
+				Map<IRI, IRI> expectedSubject = new HashMap<>();
 				expectedSubject.put(SUBJECT_1, PREDICATE_1);
 				expectedSubject.put(SUBJECT_2, PREDICATE_1);
 				expectedSubject.put(SUBJECT_3, PREDICATE_2);

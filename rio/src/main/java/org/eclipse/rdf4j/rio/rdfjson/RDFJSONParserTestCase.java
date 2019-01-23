@@ -204,7 +204,7 @@ public abstract class RDFJSONParserTestCase {
 			RDFParser rdfjsonParser = createRDFParser();
 			rdfjsonParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
-			Set<Statement> inputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> inputCollection = new LinkedHashSet<>();
 			StatementCollector inputCollector = new StatementCollector(inputCollection);
 			rdfjsonParser.setRDFHandler(inputCollector);
 
@@ -216,7 +216,7 @@ public abstract class RDFJSONParserTestCase {
 			NTriplesParser ntriplesParser = new NTriplesParser();
 			ntriplesParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
-			Set<Statement> outputCollection = new LinkedHashSet<Statement>();
+			Set<Statement> outputCollection = new LinkedHashSet<>();
 			StatementCollector outputCollector = new StatementCollector(outputCollection);
 			ntriplesParser.setRDFHandler(outputCollector);
 

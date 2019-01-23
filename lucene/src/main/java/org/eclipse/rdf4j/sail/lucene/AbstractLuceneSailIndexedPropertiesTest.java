@@ -174,7 +174,7 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 				query.setBinding("Property", RDFSLABEL);
 				try (TupleQueryResult result = query.evaluate()) {
 					// check the results
-					ArrayList<IRI> uris = new ArrayList<IRI>();
+					ArrayList<IRI> uris = new ArrayList<>();
 
 					BindingSet bindings = null;
 					while (result.hasNext()) {
@@ -195,7 +195,7 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 				query.setBinding("Property", RDFSLABEL);
 				try (TupleQueryResult result = query.evaluate()) {
 					// check the results
-					ArrayList<IRI> uris = new ArrayList<IRI>();
+					ArrayList<IRI> uris = new ArrayList<>();
 
 					BindingSet bindings = null;
 					while (result.hasNext()) {

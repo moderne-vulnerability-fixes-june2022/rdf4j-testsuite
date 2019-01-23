@@ -1036,7 +1036,7 @@ public abstract class RepositoryConnectionTest {
 		}
 
 		List<Statement> list = Iterations.addAll(testCon.getStatements(null, name, null, false),
-				new ArrayList<Statement>());
+				new ArrayList<>());
 
 		assertNotNull("List should not be null", list);
 		assertFalse("List should not be empty", list.isEmpty());
@@ -1135,7 +1135,7 @@ public abstract class RepositoryConnectionTest {
 		}
 
 		try (RepositoryResult<Statement> result = testCon.getStatements(null, name, null, false, context1);) {
-			List<Statement> list = Iterations.addAll(result, new ArrayList<Statement>());
+			List<Statement> list = Iterations.addAll(result, new ArrayList<>());
 			assertNotNull("List should not be null", list);
 			assertFalse("List should not be empty", list.isEmpty());
 		}
@@ -1298,7 +1298,7 @@ public abstract class RepositoryConnectionTest {
 		assertThat(testCon.hasStatement(alice, name, nameAlice, false)).isTrue();
 
 		try (RepositoryResult<Statement> result = testCon.getStatements(null, null, null, false);) {
-			Collection<Statement> c = Iterations.addAll(result, new ArrayList<Statement>());
+			Collection<Statement> c = Iterations.addAll(result, new ArrayList<>());
 
 			testCon.remove(c);
 
@@ -1894,7 +1894,7 @@ public abstract class RepositoryConnectionTest {
 		TupleQuery query = testCon.prepareTupleQuery(QueryLanguage.SPARQL, SELECT_BY_DATE);
 		query.setBinding("date", vf.createLiteral(xcal));
 		TupleQueryResult result = query.evaluate();
-		List<BindingSet> list = new ArrayList<BindingSet>();
+		List<BindingSet> list = new ArrayList<>();
 		while (result.hasNext()) {
 			list.add(result.next());
 		}
@@ -1918,7 +1918,7 @@ public abstract class RepositoryConnectionTest {
 		String qry = "PREFIX :<urn:test:> SELECT ?s ?v1 ?v2 WHERE " + optional;
 		TupleQuery query = testCon.prepareTupleQuery(QueryLanguage.SPARQL, qry);
 		try (TupleQueryResult result = query.evaluate();) {
-			Set<List<Value>> set = new HashSet<List<Value>>();
+			Set<List<Value>> set = new HashSet<>();
 			while (result.hasNext()) {
 				BindingSet bindings = result.next();
 				set.add(Arrays.asList(bindings.getValue("v1"), bindings.getValue("v2")));
@@ -1942,7 +1942,7 @@ public abstract class RepositoryConnectionTest {
 		String qry = "PREFIX :<urn:test:> SELECT ?p WHERE " + union;
 		TupleQuery query = testCon.prepareTupleQuery(QueryLanguage.SPARQL, qry);
 		try (TupleQueryResult result = query.evaluate();) {
-			List<Value> list = new ArrayList<Value>();
+			List<Value> list = new ArrayList<>();
 			while (result.hasNext()) {
 				BindingSet bindings = result.next();
 				list.add(bindings.getValue("p"));

@@ -908,7 +908,7 @@ public class SnapshotTest {
 		TupleQueryResult result;
 		result = con.prepareTupleQuery(QueryLanguage.SPARQL, qry, NS).evaluate();
 		try {
-			List<Value> list = new ArrayList<Value>();
+			List<Value> list = new ArrayList<>();
 			while (result.hasNext()) {
 				list.add(result.next().getValue(var));
 			}

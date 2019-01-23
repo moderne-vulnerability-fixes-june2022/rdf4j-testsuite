@@ -172,7 +172,7 @@ public abstract class RDFWriterTest {
 
 		litBigPlaceholder = vf.createLiteral(prng.nextDouble());
 
-		potentialSubjects = new ArrayList<Resource>();
+		potentialSubjects = new ArrayList<>();
 		potentialSubjects.add(bnode);
 		potentialSubjects.add(bnodeEmpty);
 		potentialSubjects.add(bnodeSingleLetter);
@@ -203,7 +203,7 @@ public abstract class RDFWriterTest {
 		}
 		Collections.shuffle(potentialSubjects, prng);
 
-		potentialObjects = new ArrayList<Value>();
+		potentialObjects = new ArrayList<>();
 		potentialObjects.addAll(potentialSubjects);
 		potentialObjects.add(plainLit);
 		potentialObjects.add(dtLit);
@@ -226,7 +226,7 @@ public abstract class RDFWriterTest {
 		potentialObjects.add(litBigPlaceholder);
 		Collections.shuffle(potentialObjects, prng);
 
-		potentialPredicates = new ArrayList<IRI>();
+		potentialPredicates = new ArrayList<>();
 		// In particular, the following fuzz tests the ability of the parser to
 		// cater for rdf:type predicates with literal endings, in unknown
 		// situations. All parsers/writers should preserve these statements,

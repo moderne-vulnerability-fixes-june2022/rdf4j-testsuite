@@ -185,7 +185,7 @@ public abstract class AbstractQueryResultIOTest {
 	 * @return A map of test namespaces for the writer to handle.
 	 */
 	protected Map<String, String> getNamespaces() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		result.put("test", "http://example.org/test/ns/");
 		result.put("other", "http://example.com/other/ns/");
 		return result;
@@ -195,7 +195,7 @@ public abstract class AbstractQueryResultIOTest {
 	 * @return A map of test namespaces for the writer to handle, including an empty namespace.
 	 */
 	protected Map<String, String> getNamespacesWithEmpty() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		result.put("test", "http://example.org/test/ns/");
 		result.put("other", "http://example.com/other/ns/");
 		result.put("", "http://other.example.org/ns/");
