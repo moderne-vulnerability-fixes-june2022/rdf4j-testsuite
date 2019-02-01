@@ -2455,6 +2455,34 @@ public abstract class ComplexSPARQLQueryTest {
 		assertEquals("http://subj1", result.get(0).getValue("s").stringValue());
 	}
 
+	@Test
+	public void testRdf4j1267Seconds() throws Exception {
+		String qry = 
+			"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+			"SELECT (SECONDS(\"2011-01-10T14:45:13\"^^xsd:dateTime) AS ?sec) { }";
+
+		try (TupleQueryResult result = conn.prepareTupleQuery(QueryLanguage.SPARQL, qry).evaluate();) {
+			assertNotNull(result);
+			assertTrue(result.hasNext());
+			assertEquals("13", result.next().getValue("sec").stringValue());
+			assertFalse(result.hasNext());
+		}
+	}
+	
+	@Test
+	public void testRdf4j1267SecondsMilliseconds() throws Exception {
+		String qry = 
+			"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+			"SELECT (SECONDS(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?sec) { }";
+
+		try (TupleQueryResult result = conn.prepareTupleQuery(QueryLanguage.SPARQL, qry).evaluate();) {
+			assertNotNull(result);
+			assertTrue(result.hasNext());
+			assertEquals("13.815", result.next().getValue("sec").stringValue());
+			assertFalse(result.hasNext());
+		}
+	}
+
 	private boolean containsSolution(List<BindingSet> result, Binding... solution) {
 		final MapBindingSet bs = new MapBindingSet();
 		for (Binding b : solution) {
