@@ -7,27 +7,6 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.rio;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.IRI;
@@ -58,6 +37,29 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Arjohn Kampman
@@ -749,8 +751,8 @@ public abstract class RDFWriterTest {
 		File testFile = tempDir.newFile(
 				"performancetest." + rdfWriterFactory.getRDFFormat().getDefaultFileExtension());
 
-		FileOutputStream out = new FileOutputStream(testFile);
-		try {
+		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(testFile))) {
+
 			long startWrite = System.currentTimeMillis();
 			RDFWriter rdfWriter = rdfWriterFactory.getWriter(out);
 			setupWriterConfig(rdfWriter.getWriterConfig());
@@ -769,15 +771,13 @@ public abstract class RDFWriterTest {
 			rdfWriter.endRDF();
 			long endWrite = System.currentTimeMillis();
 			System.out.println("Write took: " + (endWrite - startWrite) + " ms ("
-					+ rdfWriterFactory.getRDFFormat() + ")");
+				+ rdfWriterFactory.getRDFFormat() + ")");
 			System.out.println("File size (bytes): " + testFile.length());
-		}
-		finally {
-			out.close();
+
 		}
 
-		FileInputStream in = new FileInputStream(testFile);
-		try {
+		try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
+
 			RDFParser rdfParser = rdfParserFactory.getParser();
 			setupParserConfig(rdfParser.getParserConfig());
 			rdfParser.setValueFactory(vf);
@@ -789,7 +789,7 @@ public abstract class RDFWriterTest {
 			rdfParser.parse(in, "foo:bar");
 			long endParse = System.currentTimeMillis();
 			System.out.println("Parse took: " + (endParse - startParse) + " ms ("
-					+ rdfParserFactory.getRDFFormat() + ")");
+				+ rdfParserFactory.getRDFFormat() + ")");
 
 			if (storeParsedStatements) {
 				if (model.size() != parsedModel.size()) {
@@ -801,23 +801,20 @@ public abstract class RDFWriterTest {
 
 						System.out.println("Written statements=>");
 						IOUtils.writeLines(IOUtils.readLines(new FileInputStream(testFile)), "\n",
-								System.out);
+							System.out);
 						System.out.println("Parsed statements=>");
 						Rio.write(parsedModel, System.out, RDFFormat.NQUADS);
 					}
 				}
 				assertEquals("Unexpected number of statements, expected " + model.size() + " found "
-						+ parsedModel.size(), model.size(), parsedModel.size());
+					+ parsedModel.size(), model.size(), parsedModel.size());
 
 				if (rdfParser.getRDFFormat().supportsNamespaces()) {
 					assertTrue("Expected at least 5 namespaces, found " + parsedModel.getNamespaces().size(),
-							parsedModel.getNamespaces().size() >= 5);
+						parsedModel.getNamespaces().size() >= 5);
 					assertEquals(exNs, parsedModel.getNamespace("ex").get().getName());
 				}
 			}
-		}
-		finally {
-			in.close();
 		}
 	}
 

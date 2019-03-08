@@ -7,11 +7,13 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.query.parser.sparql.manifest;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -212,11 +214,11 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 							continue;
 						}
 						InputStream is = jar.getInputStream(file);
-						FileOutputStream fos = new FileOutputStream(f);
-						while (is.available() > 0) {
-							fos.write(is.read());
+						try (OutputStream fos = new BufferedOutputStream(new FileOutputStream(f))) {
+							while (is.available() > 0) {
+								fos.write(is.read());
+							}
 						}
-						fos.close();
 						is.close();
 					}
 					File localFile = new File(tmpDir, con.getEntryName());
