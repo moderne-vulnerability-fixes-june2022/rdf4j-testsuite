@@ -7,6 +7,8 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.model.base;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -241,8 +243,9 @@ public abstract class AbstractTestObject extends BulkTest {
 	protected void writeExternalFormToDisk(Serializable o, String path)
 		throws IOException
 	{
-		FileOutputStream fileStream = new FileOutputStream(path);
-		writeExternalFormToStream(o, fileStream);
+		try (OutputStream fileStream = new BufferedOutputStream(new FileOutputStream(path))) {
+			writeExternalFormToStream(o, fileStream);
+		}
 	}
 
 	/**
@@ -274,7 +277,7 @@ public abstract class AbstractTestObject extends BulkTest {
 	protected Object readExternalFormFromDisk(String path)
 		throws IOException, ClassNotFoundException
 	{
-		FileInputStream stream = new FileInputStream(path);
+		InputStream stream = new BufferedInputStream(new FileInputStream(path));
 		return readExternalFormFromStream(stream);
 	}
 
