@@ -9,6 +9,7 @@ package org.eclipse.rdf4j.sail;
 
 import static org.junit.Assert.fail;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -129,7 +130,7 @@ public abstract class InferencingTest {
 		File tmpFile = new File(tmpDir, "junit-" + name + ".nt");
 		tmpFile.createNewFile();
 
-		try (OutputStream export = new FileOutputStream(tmpFile);) {
+		try (OutputStream export = new BufferedOutputStream(new FileOutputStream(tmpFile))) {
 			RDFWriter writer = Rio.createWriter(RDFFormat.NTRIPLES, export);
 
 			writer.startRDF();

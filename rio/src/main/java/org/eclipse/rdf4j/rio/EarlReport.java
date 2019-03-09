@@ -7,17 +7,11 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.rio;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 import junit.framework.TestListener;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
@@ -36,6 +30,13 @@ import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Arjohn Kampman
@@ -139,12 +140,8 @@ public class EarlReport {
 				Rio.unsupportedFormat(RDFFormat.TURTLE));
 		File outFile = File.createTempFile("sesame-earl-compliance",
 				"." + RDFFormat.TURTLE.getDefaultFileExtension());
-		FileOutputStream out = new FileOutputStream(outFile);
-		try {
+		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile))) {
 			con.export(factory.getWriter(out));
-		}
-		finally {
-			out.close();
 		}
 
 		con.close();
