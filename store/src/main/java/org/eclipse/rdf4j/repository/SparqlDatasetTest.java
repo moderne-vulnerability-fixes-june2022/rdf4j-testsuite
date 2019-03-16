@@ -29,9 +29,7 @@ import org.junit.Test;
 public abstract class SparqlDatasetTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -61,9 +59,7 @@ public abstract class SparqlDatasetTest {
 	private IRI ringo;
 
 	@Test
-	public void testNoFrom()
-		throws Exception
-	{
+	public void testNoFrom() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryNoFrom);
 		TupleQueryResult result = query.evaluate();
 
@@ -73,7 +69,7 @@ public abstract class SparqlDatasetTest {
 			BindingSet bs = result.next();
 			assertFalse(result.hasNext());
 
-			Literal count = (Literal)bs.getValue("c");
+			Literal count = (Literal) bs.getValue("c");
 			assertEquals(4, count.intValue());
 		}
 		result.close();
@@ -87,16 +83,14 @@ public abstract class SparqlDatasetTest {
 			BindingSet bs = result.next();
 			assertFalse(result.hasNext());
 
-			Literal count = (Literal)bs.getValue("c");
+			Literal count = (Literal) bs.getValue("c");
 			assertEquals(2, count.intValue());
 		}
 		result.close();
 	}
 
 	@Test
-	public void testWithFrom()
-		throws Exception
-	{
+	public void testWithFrom() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryWithFrom);
 		TupleQueryResult result = query.evaluate();
 
@@ -106,7 +100,7 @@ public abstract class SparqlDatasetTest {
 			BindingSet bs = result.next();
 			assertFalse(result.hasNext());
 
-			Literal count = (Literal)bs.getValue("c");
+			Literal count = (Literal) bs.getValue("c");
 			assertEquals(2, count.intValue());
 		}
 		result.close();
@@ -120,16 +114,14 @@ public abstract class SparqlDatasetTest {
 			BindingSet bs = result.next();
 			assertFalse(result.hasNext());
 
-			Literal count = (Literal)bs.getValue("c");
+			Literal count = (Literal) bs.getValue("c");
 			assertEquals(2, count.intValue());
 		}
 		result.close();
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		repository = createRepository();
 		vf = repository.getValueFactory();
 		graph1 = vf.createIRI("http://example.org/graph1");
@@ -143,29 +135,23 @@ public abstract class SparqlDatasetTest {
 		dataset.addDefaultGraph(graph1);
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		conn = null;
 
@@ -173,9 +159,7 @@ public abstract class SparqlDatasetTest {
 		repository = null;
 	}
 
-	private IRI createUser(String id, String name, String email, Resource... context)
-		throws RepositoryException
-	{
+	private IRI createUser(String id, String name, String email, Resource... context) throws RepositoryException {
 		RepositoryConnection conn = repository.getConnection();
 		IRI subj = vf.createIRI("http://example.org/ns#", id);
 		IRI foafName = vf.createIRI("http://xmlns.com/foaf/0.1/", "name");

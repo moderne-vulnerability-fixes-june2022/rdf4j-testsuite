@@ -16,12 +16,12 @@ import java.util.Set;
 /**
  * Abstract test class for {@link Set} methods and contracts.
  * <p>
- * Since {@link Set} doesn't stipulate much new behavior that isn't already found in {@link Collection}, this
- * class basically just adds tests for {@link Set#equals} and {@link Set#hashCode()} along with an updated
- * {@link #verify()} that ensures elements do not appear more than once in the set.
+ * Since {@link Set} doesn't stipulate much new behavior that isn't already found in {@link Collection}, this class
+ * basically just adds tests for {@link Set#equals} and {@link Set#hashCode()} along with an updated {@link #verify()}
+ * that ensures elements do not appear more than once in the set.
  * <p>
- * To use, subclass and override the {@link #makeEmptySet()} method. You may have to override other protected
- * methods if your set is not modifiable, or if your set restricts what kinds of elements may be added; see
+ * To use, subclass and override the {@link #makeEmptySet()} method. You may have to override other protected methods if
+ * your set is not modifiable, or if your set restricts what kinds of elements may be added; see
  * {@link AbstractTestCollection} for more details.
  *
  * @version $Revision: 646780 $ $Date: 2008-04-10 13:48:07 +0100 (Thu, 10 Apr 2008) $
@@ -32,14 +32,13 @@ public abstract class AbstractTestSet extends AbstractTestCollection {
 	/**
 	 * JUnit constructor.
 	 *
-	 * @param name
-	 *        name for test
+	 * @param name name for test
 	 */
 	public AbstractTestSet(String name) {
 		super(name);
 	}
 
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	/**
 	 * Provides additional verifications for sets.
 	 */
@@ -55,7 +54,7 @@ public abstract class AbstractTestSet extends AbstractTestCollection {
 		}
 	}
 
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	/**
 	 * Set equals method is defined.
 	 */
@@ -120,22 +119,22 @@ public abstract class AbstractTestSet extends AbstractTestCollection {
 		return makeFullSet();
 	}
 
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	/**
 	 * Return the {@link AbstractTestCollection#collection} fixture, but cast as a Set.
 	 */
 	public Set getSet() {
-		return (Set)collection;
+		return (Set) collection;
 	}
 
 	/**
 	 * Return the {@link AbstractTestCollection#confirmed} fixture, but cast as a Set.
 	 */
 	public Set getConfirmedSet() {
-		return (Set)confirmed;
+		return (Set) confirmed;
 	}
 
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	/**
 	 * Tests {@link Set#equals(Object)}.
 	 */

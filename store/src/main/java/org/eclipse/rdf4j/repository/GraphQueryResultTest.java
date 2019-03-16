@@ -30,9 +30,7 @@ import org.junit.Test;
 public abstract class GraphQueryResultTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -53,9 +51,7 @@ public abstract class GraphQueryResultTest {
 	private String multipleConstructQuery;
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		rep = createRepository();
 		con = rep.getConnection();
 
@@ -64,37 +60,30 @@ public abstract class GraphQueryResultTest {
 	}
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		try {
 			con.close();
 			con = null;
-		}
-		finally {
+		} finally {
 			rep.shutDown();
 			rep = null;
 		}
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	/*
 	 * build some simple SPARQL queries to use for testing the result set object.
@@ -111,22 +100,17 @@ public abstract class GraphQueryResultTest {
 				+ OWL.CLASS.stringValue() + "> . }";
 	}
 
-	private void addData()
-		throws IOException, UnsupportedRDFormatException, RDFParseException, RepositoryException
-	{
+	private void addData() throws IOException, UnsupportedRDFormatException, RDFParseException, RepositoryException {
 		InputStream defaultGraph = GraphQueryResultTest.class.getResourceAsStream("/testcases/graph3.ttl");
 		try {
 			con.add(defaultGraph, "", RDFFormat.TURTLE);
-		}
-		finally {
+		} finally {
 			defaultGraph.close();
 		}
 	}
 
 	@Test
-	public void testDescribeEmpty()
-		throws Exception
-	{
+	public void testDescribeEmpty() throws Exception {
 		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL, emptyDescribeQuery).evaluate();
 		assertFalse("Query result should be empty", result.hasNext());
 
@@ -135,9 +119,7 @@ public abstract class GraphQueryResultTest {
 	}
 
 	@Test
-	public void testDescribeSingle()
-		throws Exception
-	{
+	public void testDescribeSingle() throws Exception {
 		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL, singleDescribeQuery).evaluate();
 		assertTrue("Query result should not be empty", result.hasNext());
 
@@ -147,11 +129,8 @@ public abstract class GraphQueryResultTest {
 	}
 
 	@Test
-	public void testDescribeMultiple()
-		throws Exception
-	{
-		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL,
-				multipleDescribeQuery).evaluate();
+	public void testDescribeMultiple() throws Exception {
+		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL, multipleDescribeQuery).evaluate();
 		assertTrue("Query result should not be empty", result.hasNext());
 
 		Model model = QueryResults.asModel(result);
@@ -160,9 +139,7 @@ public abstract class GraphQueryResultTest {
 	}
 
 	@Test
-	public void testConstructEmpty()
-		throws Exception
-	{
+	public void testConstructEmpty() throws Exception {
 		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL, emptyConstructQuery).evaluate();
 		assertFalse("Query result should be empty", result.hasNext());
 
@@ -171,11 +148,8 @@ public abstract class GraphQueryResultTest {
 	}
 
 	@Test
-	public void testConstructSingle()
-		throws Exception
-	{
-		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL,
-				singleConstructQuery).evaluate();
+	public void testConstructSingle() throws Exception {
+		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL, singleConstructQuery).evaluate();
 		assertTrue("Query result should not be empty", result.hasNext());
 
 		Model model = QueryResults.asModel(result);
@@ -184,11 +158,8 @@ public abstract class GraphQueryResultTest {
 	}
 
 	@Test
-	public void testConstructMultiple()
-		throws Exception
-	{
-		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL,
-				multipleConstructQuery).evaluate();
+	public void testConstructMultiple() throws Exception {
+		GraphQueryResult result = con.prepareGraphQuery(QueryLanguage.SPARQL, multipleConstructQuery).evaluate();
 		assertTrue("Query result should not be empty", result.hasNext());
 
 		Model model = QueryResults.asModel(result);

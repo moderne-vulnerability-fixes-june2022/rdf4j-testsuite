@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.eclipse.rdf4j.rio.nquads;
 
-
 import java.io.InputStream;
 
 import junit.framework.TestSuite;
@@ -52,9 +51,7 @@ public abstract class AbstractNQuadsParserTest {
 	 * Methods *
 	 *---------*/
 
-	public TestSuite createTestSuite()
-		throws Exception
-	{
+	public TestSuite createTestSuite() throws Exception {
 		// Create test suite
 		TestSuite suite = new TestSuite(this.getClass().getName());
 
@@ -75,10 +72,8 @@ public abstract class AbstractNQuadsParserTest {
 		return suite;
 	}
 
-	private void parsePositiveNQuadsSyntaxTests(TestSuite suite, String fileBasePath,
-			String testLocationBaseUri, RepositoryConnection con)
-		throws Exception
-	{
+	private void parsePositiveNQuadsSyntaxTests(TestSuite suite, String fileBasePath, String testLocationBaseUri,
+			RepositoryConnection con) throws Exception {
 		StringBuilder positiveQuery = new StringBuilder();
 		positiveQuery.append(" PREFIX mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>\n");
 		positiveQuery.append(" PREFIX qt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>\n");
@@ -90,16 +85,14 @@ public abstract class AbstractNQuadsParserTest {
 		positiveQuery.append("     ?test mf:action ?inputURL . ");
 		positiveQuery.append(" }");
 
-		TupleQueryResult queryResult = con.prepareTupleQuery(QueryLanguage.SPARQL,
-				positiveQuery.toString()).evaluate();
+		TupleQueryResult queryResult = con.prepareTupleQuery(QueryLanguage.SPARQL, positiveQuery.toString()).evaluate();
 
 		// Add all positive parser tests to the test suite
 		while (queryResult.hasNext()) {
 			BindingSet bindingSet = queryResult.next();
-			IRI nextTestUri = (IRI)bindingSet.getValue("test");
-			String nextTestName = ((Literal)bindingSet.getValue("testName")).getLabel();
-			String nextTestFile = removeBase(((IRI)bindingSet.getValue("inputURL")).toString(),
-					testLocationBaseUri);
+			IRI nextTestUri = (IRI) bindingSet.getValue("test");
+			String nextTestName = ((Literal) bindingSet.getValue("testName")).getLabel();
+			String nextTestFile = removeBase(((IRI) bindingSet.getValue("inputURL")).toString(), testLocationBaseUri);
 			String nextInputURL = fileBasePath + nextTestFile;
 
 			String nextBaseUrl = testLocationBaseUri + nextTestFile;
@@ -112,10 +105,8 @@ public abstract class AbstractNQuadsParserTest {
 
 	}
 
-	private void parseNegativeNQuadsSyntaxTests(TestSuite suite, String fileBasePath,
-			String testLocationBaseUri, RepositoryConnection con)
-		throws Exception
-	{
+	private void parseNegativeNQuadsSyntaxTests(TestSuite suite, String fileBasePath, String testLocationBaseUri,
+			RepositoryConnection con) throws Exception {
 		StringBuilder negativeQuery = new StringBuilder();
 		negativeQuery.append(" PREFIX mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>\n");
 		negativeQuery.append(" PREFIX qt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>\n");
@@ -127,16 +118,14 @@ public abstract class AbstractNQuadsParserTest {
 		negativeQuery.append("     ?test mf:action ?inputURL . ");
 		negativeQuery.append(" }");
 
-		TupleQueryResult queryResult = con.prepareTupleQuery(QueryLanguage.SPARQL,
-				negativeQuery.toString()).evaluate();
+		TupleQueryResult queryResult = con.prepareTupleQuery(QueryLanguage.SPARQL, negativeQuery.toString()).evaluate();
 
 		// Add all negative parser tests to the test suite
 		while (queryResult.hasNext()) {
 			BindingSet bindingSet = queryResult.next();
-			IRI nextTestUri = (IRI)bindingSet.getValue("test");
-			String nextTestName = ((Literal)bindingSet.getValue("testName")).toString();
-			String nextTestFile = removeBase(((IRI)bindingSet.getValue("inputURL")).toString(),
-					testLocationBaseUri);
+			IRI nextTestUri = (IRI) bindingSet.getValue("test");
+			String nextTestName = ((Literal) bindingSet.getValue("testName")).toString();
+			String nextTestFile = removeBase(((IRI) bindingSet.getValue("inputURL")).toString(), testLocationBaseUri);
 			String nextInputURL = fileBasePath + nextTestFile;
 
 			String nextBaseUrl = testLocationBaseUri + nextTestFile;

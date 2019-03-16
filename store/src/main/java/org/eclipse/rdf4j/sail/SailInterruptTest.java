@@ -28,9 +28,7 @@ import org.junit.Test;
 public abstract class SailInterruptTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -39,28 +37,21 @@ public abstract class SailInterruptTest {
 	private ValueFactory vf;
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		store = createSail();
 		store.initialize();
 		vf = store.getValueFactory();
 	}
 
-	protected abstract Sail createSail()
-		throws SailException;
+	protected abstract Sail createSail() throws SailException;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		store.shutDown();
 	}
 
 	@Test
-	public void testQueryInterrupt()
-		throws Exception
-	{
+	public void testQueryInterrupt() throws Exception {
 		// System.out.println("Preparing data set for query interruption test");
 		final Random r = new Random(12345);
 		SailConnection con = store.getConnection();
@@ -70,12 +61,10 @@ public abstract class SailInterruptTest {
 				insertTestStatement(con, r.nextInt());
 			}
 			con.commit();
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			con.rollback();
 			fail(e.getMessage());
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 
@@ -86,8 +75,7 @@ public abstract class SailInterruptTest {
 					try {
 						// System.out.println("query sail...");
 						iterateStatements();
-					}
-					catch (Throwable t) {
+					} catch (Throwable t) {
 						// t.printStackTrace();
 					}
 				}
@@ -112,21 +100,16 @@ public abstract class SailInterruptTest {
 		// System.out.println("Done");
 	}
 
-	private void insertTestStatement(SailConnection connection, int seed)
-		throws SailException
-	{
+	private void insertTestStatement(SailConnection connection, int seed) throws SailException {
 		IRI subj = vf.createIRI("http://test#s" + seed % 293);
 		IRI pred = vf.createIRI("http://test#p" + seed % 29);
 		Literal obj = vf.createLiteral(Integer.toString(seed % 2903));
 		connection.addStatement(subj, pred, obj);
 	}
 
-	private void iterateStatements()
-		throws SailException
-	{
+	private void iterateStatements() throws SailException {
 		try (SailConnection con = store.getConnection();
-				CloseableIteration<?, SailException> iter = con.getStatements(null, null, null, true);)
-		{
+				CloseableIteration<?, SailException> iter = con.getStatements(null, null, null, true);) {
 			while (iter.hasNext()) {
 				iter.next();
 			}

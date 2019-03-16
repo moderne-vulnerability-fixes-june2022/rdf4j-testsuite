@@ -101,13 +101,10 @@ public abstract class AbstractLuceneSailTest {
 		QUERY_STRING = buffer.toString();
 	}
 
-	protected abstract void configure(LuceneSail sail)
-		throws IOException;
+	protected abstract void configure(LuceneSail sail) throws IOException;
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		// set logging, uncomment this to get better logging for debugging
 		// org.apache.log4j.BasicConfigurator.configure();
 		// TODO: disable logging for org.eclipse.rdf4j.query.parser.serql.SeRQLParser,
@@ -143,19 +140,14 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@After
-	public void tearDown()
-		throws IOException,
-		RepositoryException
-	{
+	public void tearDown() throws IOException, RepositoryException {
 		if (repository != null) {
 			repository.shutDown();
 		}
 	}
 
 	@Test
-	public void testTriplesStored()
-		throws Exception
-	{
+	public void testTriplesStored() throws Exception {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			// are the triples stored in the underlying sail?
 			assertTrue(connection.hasStatement(SUBJECT_1, PREDICATE_1, vf.createLiteral("one"), false));
@@ -171,11 +163,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testRegularQuery()
-		throws RepositoryException,
-		MalformedQueryException,
-		QueryEvaluationException
-	{
+	public void testRegularQuery() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			// fire a query for all subjects with a given term
 			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SERQL, QUERY_STRING);
@@ -189,17 +177,17 @@ public abstract class AbstractLuceneSailTest {
 
 				assertTrue(result.hasNext());
 				bindings = result.next();
-				uris.add((IRI)bindings.getValue("Subject"));
+				uris.add((IRI) bindings.getValue("Subject"));
 				assertNotNull(bindings.getValue("Score"));
 
 				assertTrue(result.hasNext());
 				bindings = result.next();
-				uris.add((IRI)bindings.getValue("Subject"));
+				uris.add((IRI) bindings.getValue("Subject"));
 				assertNotNull(bindings.getValue("Score"));
 
 				assertTrue(result.hasNext());
 				bindings = result.next();
-				uris.add((IRI)bindings.getValue("Subject"));
+				uris.add((IRI) bindings.getValue("Subject"));
 				assertNotNull(bindings.getValue("Score"));
 
 				assertFalse(result.hasNext());
@@ -212,11 +200,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testComplexQueryOne()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+	public void testComplexQueryOne() throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// prepare the query
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("SELECT Resource, Matching, Score ");
@@ -237,14 +221,14 @@ public abstract class AbstractLuceneSailTest {
 
 				assertTrue(result.hasNext());
 				bindings = result.next();
-				results.add("<" + (IRI)bindings.getValue("Resource") + ">, " + "<"
-						+ (IRI)bindings.getValue("Matching") + ">");
+				results.add("<" + (IRI) bindings.getValue("Resource") + ">, " + "<"
+						+ (IRI) bindings.getValue("Matching") + ">");
 				assertNotNull(bindings.getValue("Score"));
 
 				assertTrue(result.hasNext());
 				bindings = result.next();
-				results.add("<" + (IRI)bindings.getValue("Resource") + ">, " + "<"
-						+ (IRI)bindings.getValue("Matching") + ">");
+				results.add("<" + (IRI) bindings.getValue("Resource") + ">, " + "<"
+						+ (IRI) bindings.getValue("Matching") + ">");
 				assertNotNull(bindings.getValue("Score"));
 
 				assertFalse(result.hasNext());
@@ -256,11 +240,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testComplexQueryTwo()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+	public void testComplexQueryTwo() throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// prepare the query
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("SELECT Resource, Matching, Score ");
@@ -278,8 +258,8 @@ public abstract class AbstractLuceneSailTest {
 				// check the results
 				assertTrue(result.hasNext());
 				BindingSet bindings = result.next();
-				assertEquals(SUBJECT_3, (IRI)bindings.getValue("Resource"));
-				assertEquals(SUBJECT_1, (IRI)bindings.getValue("Matching"));
+				assertEquals(SUBJECT_3, (IRI) bindings.getValue("Resource"));
+				assertEquals(SUBJECT_1, (IRI) bindings.getValue("Matching"));
 				assertNotNull(bindings.getValue("Score"));
 
 				assertFalse(result.hasNext());
@@ -290,10 +270,7 @@ public abstract class AbstractLuceneSailTest {
 
 	@Test
 	public void testMultipleLuceneQueries()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+			throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// prepare the query
 		String[] queries = new String[] {
 				"SELECT \n" + "  Resource1, Resource2, R1Score, R2Score \n" + "FROM \n" + "  {Resource1} <"
@@ -302,9 +279,9 @@ public abstract class AbstractLuceneSailTest {
 						+ "> {} \n" + "    <" + QUERY + "> {\"one\"}; \n" + "    <" + SCORE + "> {R2Score} ",
 				"SELECT \n" + "  Resource1, Resource3, R1Score, R3Score \n" + "FROM \n"
 						+ "  {Resource2} p21 {Resource1}, \n" + "  {Resource2} p23 {Resource3}, \n" + "  {Resource1} <"
-						+ MATCHES + "> {} \n" + "    <" + QUERY + "> {\"one\"}; \n" + "    <" + SCORE + "> {R1Score}, \n"
-						+ "  {Resource3} <" + MATCHES + "> {} \n" + "    <" + QUERY + "> {\"one\"}; \n" + "    <" + SCORE
-						+ "> {R3Score}" + "WHERE \n" + "  Resource1 != Resource3",
+						+ MATCHES + "> {} \n" + "    <" + QUERY + "> {\"one\"}; \n" + "    <" + SCORE
+						+ "> {R1Score}, \n" + "  {Resource3} <" + MATCHES + "> {} \n" + "    <" + QUERY
+						+ "> {\"one\"}; \n" + "    <" + SCORE + "> {R3Score}" + "WHERE \n" + "  Resource1 != Resource3",
 				"SELECT \n" + "  Resource1, Resource3, R1Score, R3Score \n" + "FROM \n"
 						+ "  {Resource2} p21 {Resource1}, \n" + "  {Resource2} p23 {Resource3}, \n" + "  {Resource1} <"
 						+ MATCHES + "> {} \n" + "    <" + QUERY + "> {\"one\"}; \n" + "    <" + PROPERTY + "> {<"
@@ -413,10 +390,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	private void evaluate(String[] queries, ArrayList<List<Map<String, String>>> expectedResults)
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+			throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			for (int queryID = 0; queryID < queries.length; queryID++) {
 				String serql = queries[queryID];
@@ -443,8 +417,7 @@ public abstract class AbstractLuceneSailTest {
 							matches = true;
 
 							// get the result we compare with now
-							Map<String, String> expectedResult = new HashMap<>(
-									expectedResultSet.get(resultSetID));
+							Map<String, String> expectedResult = new HashMap<>(expectedResultSet.get(resultSetID));
 
 							// get all var names
 							Collection<String> vars = new ArrayList<>(expectedResult.keySet());
@@ -461,8 +434,7 @@ public abstract class AbstractLuceneSailTest {
 										matches = false;
 										break;
 									}
-								}
-								else {
+								} else {
 									// compare the values
 									if ((actualVal == null) || (expectedVal.compareTo(actualVal.stringValue()) != 0)) {
 										matches = false;
@@ -499,10 +471,7 @@ public abstract class AbstractLuceneSailTest {
 
 	@Test
 	public void testPredicateLuceneQueries()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+			throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// prepare the query
 		String[] queries = new String[] {
 				"SELECT \n" + "  Resource, Score, Snippet \n" + "FROM \n" + "  {Resource} <" + MATCHES + "> {} \n"
@@ -560,11 +529,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testSnippetQueries()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+	public void testSnippetQueries() throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// prepare the query
 		// search for the term "one", but only in predicate 1
 		StringBuilder buffer = new StringBuilder();
@@ -608,15 +573,12 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	/**
-	 * Test if the snippets do not accidentially come from the "text" field while we actually expect them to
-	 * come from the predicate field.
+	 * Test if the snippets do not accidentially come from the "text" field while we actually expect them to come from
+	 * the predicate field.
 	 */
 	@Test
 	public void testSnippetLimitedToPredicate()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+			throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// more test-data
 		try (RepositoryConnection myconnection = repository.getConnection()) {
 			myconnection.begin();
@@ -664,7 +626,7 @@ public abstract class AbstractLuceneSailTest {
 
 						// the resource should be among the set of expected subjects, if so,
 						// remove it from the set
-						String snippet = ((Literal)bindings.getValue("Snippet")).stringValue();
+						String snippet = ((Literal) bindings.getValue("Snippet")).stringValue();
 						boolean foundexpected = false;
 						for (Iterator<String> i = expectedSnippetPart.iterator(); i.hasNext();) {
 							String expected = i.next();
@@ -729,7 +691,7 @@ public abstract class AbstractLuceneSailTest {
 
 						// the resource should be among the set of expected subjects, if so,
 						// remove it from the set
-						String snippet = ((Literal)bindings.getValue("Snippet")).stringValue();
+						String snippet = ((Literal) bindings.getValue("Snippet")).stringValue();
 						boolean foundexpected = false;
 						for (Iterator<String> i = expectedSnippetPart.iterator(); i.hasNext();) {
 							String expected = i.next();
@@ -758,11 +720,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testGraphQuery()
-		throws QueryEvaluationException,
-		MalformedQueryException,
-		RepositoryException
-	{
+	public void testGraphQuery() throws QueryEvaluationException, MalformedQueryException, RepositoryException {
 		IRI score = vf.createIRI(LuceneSailSchema.NAMESPACE + "score");
 		StringBuilder query = new StringBuilder();
 
@@ -789,14 +747,12 @@ public abstract class AbstractLuceneSailTest {
 					n++;
 
 					if (statement.getSubject().equals(SUBJECT_3) && statement.getPredicate().equals(PREDICATE_3)
-							&& statement.getObject().equals(SUBJECT_1))
-					{
+							&& statement.getObject().equals(SUBJECT_1)) {
 						r |= 1;
 						continue;
 					}
 					if (statement.getSubject().equals(SUBJECT_3) && statement.getPredicate().equals(PREDICATE_3)
-							&& statement.getObject().equals(SUBJECT_2))
-					{
+							&& statement.getObject().equals(SUBJECT_2)) {
 						r |= 2;
 						continue;
 					}
@@ -813,10 +769,7 @@ public abstract class AbstractLuceneSailTest {
 
 	@Test
 	public void testQueryWithSpecifiedSubject()
-		throws RepositoryException,
-		MalformedQueryException,
-		QueryEvaluationException
-	{
+			throws RepositoryException, MalformedQueryException, QueryEvaluationException {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			// fire a query with the subject pre-specified
 			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SERQL, QUERY_STRING);
@@ -827,18 +780,14 @@ public abstract class AbstractLuceneSailTest {
 			// check that this subject and only this subject is returned
 			assertTrue(result.hasNext());
 			BindingSet bindings = result.next();
-			assertEquals(SUBJECT_1, (IRI)bindings.getValue("Subject"));
+			assertEquals(SUBJECT_1, (IRI) bindings.getValue("Subject"));
 			assertNotNull(bindings.getValue("Score"));
 			assertFalse(result.hasNext());
 		}
 	}
 
 	@Test
-	public void testUnionQuery()
-		throws RepositoryException,
-		MalformedQueryException,
-		QueryEvaluationException
-	{
+	public void testUnionQuery() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
 		String queryStr = "";
 		queryStr += "PREFIX search: <http://www.openrdf.org/contrib/lucenesail#> ";
 		queryStr += "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ";
@@ -865,9 +814,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testContextHandling()
-		throws Exception
-	{
+	public void testContextHandling() throws Exception {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			connection.begin();
 			connection.add(SUBJECT_4, PREDICATE_1, vf.createLiteral("sfourponecone"), CONTEXT_1);
@@ -899,9 +846,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testConcurrentReadingAndWriting()
-		throws Exception
-	{
+	public void testConcurrentReadingAndWriting() throws Exception {
 
 		try (RepositoryConnection connection = repository.getConnection()) {
 			connection.begin();
@@ -954,9 +899,7 @@ public abstract class AbstractLuceneSailTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testNullContextHandling()
-		throws Exception
-	{
+	public void testNullContextHandling() throws Exception {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			connection.add(SUBJECT_4, PREDICATE_1, vf.createLiteral("sfourponecone"));
 			connection.add(SUBJECT_4, PREDICATE_2, vf.createLiteral("sfourptwocone"));
@@ -974,7 +917,7 @@ public abstract class AbstractLuceneSailTest {
 			// blind test to see if this method works:
 			assertNoQueryResult("johannesgrenzfurthner");
 			// remove a context
-			connection.clear((Resource)null);
+			connection.clear((Resource) null);
 			connection.commit();
 			assertNoQueryResult("sfourponecone");
 			assertNoQueryResult("sfourptwocone");
@@ -985,11 +928,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testFuzzyQuery()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+	public void testFuzzyQuery() throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		// prepare the query
 		// search for the term "one" with 80% fuzzyness
 		StringBuilder buffer = new StringBuilder();
@@ -1021,7 +960,7 @@ public abstract class AbstractLuceneSailTest {
 
 					// the resource should be among the set of expected subjects, if so,
 					// remove it from the set
-					assertTrue(expectedSubject.remove((IRI)bindings.getValue("Resource")));
+					assertTrue(expectedSubject.remove((IRI) bindings.getValue("Resource")));
 
 					// there should be a score
 					assertNotNull(bindings.getValue("Score"));
@@ -1035,19 +974,13 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testReindexing()
-		throws Exception
-	{
+	public void testReindexing() throws Exception {
 		sail.reindex();
 		testComplexQueryTwo();
 	}
 
 	@Test
-	public void testPropertyVar()
-		throws MalformedQueryException,
-		RepositoryException,
-		QueryEvaluationException
-	{
+	public void testPropertyVar() throws MalformedQueryException, RepositoryException, QueryEvaluationException {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("SELECT \n");
 		buffer.append("  Resource, Property \n");
@@ -1085,9 +1018,7 @@ public abstract class AbstractLuceneSailTest {
 	}
 
 	@Test
-	public void testMultithreadedAdd()
-		throws InterruptedException
-	{
+	public void testMultithreadedAdd() throws InterruptedException {
 		int numThreads = 3;
 		final CountDownLatch startLatch = new CountDownLatch(1);
 		final CountDownLatch endLatch = new CountDownLatch(numThreads);
@@ -1103,12 +1034,10 @@ public abstract class AbstractLuceneSailTest {
 						for (long i = 0; i < iterationCount; i++) {
 							con.add(vf.createIRI("ex:" + i), vf.createIRI("ex:prop" + i % 3), vf.createLiteral(i));
 						}
-					}
-					catch (Throwable e) {
+					} catch (Throwable e) {
 						exceptions.add(e);
 						throw new AssertionError(e);
-					}
-					finally {
+					} finally {
 						endLatch.countDown();
 					}
 				}
@@ -1119,17 +1048,14 @@ public abstract class AbstractLuceneSailTest {
 		for (Throwable e : exceptions) {
 			e.printStackTrace(System.err);
 		}
-		assertEquals("Exceptions occurred during testMultithreadedAdd, see stacktraces above", 0,
-				exceptions.size());
+		assertEquals("Exceptions occurred during testMultithreadedAdd, see stacktraces above", 0, exceptions.size());
 	}
 
-	protected void assertQueryResult(String literal, IRI predicate, Resource resultUri)
-		throws Exception
-	{
+	protected void assertQueryResult(String literal, IRI predicate, Resource resultUri) throws Exception {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			// fire a query for all subjects with a given term
-			String queryString = "SELECT Resource " + "FROM {Resource} <" + MATCHES + "> {} " + " <" + QUERY
-					+ "> {\"" + literal + "\"} ";
+			String queryString = "SELECT Resource " + "FROM {Resource} <" + MATCHES + "> {} " + " <" + QUERY + "> {\""
+					+ literal + "\"} ";
 			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SERQL, queryString);
 			try (TupleQueryResult result = query.evaluate()) {
 				// check the result
@@ -1143,13 +1069,11 @@ public abstract class AbstractLuceneSailTest {
 		}
 	}
 
-	protected void assertNoQueryResult(String literal)
-		throws Exception
-	{
+	protected void assertNoQueryResult(String literal) throws Exception {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			// fire a query for all subjects with a given term
-			String queryString = "SELECT Resource " + "FROM {Resource} <" + MATCHES + "> {} " + " <" + QUERY
-					+ "> {\"" + literal + "\"} ";
+			String queryString = "SELECT Resource " + "FROM {Resource} <" + MATCHES + "> {} " + " <" + QUERY + "> {\""
+					+ literal + "\"} ";
 			TupleQuery query = connection.prepareTupleQuery(QueryLanguage.SERQL, queryString);
 			try (TupleQueryResult result = query.evaluate()) {
 

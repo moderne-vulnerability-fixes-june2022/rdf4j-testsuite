@@ -14,9 +14,9 @@ import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.junit.Test;
 
 /**
- * A JUnit test for testing Sail implementations that store RDF data. This is purely a test for data storage
- * and retrieval which assumes that no inferencing or whatsoever is performed. This is an abstract class that
- * should be extended for specific Sail implementations.
+ * A JUnit test for testing Sail implementations that store RDF data. This is purely a test for data storage and
+ * retrieval which assumes that no inferencing or whatsoever is performed. This is an abstract class that should be
+ * extended for specific Sail implementations.
  */
 public abstract class RDFNotifyingStoreTest extends RDFStoreTest implements SailChangedListener {
 
@@ -33,32 +33,25 @@ public abstract class RDFNotifyingStoreTest extends RDFStoreTest implements Sail
 	 *---------*/
 
 	/**
-	 * Gets an instance of the Sail that should be tested. The returned repository should already have been
-	 * initialized.
+	 * Gets an instance of the Sail that should be tested. The returned repository should already have been initialized.
 	 * 
 	 * @return an initialized Sail.
-	 * @throws SailException
-	 *         If the initialization of the repository failed.
+	 * @throws SailException If the initialization of the repository failed.
 	 */
 	@Override
-	protected abstract NotifyingSail createSail()
-		throws SailException;
+	protected abstract NotifyingSail createSail() throws SailException;
 
 	@Override
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		super.setUp();
 
 		// set self as listener
-		((NotifyingSail)sail).addSailChangedListener(this);
+		((NotifyingSail) sail).addSailChangedListener(this);
 
 	}
 
 	@Test
-	public void testNotifyingRemoveAndClear()
-		throws Exception
-	{
+	public void testNotifyingRemoveAndClear() throws Exception {
 		// Add some data to the repository
 		con.begin();
 		con.addStatement(painter, RDF.TYPE, RDFS.CLASS);

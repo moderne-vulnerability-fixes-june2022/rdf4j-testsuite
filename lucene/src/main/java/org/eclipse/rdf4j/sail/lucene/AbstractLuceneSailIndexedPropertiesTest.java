@@ -76,9 +76,7 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 	protected abstract void configure(LuceneSail sail);
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		// setup a LuceneSail
 		MemoryStore memoryStore = new MemoryStore();
 		// enable lock tracking
@@ -120,36 +118,28 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 	}
 
 	@After
-	public void tearDown()
-		throws IOException,
-		RepositoryException
-	{
+	public void tearDown() throws IOException, RepositoryException {
 		if (repository != null) {
 			repository.shutDown();
 		}
 	}
 
 	@Test
-	public void testTriplesStored()
-		throws Exception
-	{
+	public void testTriplesStored() throws Exception {
 		// are the triples stored in the underlying sail?
 		try (RepositoryConnection connection = repository.getConnection()) {
-			assertTrue(
-					connection.hasStatement(SUBJECT_1, RDFSLABEL, vf.createLiteral("the first resource"), false));
+			assertTrue(connection.hasStatement(SUBJECT_1, RDFSLABEL, vf.createLiteral("the first resource"), false));
 			assertTrue(connection.hasStatement(SUBJECT_1, RDFSCOMMENT,
 					vf.createLiteral(
 							"Groucho Marx is going to cut away the first part of the first party of the contract."),
 					false));
 			assertTrue(connection.hasStatement(SUBJECT_1, FOAFNAME, vf.createLiteral("groucho and harpo"), false));
 
-			assertTrue(
-					connection.hasStatement(SUBJECT_2, FOAFNAME, vf.createLiteral("the second resource"), false));
+			assertTrue(connection.hasStatement(SUBJECT_2, FOAFNAME, vf.createLiteral("the second resource"), false));
 			assertTrue(connection.hasStatement(SUBJECT_2, RDFSCOMMENT,
 					vf.createLiteral("in the night at the opera, groucho is in a cabin on a ship."), false));
 
-			assertTrue(
-					connection.hasStatement(SUBJECT_3, RDFSLABEL, vf.createLiteral("the third resource"), false));
+			assertTrue(connection.hasStatement(SUBJECT_3, RDFSLABEL, vf.createLiteral("the third resource"), false));
 			assertTrue(connection.hasStatement(SUBJECT_3, RDFSCOMMENT,
 					vf.createLiteral("a not well known fact, groucho marx was not a smoker"), false));
 			// this should not be indexed
@@ -159,11 +149,7 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 	}
 
 	@Test
-	public void testRegularQuery()
-		throws RepositoryException,
-		MalformedQueryException,
-		QueryEvaluationException
-	{
+	public void testRegularQuery() throws RepositoryException, MalformedQueryException, QueryEvaluationException {
 		try (RepositoryConnection connection = repository.getConnection()) {
 			// fire a query for all subjects with a given term
 			String queryString = "SELECT Subject, Score " + "FROM {Subject} <" + MATCHES + "> {} " + " <" + QUERY
@@ -179,7 +165,7 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 					BindingSet bindings = null;
 					while (result.hasNext()) {
 						bindings = result.next();
-						uris.add((IRI)bindings.getValue("Subject"));
+						uris.add((IRI) bindings.getValue("Subject"));
 						assertNotNull(bindings.getValue("Score"));
 					}
 					assertEquals(3, uris.size());
@@ -200,7 +186,7 @@ public abstract class AbstractLuceneSailIndexedPropertiesTest {
 					BindingSet bindings = null;
 					while (result.hasNext()) {
 						bindings = result.next();
-						uris.add((IRI)bindings.getValue("Subject"));
+						uris.add((IRI) bindings.getValue("Subject"));
 						assertNotNull(bindings.getValue("Score"));
 					}
 					assertEquals(1, uris.size());

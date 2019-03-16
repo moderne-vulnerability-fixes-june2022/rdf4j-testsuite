@@ -28,9 +28,7 @@ import org.junit.Test;
 public abstract class SparqlAggregatesTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -45,8 +43,7 @@ public abstract class SparqlAggregatesTest {
 			+ "SELECT ?name (group_concat(?mbox) AS ?mbox)\n"
 			+ " WHERE { ?x foaf:name  ?name OPTIONAL { ?x foaf:mbox  ?mbox } } GROUP BY ?name";
 
-	public String countMbox = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
-			+ "SELECT ?name (count(?mbox) AS ?mbox)\n"
+	public String countMbox = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" + "SELECT ?name (count(?mbox) AS ?mbox)\n"
 			+ " WHERE { ?x foaf:name  ?name; foaf:mbox  ?mbox } GROUP BY ?name";
 
 	public String countOptionalMbox = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
@@ -60,9 +57,7 @@ public abstract class SparqlAggregatesTest {
 	private ValueFactory vf;
 
 	@Test
-	public void testSelect()
-		throws Exception
-	{
+	public void testSelect() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, selectNameMbox);
 		TupleQueryResult result = query.evaluate();
 		assertTrue(result.hasNext());
@@ -73,9 +68,7 @@ public abstract class SparqlAggregatesTest {
 	}
 
 	@Test
-	public void testConcat()
-		throws Exception
-	{
+	public void testConcat() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, concatMbox);
 		TupleQueryResult result = query.evaluate();
 		assertTrue(result.hasNext());
@@ -86,9 +79,7 @@ public abstract class SparqlAggregatesTest {
 	}
 
 	@Test
-	public void testConcatOptional()
-		throws Exception
-	{
+	public void testConcatOptional() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, concatOptionalMbox);
 		TupleQueryResult result = query.evaluate();
 		assertTrue(result.hasNext());
@@ -100,9 +91,7 @@ public abstract class SparqlAggregatesTest {
 	}
 
 	@Test
-	public void testCount()
-		throws Exception
-	{
+	public void testCount() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, countMbox);
 		TupleQueryResult result = query.evaluate();
 		assertTrue(result.hasNext());
@@ -113,9 +102,7 @@ public abstract class SparqlAggregatesTest {
 	}
 
 	@Test
-	public void testCountOptional()
-		throws Exception
-	{
+	public void testCountOptional() throws Exception {
 		Set<String> zeroOr1 = new HashSet<>();
 		zeroOr1.add("0");
 		zeroOr1.add("1");
@@ -130,9 +117,7 @@ public abstract class SparqlAggregatesTest {
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		repository = createRepository();
 		vf = repository.getValueFactory();
 		createUser("james", "James Leigh", "james@leigh");
@@ -141,29 +126,23 @@ public abstract class SparqlAggregatesTest {
 		conn = repository.getConnection();
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		conn = null;
 
@@ -171,9 +150,7 @@ public abstract class SparqlAggregatesTest {
 		repository = null;
 	}
 
-	private void createUser(String id, String name, String email)
-		throws RepositoryException
-	{
+	private void createUser(String id, String name, String email) throws RepositoryException {
 		RepositoryConnection conn = repository.getConnection();
 		IRI subj = vf.createIRI("http://example.org/ns#", id);
 		IRI foafName = vf.createIRI("http://xmlns.com/foaf/0.1/", "name");

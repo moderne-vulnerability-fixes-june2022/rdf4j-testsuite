@@ -38,9 +38,7 @@ public abstract class TupleQueryResultTest {
 	private final Logger logger = LoggerFactory.getLogger(TupleQueryResultTest.class);
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -55,9 +53,7 @@ public abstract class TupleQueryResultTest {
 	private String multipleResultQuery;
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		rep = createRepository();
 		con = rep.getConnection();
 
@@ -66,22 +62,17 @@ public abstract class TupleQueryResultTest {
 	}
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		try {
 			con.close();
 			con = null;
-		}
-		finally {
+		} finally {
 			rep.shutDown();
 			rep = null;
 		}
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
@@ -91,8 +82,7 @@ public abstract class TupleQueryResultTest {
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	/*
 	 * build some simple SeRQL queries to use for testing the result set object.
@@ -125,47 +115,38 @@ public abstract class TupleQueryResultTest {
 		multipleResultQuery = query.toString();
 	}
 
-	private void addData()
-		throws IOException, UnsupportedRDFormatException, RDFParseException, RepositoryException
-	{
-		InputStream defaultGraph = TupleQueryResultTest.class.getResourceAsStream(
-				"/testcases/default-graph-1.ttl");
+	private void addData() throws IOException, UnsupportedRDFormatException, RDFParseException, RepositoryException {
+		InputStream defaultGraph = TupleQueryResultTest.class.getResourceAsStream("/testcases/default-graph-1.ttl");
 		try {
 			con.add(defaultGraph, "", RDFFormat.TURTLE);
-		}
-		finally {
+		} finally {
 			defaultGraph.close();
 		}
 	}
 
 	@Test
-	public void testGetBindingNames()
-		throws Exception
-	{
+	public void testGetBindingNames() throws Exception {
 		TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SERQL, multipleResultQuery).evaluate();
 		try {
 			List<String> headers = result.getBindingNames();
 
 			assertThat(headers.get(0)).isEqualTo("P").as("first header element");
 			assertThat(headers.get(1)).isEqualTo("D").as("second header element");
-		}
-		finally {
+		} finally {
 			result.close();
 		}
 	}
 
 	/*
 	 * deprecated public void testIsDistinct() throws Exception { TupleQueryResult result =
-	 * con.prepareTupleQuery(QueryLanguage.SERQL, emptyResultQuery).evaluate(); try { if (result.isDistinct())
-	 * { fail("query result should not be distinct."); } } finally { result.close(); } result =
-	 * con.prepareTupleQuery(QueryLanguage.SERQL, singleResultQuery).evaluate(); try { if
-	 * (!result.isDistinct()) { fail("query result should be distinct."); } } finally { result.close(); } }
+	 * con.prepareTupleQuery(QueryLanguage.SERQL, emptyResultQuery).evaluate(); try { if (result.isDistinct()) {
+	 * fail("query result should not be distinct."); } } finally { result.close(); } result =
+	 * con.prepareTupleQuery(QueryLanguage.SERQL, singleResultQuery).evaluate(); try { if (!result.isDistinct()) {
+	 * fail("query result should be distinct."); } } finally { result.close(); } }
 	 */
 
 	@Test
-	public void testIterator()
-		throws Exception
-	{
+	public void testIterator() throws Exception {
 		TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SERQL, multipleResultQuery).evaluate();
 
 		try {
@@ -176,30 +157,24 @@ public abstract class TupleQueryResultTest {
 			}
 
 			assertTrue("query should have multiple results.", count > 1);
-		}
-		finally {
+		} finally {
 			result.close();
 		}
 	}
 
 	@Test
-	public void testIsEmpty()
-		throws Exception
-	{
+	public void testIsEmpty() throws Exception {
 		TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SERQL, emptyResultQuery).evaluate();
 
 		try {
 			assertFalse("Query result should be empty", result.hasNext());
-		}
-		finally {
+		} finally {
 			result.close();
 		}
 	}
 
 	@Test
-	public void testStreaming()
-		throws Exception
-	{
+	public void testStreaming() throws Exception {
 		ValueFactory vf = con.getValueFactory();
 		int subjectIndex = 0;
 		int predicateIndex = 100;
@@ -210,24 +185,24 @@ public abstract class TupleQueryResultTest {
 		while (count < testStatementCount) {
 			con.add(vf.createIRI("urn:test:" + subjectIndex), vf.createIRI("urn:test:" + predicateIndex),
 					vf.createIRI("urn:test:" + objectIndex));
-			if(Math.round(Math.random()) > 0) {
+			if (Math.round(Math.random()) > 0) {
 				subjectIndex++;
 			}
-			if(Math.round(Math.random()) > 0) {
+			if (Math.round(Math.random()) > 0) {
 				predicateIndex++;
 			}
-			if(Math.round(Math.random()) > 0) {
+			if (Math.round(Math.random()) > 0) {
 				objectIndex++;
 			}
 			count++;
 		}
 		con.commit();
 
-		for(int evaluateCount = 0; evaluateCount < 1000; evaluateCount++) {
+		for (int evaluateCount = 0; evaluateCount < 1000; evaluateCount++) {
 			try (ByteArrayOutputStream stream = new ByteArrayOutputStream();
 					RepositoryConnection nextCon = rep.getConnection();) {
-				TupleQueryResultWriter sparqlWriter = QueryResultIO.createTupleWriter(
-						TupleQueryResultFormat.SPARQL, stream);
+				TupleQueryResultWriter sparqlWriter = QueryResultIO.createTupleWriter(TupleQueryResultFormat.SPARQL,
+						stream);
 				TupleQuery tupleQuery = nextCon.prepareTupleQuery(QueryLanguage.SPARQL,
 						"SELECT ?s ?p ?o WHERE { ?s ?p ?o . }");
 				tupleQuery.setIncludeInferred(false);
@@ -248,13 +223,13 @@ public abstract class TupleQueryResultTest {
 		while (count < testStatementCount) {
 			con.add(vf.createIRI("urn:test:" + subjectIndex), vf.createIRI("urn:test:" + predicateIndex),
 					vf.createIRI("urn:test:" + objectIndex));
-			if(Math.round(Math.random()) > 0) {
+			if (Math.round(Math.random()) > 0) {
 				subjectIndex++;
 			}
-			if(Math.round(Math.random()) > 0) {
+			if (Math.round(Math.random()) > 0) {
 				predicateIndex++;
 			}
-			if(Math.round(Math.random()) > 0) {
+			if (Math.round(Math.random()) > 0) {
 				objectIndex++;
 			}
 			count++;

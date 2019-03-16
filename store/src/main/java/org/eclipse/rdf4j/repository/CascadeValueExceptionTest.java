@@ -21,9 +21,7 @@ import org.junit.Test;
 public abstract class CascadeValueExceptionTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -56,205 +54,161 @@ public abstract class CascadeValueExceptionTest {
 	private Repository repository;
 
 	@Test
-	public void testValueExceptionLessThanPlain()
-		throws Exception
-	{
+	public void testValueExceptionLessThanPlain() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrLT);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionLessThanOrEqualPlain()
-		throws Exception
-	{
+	public void testValueExceptionLessThanOrEqualPlain() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrLE);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionEqualPlain()
-		throws Exception
-	{
+	public void testValueExceptionEqualPlain() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrEQ);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionNotEqualPlain()
-		throws Exception
-	{
+	public void testValueExceptionNotEqualPlain() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrNE);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionGreaterThanOrEqualPlain()
-		throws Exception
-	{
+	public void testValueExceptionGreaterThanOrEqualPlain() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrGE);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionGreaterThanPlain()
-		throws Exception
-	{
+	public void testValueExceptionGreaterThanPlain() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrGT);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionLessThanTyped()
-		throws Exception
-	{
+	public void testValueExceptionLessThanTyped() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrAltLT);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionLessThanOrEqualTyped()
-		throws Exception
-	{
+	public void testValueExceptionLessThanOrEqualTyped() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrAltLE);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionEqualTyped()
-		throws Exception
-	{
+	public void testValueExceptionEqualTyped() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrAltEQ);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionNotEqualTyped()
-		throws Exception
-	{
+	public void testValueExceptionNotEqualTyped() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrAltNE);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionGreaterThanOrEqualTyped()
-		throws Exception
-	{
+	public void testValueExceptionGreaterThanOrEqualTyped() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrAltGE);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Test
-	public void testValueExceptionGreaterThanTyped()
-		throws Exception
-	{
+	public void testValueExceptionGreaterThanTyped() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStrAltGT);
 		TupleQueryResult evaluate = query.evaluate();
 		try {
 			assertFalse(evaluate.hasNext());
-		}
-		finally {
+		} finally {
 			evaluate.close();
 		}
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		repository = createRepository();
 		conn = repository.getConnection();
 		conn.add(RDF.NIL, RDF.TYPE, RDF.LIST);
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		conn = null;
 

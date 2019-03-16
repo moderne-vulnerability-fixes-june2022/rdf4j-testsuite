@@ -34,6 +34,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 /**
  * Designed to test the performance of ORDER BY queries.
+ * 
  * @see https://github.com/eclipse/rdf4j/issues/971
  * @author James Leigh
  */
@@ -57,14 +58,12 @@ public class QueryOrderBenchmark {
 	@Param({ "10", "100", "1000", "10000", "50000", "-1" })
 	public int limit = 10;
 
-	@Param({"0", "10000"})
+	@Param({ "0", "10000" })
 	public int syncThreshold = 10;
 
 	@Setup
 	@Before
-	public void setup()
-		throws Exception
-	{
+	public void setup() throws Exception {
 		tempDir = File.createTempFile("nativestore", "");
 		tempDir.delete();
 		tempDir.mkdirs();
@@ -93,9 +92,7 @@ public class QueryOrderBenchmark {
 
 	@TearDown
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		repository.shutDown();
 		FileUtil.deleteDir(tempDir);
@@ -103,9 +100,7 @@ public class QueryOrderBenchmark {
 
 	@Test
 	@Benchmark
-	public void selectAll()
-		throws Exception
-	{
+	public void selectAll() throws Exception {
 		StringBuilder rq = new StringBuilder("SELECT * { ?s ?p ?o } ORDER BY ?o");
 		if (limit > 0) {
 			rq = rq.append(" LIMIT ").append(limit);
@@ -131,9 +126,7 @@ public class QueryOrderBenchmark {
 
 	@Test
 	@Benchmark
-	public void selectDistinct()
-		throws Exception
-	{
+	public void selectDistinct() throws Exception {
 		StringBuilder rq = new StringBuilder("SELECT DISTINCT ?s ?o { ?s ?p ?o } ORDER BY ?o");
 		if (limit > 0) {
 			rq = rq.append(" LIMIT ").append(limit);
@@ -157,9 +150,7 @@ public class QueryOrderBenchmark {
 		}
 	}
 
-	public static void main(String[] args)
-		throws RunnerException
-	{
+	public static void main(String[] args) throws RunnerException {
 		String regexp = ".*" + QueryOrderBenchmark.class.getSimpleName() + ".*";
 		new Runner(new OptionsBuilder().include(regexp).build()).run();
 

@@ -63,8 +63,8 @@ public abstract class AbstractParserHandlingTest {
 	/**
 	 * Test URI used for testing unknown datatype support.
 	 */
-	private static final IRI UNKNOWN_DATATYPE_URI = SimpleValueFactory.getInstance().createIRI(
-			"urn:test:unknowndatatype");
+	private static final IRI UNKNOWN_DATATYPE_URI = SimpleValueFactory.getInstance()
+			.createIRI("urn:test:unknowndatatype");
 
 	/**
 	 * Test value used for testing unknown datatype value handling.
@@ -107,58 +107,46 @@ public abstract class AbstractParserHandlingTest {
 	private Model testStatements;
 
 	/**
-	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
-	 * the RDFParser returned by {@link #getParser()}.
+	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by the
+	 * RDFParser returned by {@link #getParser()}.
 	 * 
-	 * @param unknownDatatypeStatements
-	 *        A {@link Model} containing statements which all contain unknown datatypes.
+	 * @param unknownDatatypeStatements A {@link Model} containing statements which all contain unknown datatypes.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected InputStream getUnknownDatatypeStream(Model model)
-		throws Exception
-	{
+	protected InputStream getUnknownDatatypeStream(Model model) throws Exception {
 		return serialize(model);
 	}
 
 	/**
-	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
-	 * the RDFParser returned by {@link #getParser()}.
+	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by the
+	 * RDFParser returned by {@link #getParser()}.
 	 * 
-	 * @param knownDatatypeStatements
-	 *        A {@link Model} containing statements which all contain known datatypes.
+	 * @param knownDatatypeStatements A {@link Model} containing statements which all contain known datatypes.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected InputStream getKnownDatatypeStream(Model model)
-		throws Exception
-	{
+	protected InputStream getKnownDatatypeStream(Model model) throws Exception {
 		return serialize(model);
 	}
 
 	/**
-	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
-	 * the RDFParser returned by {@link #getParser()}.
+	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by the
+	 * RDFParser returned by {@link #getParser()}.
 	 * 
-	 * @param unknownLanguageStatements
-	 *        A {@link Model} containing statements which all contain unknown language tags.
+	 * @param unknownLanguageStatements A {@link Model} containing statements which all contain unknown language tags.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected InputStream getUnknownLanguageStream(Model model)
-		throws Exception
-	{
+	protected InputStream getUnknownLanguageStream(Model model) throws Exception {
 		return serialize(model);
 	}
 
 	/**
-	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by
-	 * the RDFParser returned by {@link #getParser()}.
+	 * Returns an {@link InputStream} containing the given RDF statements in a format that is recognised by the
+	 * RDFParser returned by {@link #getParser()}.
 	 * 
-	 * @param knownLanguageStatements
-	 *        A {@link Model} containing statements which all contain known language tags.
+	 * @param knownLanguageStatements A {@link Model} containing statements which all contain known language tags.
 	 * @return An InputStream based on the given parameters.
 	 */
-	protected InputStream getKnownLanguageStream(Model model)
-		throws Exception
-	{
+	protected InputStream getKnownLanguageStream(Model model) throws Exception {
 		return serialize(model);
 	}
 
@@ -176,9 +164,7 @@ public abstract class AbstractParserHandlingTest {
 	 * @return An {@link InputStream} containing the results.
 	 * @throws RDFHandlerException
 	 */
-	private InputStream serialize(Model statements)
-		throws RDFHandlerException
-	{
+	private InputStream serialize(Model statements) throws RDFHandlerException {
 		ByteArrayOutputStream output = new ByteArrayOutputStream(8096);
 
 		RDFWriter writer = createWriter(output);
@@ -205,9 +191,7 @@ public abstract class AbstractParserHandlingTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		testParser = getParser();
 
 		testParser.setValueFactory(vf);
@@ -222,9 +206,7 @@ public abstract class AbstractParserHandlingTest {
 	 * @throws java.lang.Exception
 	 */
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		testListener.reset();
 		testListener = null;
 		testStatements.clear();
@@ -237,9 +219,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown datatype with the default settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testUnknownDatatypeNoMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testUnknownDatatypeNoMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -250,13 +230,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an unknown datatype with the default settings (using {@link ParserConfig#useDefaults()})
-	 * will both generate no message and not fail.
+	 * Tests whether an unknown datatype with the default settings (using {@link ParserConfig#useDefaults()}) will both
+	 * generate no message and not fail.
 	 */
 	@Test
-	public final void testUnknownDatatypeNoMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testUnknownDatatypeNoMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -272,9 +250,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown datatype with the correct settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testUnknownDatatypeNoMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testUnknownDatatypeNoMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -287,13 +263,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an unknown datatype with the correct settings will both generate no message and not fail
-	 * when addNonFatalError is called with the given setting.
+	 * Tests whether an unknown datatype with the correct settings will both generate no message and not fail when
+	 * addNonFatalError is called with the given setting.
 	 */
 	@Test
-	public final void testUnknownDatatypeNoMessageNoFailCase4()
-		throws Exception
-	{
+	public final void testUnknownDatatypeNoMessageNoFailCase4() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -307,13 +281,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an unknown datatype with the correct settings will both generate no message and not fail
-	 * when setNonFatalError is called with an empty set to reset the fatal errors
+	 * Tests whether an unknown datatype with the correct settings will both generate no message and not fail when
+	 * setNonFatalError is called with an empty set to reset the fatal errors
 	 */
 	@Test
-	public final void testUnknownDatatypeNoMessageNoFailCase5()
-		throws Exception
-	{
+	public final void testUnknownDatatypeNoMessageNoFailCase5() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -330,9 +302,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown datatype with the message no fail.
 	 */
 	@Test
-	public final void testUnknownDatatypeWithMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testUnknownDatatypeWithMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -349,9 +319,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown datatype with the message no fail.
 	 */
 	@Test
-	public final void testUnknownDatatypeWithMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testUnknownDatatypeWithMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -369,15 +337,13 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown datatype with the message no fail.
 	 */
 	@Test
-	public final void testUnknownDatatypeWithMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testUnknownDatatypeWithMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES, true);
-		testParser.getParserConfig().setNonFatalErrors(
-				Collections.<RioSetting<?>> singleton(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES));
+		testParser.getParserConfig()
+				.setNonFatalErrors(Collections.<RioSetting<?>>singleton(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES));
 
 		testParser.parse(input, BASE_URI);
 
@@ -389,9 +355,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown datatype with the message and with a failure.
 	 */
 	@Test
-	public final void testUnknownDatatypeWithMessageWithFailCase1()
-		throws Exception
-	{
+	public final void testUnknownDatatypeWithMessageWithFailCase1() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_DATATYPE_VALUE, UNKNOWN_DATATYPE_URI);
 		InputStream input = getUnknownDatatypeStream(expectedModel);
 
@@ -400,8 +364,7 @@ public abstract class AbstractParserHandlingTest {
 		try {
 			testParser.parse(input, BASE_URI);
 			fail("Did not receive expected exception");
-		}
-		catch (RDFParseException e) {
+		} catch (RDFParseException e) {
 			// expected
 		}
 
@@ -413,9 +376,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known datatype with the default settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testKnownDatatypeNoMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testKnownDatatypeNoMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -426,13 +387,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known datatype with the default settings (using {@link ParserConfig#useDefaults()})
-	 * will both generate no message and not fail.
+	 * Tests whether an known datatype with the default settings (using {@link ParserConfig#useDefaults()}) will both
+	 * generate no message and not fail.
 	 */
 	@Test
-	public final void testKnownDatatypeNoMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testKnownDatatypeNoMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -448,9 +407,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known datatype with the correct settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testKnownDatatypeNoMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testKnownDatatypeNoMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -463,13 +420,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known datatype with the correct settings will both generate no message and not fail
-	 * when addNonFatalError is called with the given setting.
+	 * Tests whether an known datatype with the correct settings will both generate no message and not fail when
+	 * addNonFatalError is called with the given setting.
 	 */
 	@Test
-	public final void testKnownDatatypeNoMessageNoFailCase4()
-		throws Exception
-	{
+	public final void testKnownDatatypeNoMessageNoFailCase4() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -483,13 +438,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known datatype with the correct settings will both generate no message and not fail
-	 * when setNonFatalError is called with an empty set to reset the fatal errors
+	 * Tests whether an known datatype with the correct settings will both generate no message and not fail when
+	 * setNonFatalError is called with an empty set to reset the fatal errors
 	 */
 	@Test
-	public final void testKnownDatatypeNoMessageNoFailCase5()
-		throws Exception
-	{
+	public final void testKnownDatatypeNoMessageNoFailCase5() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -506,9 +459,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known datatype with the message no fail.
 	 */
 	@Test
-	public final void testKnownDatatypeWithMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testKnownDatatypeWithMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -525,9 +476,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known datatype with the message no fail.
 	 */
 	@Test
-	public final void testKnownDatatypeWithMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testKnownDatatypeWithMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -545,15 +494,13 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known datatype with the message no fail.
 	 */
 	@Test
-	public final void testKnownDatatypeWithMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testKnownDatatypeWithMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES, true);
-		testParser.getParserConfig().setNonFatalErrors(
-				Collections.<RioSetting<?>> singleton(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES));
+		testParser.getParserConfig()
+				.setNonFatalErrors(Collections.<RioSetting<?>>singleton(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES));
 
 		testParser.parse(input, BASE_URI);
 
@@ -565,9 +512,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known datatype with the message which generates a failure if the datatype is unknown.
 	 */
 	@Test
-	public final void testKnownDatatypeWithMessageWhereUnknownWouldFailCase1()
-		throws Exception
-	{
+	public final void testKnownDatatypeWithMessageWhereUnknownWouldFailCase1() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI);
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
@@ -583,9 +528,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown language with the default settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testUnknownLanguageNoMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testUnknownLanguageNoMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -596,13 +539,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an unknown language with the default settings (using {@link ParserConfig#useDefaults()})
-	 * will both generate no message and not fail.
+	 * Tests whether an unknown language with the default settings (using {@link ParserConfig#useDefaults()}) will both
+	 * generate no message and not fail.
 	 */
 	@Test
-	public final void testUnknownLanguageNoMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testUnknownLanguageNoMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -618,9 +559,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown language with the correct settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testUnknownLanguageNoMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testUnknownLanguageNoMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -633,13 +572,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an unknown language with the correct settings will both generate no message and not fail
-	 * when addNonFatalError is called with the given setting.
+	 * Tests whether an unknown language with the correct settings will both generate no message and not fail when
+	 * addNonFatalError is called with the given setting.
 	 */
 	@Test
-	public final void testUnknownLanguageNoMessageNoFailCase4()
-		throws Exception
-	{
+	public final void testUnknownLanguageNoMessageNoFailCase4() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -653,13 +590,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an unknown language with the correct settings will both generate no message and not fail
-	 * when setNonFatalError is called with an empty set to reset the fatal errors
+	 * Tests whether an unknown language with the correct settings will both generate no message and not fail when
+	 * setNonFatalError is called with an empty set to reset the fatal errors
 	 */
 	@Test
-	public final void testUnknownLanguageNoMessageNoFailCase5()
-		throws Exception
-	{
+	public final void testUnknownLanguageNoMessageNoFailCase5() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -676,9 +611,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown language with the message no fail.
 	 */
 	@Test
-	public final void testUnknownLanguageWithMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testUnknownLanguageWithMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -695,9 +628,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown language with the message no fail.
 	 */
 	@Test
-	public final void testUnknownLanguageWithMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testUnknownLanguageWithMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -715,15 +646,13 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown language with the message no fail.
 	 */
 	@Test
-	public final void testUnknownLanguageWithMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testUnknownLanguageWithMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES, true);
-		testParser.getParserConfig().setNonFatalErrors(
-				Collections.<RioSetting<?>> singleton(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES));
+		testParser.getParserConfig()
+				.setNonFatalErrors(Collections.<RioSetting<?>>singleton(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES));
 
 		testParser.parse(input, BASE_URI);
 
@@ -735,9 +664,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an unknown language with the message and with a failure.
 	 */
 	@Test
-	public final void testUnknownLanguageWithMessageWithFailCase1()
-		throws Exception
-	{
+	public final void testUnknownLanguageWithMessageWithFailCase1() throws Exception {
 		Model expectedModel = getTestModel(UNKNOWN_LANGUAGE_VALUE, UNKNOWN_LANGUAGE_TAG);
 		InputStream input = getUnknownLanguageStream(expectedModel);
 
@@ -746,8 +673,7 @@ public abstract class AbstractParserHandlingTest {
 		try {
 			testParser.parse(input, BASE_URI);
 			fail("Did not receive expected exception");
-		}
-		catch (RDFParseException e) {
+		} catch (RDFParseException e) {
 			// expected
 		}
 
@@ -759,9 +685,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known language with the default settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testKnownLanguageNoMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testKnownLanguageNoMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -772,13 +696,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known language with the default settings (using {@link ParserConfig#useDefaults()})
-	 * will both generate no message and not fail.
+	 * Tests whether an known language with the default settings (using {@link ParserConfig#useDefaults()}) will both
+	 * generate no message and not fail.
 	 */
 	@Test
-	public final void testKnownLanguageNoMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testKnownLanguageNoMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -794,9 +716,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known language with the correct settings will both generate no message and not fail.
 	 */
 	@Test
-	public final void testKnownLanguageNoMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testKnownLanguageNoMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -809,13 +729,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known language with the correct settings will both generate no message and not fail
-	 * when addNonFatalError is called with the given setting.
+	 * Tests whether an known language with the correct settings will both generate no message and not fail when
+	 * addNonFatalError is called with the given setting.
 	 */
 	@Test
-	public final void testKnownLanguageNoMessageNoFailCase4()
-		throws Exception
-	{
+	public final void testKnownLanguageNoMessageNoFailCase4() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -829,13 +747,11 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known language with the correct settings will both generate no message and not fail
-	 * when setNonFatalError is called with an empty set to reset the fatal errors
+	 * Tests whether an known language with the correct settings will both generate no message and not fail when
+	 * setNonFatalError is called with an empty set to reset the fatal errors
 	 */
 	@Test
-	public final void testKnownLanguageNoMessageNoFailCase5()
-		throws Exception
-	{
+	public final void testKnownLanguageNoMessageNoFailCase5() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -852,9 +768,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known language with the message no fail.
 	 */
 	@Test
-	public final void testKnownLanguageWithMessageNoFailCase1()
-		throws Exception
-	{
+	public final void testKnownLanguageWithMessageNoFailCase1() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -871,9 +785,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known language with the message no fail.
 	 */
 	@Test
-	public final void testKnownLanguageWithMessageNoFailCase2()
-		throws Exception
-	{
+	public final void testKnownLanguageWithMessageNoFailCase2() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -891,15 +803,13 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known language with the message no fail.
 	 */
 	@Test
-	public final void testKnownLanguageWithMessageNoFailCase3()
-		throws Exception
-	{
+	public final void testKnownLanguageWithMessageNoFailCase3() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES, true);
-		testParser.getParserConfig().setNonFatalErrors(
-				Collections.<RioSetting<?>> singleton(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES));
+		testParser.getParserConfig()
+				.setNonFatalErrors(Collections.<RioSetting<?>>singleton(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES));
 
 		testParser.parse(input, BASE_URI);
 
@@ -911,9 +821,7 @@ public abstract class AbstractParserHandlingTest {
 	 * Tests whether an known language with the message which generates a failure if the language is unknown.
 	 */
 	@Test
-	public final void testKnownLanguageWithMessageWhereUnknownWouldFailCase1()
-		throws Exception
-	{
+	public final void testKnownLanguageWithMessageWhereUnknownWouldFailCase1() throws Exception {
 		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG);
 		InputStream input = getKnownLanguageStream(expectedModel);
 
@@ -926,15 +834,12 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known language with the message which generates a failure if the uppercased version of
-	 * the language is unknown.
+	 * Tests whether an known language with the message which generates a failure if the uppercased version of the
+	 * language is unknown.
 	 */
 	@Test
-	public final void testKnownLanguageWithMessageWhereUnknownWouldFailCase2()
-		throws Exception
-	{
-		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE,
-				KNOWN_LANGUAGE_TAG.toUpperCase(Locale.ENGLISH));
+	public final void testKnownLanguageWithMessageWhereUnknownWouldFailCase2() throws Exception {
+		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG.toUpperCase(Locale.ENGLISH));
 		InputStream input = getKnownLanguageStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES, true);
@@ -946,15 +851,12 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	/**
-	 * Tests whether an known language with the message which generates a failure if the lowercased version of
-	 * the language is unknown.
+	 * Tests whether an known language with the message which generates a failure if the lowercased version of the
+	 * language is unknown.
 	 */
 	@Test
-	public final void testKnownLanguageWithMessageWhereUnknownWouldFailCase3()
-		throws Exception
-	{
-		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE,
-				KNOWN_LANGUAGE_TAG.toLowerCase(Locale.ENGLISH));
+	public final void testKnownLanguageWithMessageWhereUnknownWouldFailCase3() throws Exception {
+		Model expectedModel = getTestModel(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG.toLowerCase(Locale.ENGLISH));
 		InputStream input = getKnownLanguageStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_LANGUAGES, true);
@@ -966,15 +868,13 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	@Test
-	public final void testSkolemization()
-		throws Exception
-	{
+	public final void testSkolemization() throws Exception {
 		Model expectedModel = new LinkedHashModel();
 		BNode subj = vf.createBNode();
-		expectedModel.add(vf.createStatement(subj, RDF.VALUE,
-				vf.createLiteral(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI)));
-		expectedModel.add(vf.createStatement(subj, RDF.VALUE,
-				vf.createLiteral(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG)));
+		expectedModel
+				.add(vf.createStatement(subj, RDF.VALUE, vf.createLiteral(KNOWN_DATATYPE_VALUE, KNOWN_DATATYPE_URI)));
+		expectedModel
+				.add(vf.createStatement(subj, RDF.VALUE, vf.createLiteral(KNOWN_LANGUAGE_VALUE, KNOWN_LANGUAGE_TAG)));
 		InputStream input = getKnownDatatypeStream(expectedModel);
 
 		testParser.getParserConfig().set(BasicParserSettings.SKOLEMIZE_ORIGIN, "http://example.com");
@@ -996,23 +896,20 @@ public abstract class AbstractParserHandlingTest {
 	}
 
 	private void assertErrorListener(int expectedWarnings, int expectedErrors, int expectedFatalErrors) {
-		assertEquals("Unexpected number of fatal errors", expectedFatalErrors,
-				testListener.getFatalErrors().size());
+		assertEquals("Unexpected number of fatal errors", expectedFatalErrors, testListener.getFatalErrors().size());
 		assertEquals("Unexpected number of errors", expectedErrors, testListener.getErrors().size());
 		assertEquals("Unexpected number of warnings", expectedWarnings, testListener.getWarnings().size());
 	}
 
 	private final Model getTestModel(String datatypeValue, IRI datatypeURI) {
 		Model result = new LinkedHashModel();
-		result.add(vf.createStatement(vf.createBNode(), DC.DESCRIPTION,
-				vf.createLiteral(datatypeValue, datatypeURI)));
+		result.add(vf.createStatement(vf.createBNode(), DC.DESCRIPTION, vf.createLiteral(datatypeValue, datatypeURI)));
 		return result;
 	}
 
 	private final Model getTestModel(String languageValue, String languageTag) {
 		Model result = new LinkedHashModel();
-		result.add(vf.createStatement(vf.createBNode(), RDFS.COMMENT,
-				vf.createLiteral(languageValue, languageTag)));
+		result.add(vf.createStatement(vf.createBNode(), RDFS.COMMENT, vf.createLiteral(languageValue, languageTag)));
 		return result;
 	}
 }

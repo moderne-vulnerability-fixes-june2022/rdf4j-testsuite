@@ -43,9 +43,7 @@ public class PositiveParserTest extends TestCase {
 	 *--------------*/
 
 	public PositiveParserTest(IRI testUri, String testName, String inputURL, String outputURL, String baseURL,
-			RDFParser targetParser, RDFParser ntriplesParser)
-		throws MalformedURLException
-	{
+			RDFParser targetParser, RDFParser ntriplesParser) throws MalformedURLException {
 		super(testName);
 		this.testUri = testUri;
 		this.inputURL = inputURL;
@@ -62,9 +60,7 @@ public class PositiveParserTest extends TestCase {
 	 *---------*/
 
 	@Override
-	protected void runTest()
-		throws Exception
-	{
+	protected void runTest() throws Exception {
 		// Parse input data
 		// targetParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
 
@@ -82,8 +78,7 @@ public class PositiveParserTest extends TestCase {
 
 		try {
 			targetParser.parse(in, baseURL);
-		}
-		finally {
+		} finally {
 			in.close();
 
 			if (!el.getFatalErrors().isEmpty()) {
@@ -113,8 +108,7 @@ public class PositiveParserTest extends TestCase {
 			in = this.getClass().getResourceAsStream(outputURL);
 			try {
 				ntriplesParser.parse(in, baseURL);
-			}
-			finally {
+			} finally {
 				in.close();
 			}
 

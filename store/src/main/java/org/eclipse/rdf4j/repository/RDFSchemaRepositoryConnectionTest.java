@@ -33,11 +33,8 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 
 	@Parameters(name = "{0}")
 	public static final IsolationLevel[] parametersREAD_COMMITTED() {
-		return new IsolationLevel[] {
-				IsolationLevels.READ_COMMITTED,
-				IsolationLevels.SNAPSHOT_READ,
-				IsolationLevels.SNAPSHOT,
-				IsolationLevels.SERIALIZABLE };
+		return new IsolationLevel[] { IsolationLevels.READ_COMMITTED, IsolationLevels.SNAPSHOT_READ,
+				IsolationLevels.SNAPSHOT, IsolationLevels.SERIALIZABLE };
 	}
 
 	private IRI person;
@@ -51,9 +48,7 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Override
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		super.setUp();
 
 		person = vf.createIRI(FOAF_NS + "Person");
@@ -62,9 +57,7 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testDomainInference()
-		throws Exception
-	{
+	public void testDomainInference() throws Exception {
 		testCon.begin();
 		testCon.add(name, RDFS.DOMAIN, person);
 		testCon.add(bob, name, nameBob);
@@ -74,9 +67,7 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testSubClassInference()
-		throws Exception
-	{
+	public void testSubClassInference() throws Exception {
 		testCon.begin();
 		testCon.add(woman, RDFS.SUBCLASSOF, person);
 		testCon.add(man, RDFS.SUBCLASSOF, person);
@@ -87,9 +78,7 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testMakeExplicit()
-		throws Exception
-	{
+	public void testMakeExplicit() throws Exception {
 		testCon.begin();
 		testCon.add(woman, RDFS.SUBCLASSOF, person);
 		testCon.add(alice, RDF.TYPE, woman);
@@ -105,30 +94,24 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testExplicitFlag()
-		throws Exception
-	{
+	public void testExplicitFlag() throws Exception {
 		RepositoryResult<Statement> result = testCon.getStatements(RDF.TYPE, RDF.TYPE, null, true);
 		try {
 			assertTrue("result should not be empty", result.hasNext());
-		}
-		finally {
+		} finally {
 			result.close();
 		}
 
 		result = testCon.getStatements(RDF.TYPE, RDF.TYPE, null, false);
 		try {
 			assertFalse("result should be empty", result.hasNext());
-		}
-		finally {
+		} finally {
 			result.close();
 		}
 	}
 
 	@Test
-	public void testInferencerUpdates()
-		throws Exception
-	{
+	public void testInferencerUpdates() throws Exception {
 		testCon.begin(IsolationLevels.READ_COMMITTED);
 
 		testCon.add(bob, name, nameBob);
@@ -140,9 +123,7 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testInferencerQueryDuringTransaction()
-		throws Exception
-	{
+	public void testInferencerQueryDuringTransaction() throws Exception {
 		testCon.begin();
 
 		testCon.add(bob, name, nameBob);
@@ -152,9 +133,7 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testInferencerTransactionIsolation()
-		throws Exception
-	{
+	public void testInferencerTransactionIsolation() throws Exception {
 		if (IsolationLevels.NONE.isCompatibleWith(level)) {
 			return;
 		}
@@ -171,34 +150,30 @@ public abstract class RDFSchemaRepositoryConnectionTest extends RepositoryConnec
 	}
 
 	@Test
-	public void testContextStatementsNotDuplicated()
-		throws Exception
-	{
+	public void testContextStatementsNotDuplicated() throws Exception {
 		testCon.add(bob, RDF.TYPE, FOAF.PERSON, RDF.FIRST);
 
-		// TODO this test currently assumes that inferred triples are added to the null context. If we extend 
+		// TODO this test currently assumes that inferred triples are added to the null context. If we extend
 		// the reasoner to support usage of other contexts, this will have to be amended.
 		assertTrue("inferred triple should have been added to null context",
-				testCon.hasStatement(bob, RDF.TYPE, RDFS.RESOURCE, true, (Resource)null));
+				testCon.hasStatement(bob, RDF.TYPE, RDFS.RESOURCE, true, (Resource) null));
 		assertFalse("input triple should not have been re-added as inferred",
-				testCon.hasStatement(bob, RDF.TYPE, FOAF.PERSON, true, (Resource)null));
+				testCon.hasStatement(bob, RDF.TYPE, FOAF.PERSON, true, (Resource) null));
 	}
 
 	@Test
-	public void testContextStatementsNotDuplicated2()
-		throws Exception
-	{
+	public void testContextStatementsNotDuplicated2() throws Exception {
 		testCon.add(FOAF.PERSON, RDF.TYPE, RDFS.CLASS, RDF.FIRST);
 		testCon.add(FOAF.PERSON, RDFS.SUBCLASSOF, FOAF.AGENT, RDF.FIRST);
 
-		// TODO this test currently assumes that inferred triples are added to the null context. If we extend 
+		// TODO this test currently assumes that inferred triples are added to the null context. If we extend
 		// the reasoner to support usage of other contexts, this will have to be amended.
 		assertTrue("inferred triple should have been added to null context",
-				testCon.hasStatement(FOAF.AGENT, RDF.TYPE, RDFS.CLASS, true, (Resource)null));
+				testCon.hasStatement(FOAF.AGENT, RDF.TYPE, RDFS.CLASS, true, (Resource) null));
 		assertFalse("input triple should not have been re-added as inferred",
-				testCon.hasStatement(FOAF.PERSON, RDF.TYPE, RDFS.CLASS, true, (Resource)null));
+				testCon.hasStatement(FOAF.PERSON, RDF.TYPE, RDFS.CLASS, true, (Resource) null));
 		assertFalse("input triple should not have been re-added as inferred",
-				testCon.hasStatement(FOAF.PERSON, RDFS.SUBCLASSOF, FOAF.AGENT, true, (Resource)null));
+				testCon.hasStatement(FOAF.PERSON, RDFS.SUBCLASSOF, FOAF.AGENT, true, (Resource) null));
 		assertTrue("input triple should be explicitly present",
 				testCon.hasStatement(FOAF.PERSON, RDFS.SUBCLASSOF, FOAF.AGENT, false));
 		assertTrue("input triple should be explicitly present",

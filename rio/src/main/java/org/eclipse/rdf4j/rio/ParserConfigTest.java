@@ -29,8 +29,7 @@ import org.junit.Test;
 public class ParserConfigTest {
 
 	/**
-	 * Test the default constructor does not set any settings, but still returns the default values for basic
-	 * settings.
+	 * Test the default constructor does not set any settings, but still returns the default values for basic settings.
 	 */
 	@Test
 	public final void testParserConfig() {
@@ -144,8 +143,7 @@ public class ParserConfigTest {
 		assertFalse(testConfig.getNonFatalErrors().contains(BasicParserSettings.VERIFY_DATATYPE_VALUES));
 
 		// Test with a non-empty set that we remove the previous setting
-		testConfig.setNonFatalErrors(
-				Collections.<RioSetting<?>> singleton(BasicParserSettings.VERIFY_DATATYPE_VALUES));
+		testConfig.setNonFatalErrors(Collections.<RioSetting<?>>singleton(BasicParserSettings.VERIFY_DATATYPE_VALUES));
 		assertNotNull(testConfig.getNonFatalErrors());
 		assertFalse(testConfig.getNonFatalErrors().isEmpty());
 		assertFalse(testConfig.getNonFatalErrors().contains(BasicParserSettings.PRESERVE_BNODE_IDS));
@@ -158,8 +156,7 @@ public class ParserConfigTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.rdf4j.rio.ParserConfig#addNonFatalError(org.eclipse.rdf4j.rio.RioSetting)} .
+	 * Test method for {@link org.eclipse.rdf4j.rio.ParserConfig#addNonFatalError(org.eclipse.rdf4j.rio.RioSetting)} .
 	 */
 	@Test
 	public final void testAddNonFatalError() {
@@ -171,8 +168,7 @@ public class ParserConfigTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.rdf4j.rio.ParserConfig#isNonFatalError(org.eclipse.rdf4j.rio.RioSetting)} .
+	 * Test method for {@link org.eclipse.rdf4j.rio.ParserConfig#isNonFatalError(org.eclipse.rdf4j.rio.RioSetting)} .
 	 */
 	@Test
 	public final void testIsNonFatalError() {
@@ -216,8 +212,7 @@ public class ParserConfigTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.rdf4j.rio.ParserConfig#stopAtFirstError()}. Test specifically for
-	 * SES-1947
+	 * Test method for {@link org.eclipse.rdf4j.rio.ParserConfig#stopAtFirstError()}. Test specifically for SES-1947
 	 */
 	@Test
 	public final void testStopAtFirstError() {
@@ -254,8 +249,7 @@ public class ParserConfigTest {
 		try {
 			testConfig.datatypeHandling();
 			fail("Did not receive expected exception");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 		}
 	}
 

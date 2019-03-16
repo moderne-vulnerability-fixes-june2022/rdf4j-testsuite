@@ -51,9 +51,7 @@ public abstract class N3ParserTestCase {
 	 * Static initializer *
 	 *--------------------*/
 
-	public TestSuite createTestSuite()
-		throws Exception
-	{
+	public TestSuite createTestSuite() throws Exception {
 		// Create test suite
 		TestSuite suite = new TestSuite(N3ParserTestCase.class.getName());
 
@@ -66,8 +64,7 @@ public abstract class N3ParserTestCase {
 		con.add(url, base(MANIFEST_URL), RDFFormat.TURTLE);
 
 		// Add all positive parser tests to the test suite
-		String query = "SELECT testURI, inputURL, outputURL "
-				+ "FROM {testURI} rdf:type {n3test:PositiveParserTest}; "
+		String query = "SELECT testURI, inputURL, outputURL " + "FROM {testURI} rdf:type {n3test:PositiveParserTest}; "
 				+ "               n3test:inputDocument {inputURL}; "
 				+ "               n3test:outputDocument {outputURL} "
 				+ "USING NAMESPACE n3test = <http://www.w3.org/2004/11/n3test#>";
@@ -125,9 +122,7 @@ public abstract class N3ParserTestCase {
 		 * Constructors *
 		 *--------------*/
 
-		public PositiveParserTest(String testURI, String inputURL, String outputURL)
-			throws MalformedURLException
-		{
+		public PositiveParserTest(String testURI, String inputURL, String outputURL) throws MalformedURLException {
 			super(testURI);
 			this.inputURL = url(inputURL);
 			this.outputURL = url(outputURL);
@@ -138,9 +133,7 @@ public abstract class N3ParserTestCase {
 		 *---------*/
 
 		@Override
-		protected void runTest()
-			throws Exception
-		{
+		protected void runTest() throws Exception {
 			// Parse input data
 			RDFParser turtleParser = createRDFParser();
 			turtleParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
@@ -207,9 +200,7 @@ public abstract class N3ParserTestCase {
 		 * Constructors *
 		 *--------------*/
 
-		public NegativeParserTest(String testURI, String inputURL)
-			throws MalformedURLException
-		{
+		public NegativeParserTest(String testURI, String inputURL) throws MalformedURLException {
 			super(testURI);
 			this.inputURL = url(inputURL);
 		}
@@ -233,20 +224,16 @@ public abstract class N3ParserTestCase {
 				in.close();
 
 				fail("Parser parses erroneous data without reporting errors");
-			}
-			catch (RDFParseException e) {
+			} catch (RDFParseException e) {
 				// This is expected as the input file is incorrect RDF
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				fail("Error: " + e.getMessage());
 			}
 		}
 
 	} // end inner class NegativeParserTest
 
-	private static URL url(String uri)
-		throws MalformedURLException
-	{
+	private static URL url(String uri) throws MalformedURLException {
 		return new URL(uri);
 	}
 
