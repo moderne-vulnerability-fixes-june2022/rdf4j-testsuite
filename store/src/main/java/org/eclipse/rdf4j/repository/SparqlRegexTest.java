@@ -25,9 +25,7 @@ import org.junit.Test;
 public abstract class SparqlRegexTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -58,9 +56,7 @@ public abstract class SparqlRegexTest {
 	private Literal hunt;
 
 	@Test
-	public void testInline()
-		throws Exception
-	{
+	public void testInline() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryInline);
 		TupleQueryResult result = query.evaluate();
 		assertEquals(hunt, result.next().getValue("name"));
@@ -69,9 +65,7 @@ public abstract class SparqlRegexTest {
 	}
 
 	@Test
-	public void testBinding()
-		throws Exception
-	{
+	public void testBinding() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryBinding);
 		query.setBinding("pattern", vf.createLiteral("@work.example"));
 		TupleQueryResult result = query.evaluate();
@@ -81,9 +75,7 @@ public abstract class SparqlRegexTest {
 	}
 
 	@Test
-	public void testBindingFlags()
-		throws Exception
-	{
+	public void testBindingFlags() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryBindingFlags);
 		query.setBinding("pattern", vf.createLiteral("@Work.example"));
 		query.setBinding("flags", vf.createLiteral("i"));
@@ -94,9 +86,7 @@ public abstract class SparqlRegexTest {
 	}
 
 	@Test
-	public void testExpr()
-		throws Exception
-	{
+	public void testExpr() throws Exception {
 		IRI pattern = vf.createIRI("http://example.org/ns#", "pattern");
 		IRI flags = vf.createIRI("http://example.org/ns#", "flags");
 		BNode bnode = vf.createBNode();
@@ -110,9 +100,7 @@ public abstract class SparqlRegexTest {
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		repository = createRepository();
 		vf = repository.getValueFactory();
 		hunt = vf.createLiteral("James Leigh Hunt");
@@ -122,29 +110,23 @@ public abstract class SparqlRegexTest {
 		conn = repository.getConnection();
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		conn = null;
 
@@ -152,9 +134,7 @@ public abstract class SparqlRegexTest {
 		repository = null;
 	}
 
-	private void createUser(String id, String name, String email)
-		throws RepositoryException
-	{
+	private void createUser(String id, String name, String email) throws RepositoryException {
 		RepositoryConnection conn = repository.getConnection();
 		IRI subj = vf.createIRI("http://example.org/ns#", id);
 		IRI foafName = vf.createIRI("http://xmlns.com/foaf/0.1/", "name");

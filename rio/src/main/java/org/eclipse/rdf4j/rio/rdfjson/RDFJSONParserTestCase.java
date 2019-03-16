@@ -53,9 +53,7 @@ public abstract class RDFJSONParserTestCase {
 	 * Static initializer *
 	 *--------------------*/
 
-	public TestSuite createTestSuite()
-		throws Exception
-	{
+	public TestSuite createTestSuite() throws Exception {
 		// Create test suite
 		TestSuite suite = new TestSuite(RDFJSONParserTestCase.class.getName());
 
@@ -78,14 +76,13 @@ public abstract class RDFJSONParserTestCase {
 		positiveQuery.append("     ?test mf:action ?inputURL . ");
 		positiveQuery.append(" }");
 
-		TupleQueryResult queryResult = con.prepareTupleQuery(QueryLanguage.SPARQL,
-				positiveQuery.toString()).evaluate();
+		TupleQueryResult queryResult = con.prepareTupleQuery(QueryLanguage.SPARQL, positiveQuery.toString()).evaluate();
 
 		// Add all positive parser tests to the test suite
 		while (queryResult.hasNext()) {
 			BindingSet bindingSet = queryResult.next();
-			String nextTestName = ((Literal)bindingSet.getValue("testName")).getLabel();
-			String nextTestFile = removeBase(((IRI)bindingSet.getValue("inputURL")).toString());
+			String nextTestName = ((Literal) bindingSet.getValue("testName")).getLabel();
+			String nextTestFile = removeBase(((IRI) bindingSet.getValue("inputURL")).toString());
 			String nextInputURL = TEST_FILE_BASE_PATH + nextTestFile;
 
 			String nextBaseUrl = BASE_URL + nextTestFile;
@@ -111,8 +108,8 @@ public abstract class RDFJSONParserTestCase {
 		// Add all negative parser tests to the test suite
 		while (queryResult.hasNext()) {
 			BindingSet bindingSet = queryResult.next();
-			String nextTestName = ((Literal)bindingSet.getValue("testName")).toString();
-			String nextTestFile = removeBase(((IRI)bindingSet.getValue("inputURL")).toString());
+			String nextTestName = ((Literal) bindingSet.getValue("testName")).toString();
+			String nextTestFile = removeBase(((IRI) bindingSet.getValue("inputURL")).toString());
 			String nextInputURL = TEST_FILE_BASE_PATH + nextTestFile;
 
 			String nextBaseUrl = BASE_URL + nextTestFile;
@@ -123,8 +120,7 @@ public abstract class RDFJSONParserTestCase {
 		queryResult.close();
 
 		StringBuilder positiveEvalQuery = new StringBuilder();
-		positiveEvalQuery.append(
-				" PREFIX mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>\n");
+		positiveEvalQuery.append(" PREFIX mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>\n");
 		positiveEvalQuery.append(" PREFIX qt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>\n");
 		positiveEvalQuery.append(" PREFIX rdft: <http://www.w3.org/ns/rdftest#>\n");
 		positiveEvalQuery.append(" SELECT ?test ?testName ?inputURL ?outputURL \n");
@@ -140,11 +136,11 @@ public abstract class RDFJSONParserTestCase {
 		// Add all positive eval tests to the test suite
 		while (queryResult.hasNext()) {
 			BindingSet bindingSet = queryResult.next();
-			String nextTestName = ((Literal)bindingSet.getValue("testName")).getLabel();
-			String nextTestFile = removeBase(((IRI)bindingSet.getValue("inputURL")).toString());
+			String nextTestName = ((Literal) bindingSet.getValue("testName")).getLabel();
+			String nextTestFile = removeBase(((IRI) bindingSet.getValue("inputURL")).toString());
 			String nextInputURL = TEST_FILE_BASE_PATH + nextTestFile;
 			String nextOutputURL = TEST_FILE_BASE_PATH
-					+ removeBase(((IRI)bindingSet.getValue("outputURL")).toString());
+					+ removeBase(((IRI) bindingSet.getValue("outputURL")).toString());
 
 			String nextBaseUrl = BASE_URL + nextTestFile;
 
@@ -182,8 +178,7 @@ public abstract class RDFJSONParserTestCase {
 		 *--------------*/
 
 		public PositiveParserTest(String testName, String inputURL, String outputURL, String baseURL)
-			throws MalformedURLException
-		{
+				throws MalformedURLException {
 			super(testName);
 			this.inputURL = inputURL;
 			if (outputURL != null) {
@@ -197,9 +192,7 @@ public abstract class RDFJSONParserTestCase {
 		 *---------*/
 
 		@Override
-		protected void runTest()
-			throws Exception
-		{
+		protected void runTest() throws Exception {
 			// Parse input data
 			RDFParser rdfjsonParser = createRDFParser();
 			rdfjsonParser.setDatatypeHandling(RDFParser.DatatypeHandling.IGNORE);
@@ -266,9 +259,7 @@ public abstract class RDFJSONParserTestCase {
 		 * Constructors *
 		 *--------------*/
 
-		public NegativeParserTest(String caseURI, String inputURL, String baseURL)
-			throws MalformedURLException
-		{
+		public NegativeParserTest(String caseURI, String inputURL, String baseURL) throws MalformedURLException {
 			super(caseURI);
 			this.inputURL = inputURL;
 			this.baseURL = baseURL;
@@ -293,11 +284,9 @@ public abstract class RDFJSONParserTestCase {
 				in.close();
 
 				fail("Parser parses erroneous data without reporting errors");
-			}
-			catch (RDFParseException e) {
+			} catch (RDFParseException e) {
 				// This is expected as the input file is incorrect RDF
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				fail("Error: " + e.getMessage());
 			}
 		}

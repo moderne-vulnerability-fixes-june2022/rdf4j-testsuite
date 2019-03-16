@@ -25,17 +25,15 @@ import org.junit.Test;
 public abstract class SparqlSetBindingTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
 	public String queryBinding = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" + "SELECT ?name ?mbox\n"
 			+ " WHERE { ?x foaf:name  ?name ;\n" + "            foaf:mbox  ?mbox .\n" + " } ";
 
-	public String queryBindingSubselect = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
-			+ "SELECT ?name ?mbox\n" + " WHERE { ?x foaf:name  ?name ;\n" + "            foaf:mbox  ?mbox .\n"
+	public String queryBindingSubselect = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" + "SELECT ?name ?mbox\n"
+			+ " WHERE { ?x foaf:name  ?name ;\n" + "            foaf:mbox  ?mbox .\n"
 			+ "        { SELECT ?x WHERE { ?x a foaf:Person } } } ";
 
 	private Repository repository;
@@ -49,9 +47,7 @@ public abstract class SparqlSetBindingTest {
 	private IRI ringoRes;
 
 	@Test
-	public void testBinding()
-		throws Exception
-	{
+	public void testBinding() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryBinding);
 		query.setBinding("name", ringo);
 		TupleQueryResult result = query.evaluate();
@@ -61,9 +57,7 @@ public abstract class SparqlSetBindingTest {
 	}
 
 	@Test
-	public void testBindingSubselect()
-		throws Exception
-	{
+	public void testBindingSubselect() throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryBindingSubselect);
 		query.setBinding("x", ringoRes);
 		TupleQueryResult result = query.evaluate();
@@ -73,9 +67,7 @@ public abstract class SparqlSetBindingTest {
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		repository = createRepository();
 		vf = repository.getValueFactory();
 		ringo = vf.createLiteral("Ringo Starr");
@@ -87,29 +79,23 @@ public abstract class SparqlSetBindingTest {
 		conn = repository.getConnection();
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		conn = null;
 
@@ -117,9 +103,7 @@ public abstract class SparqlSetBindingTest {
 		repository = null;
 	}
 
-	private void createUser(String id, String name, String email)
-		throws RepositoryException
-	{
+	private void createUser(String id, String name, String email) throws RepositoryException {
 		RepositoryConnection conn = repository.getConnection();
 		IRI subj = vf.createIRI("http://example.org/ns#", id);
 		IRI foafName = vf.createIRI("http://xmlns.com/foaf/0.1/", "name");

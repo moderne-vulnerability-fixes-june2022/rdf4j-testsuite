@@ -62,21 +62,16 @@ public abstract class SailConcurrencyTest {
 	 *---------*/
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		store = createSail();
 		store.initialize();
 		vf = store.getValueFactory();
 	}
 
-	protected abstract Sail createSail()
-		throws SailException;
+	protected abstract Sail createSail() throws SailException;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		store.shutDown();
 	}
 
@@ -85,7 +80,7 @@ public abstract class SailConcurrencyTest {
 		private final IRI context;
 
 		private int txnSize;
-		
+
 		private final CountDownLatch completed;
 
 		private final CountDownLatch otherTxnCommitted;
@@ -94,7 +89,8 @@ public abstract class SailConcurrencyTest {
 
 		private final boolean rollback;
 
-		public UploadTransaction(CountDownLatch completed, CountDownLatch otherTxnCommitted, IRI context, boolean rollback) {
+		public UploadTransaction(CountDownLatch completed, CountDownLatch otherTxnCommitted, IRI context,
+				boolean rollback) {
 			this.completed = completed;
 			this.otherTxnCommitted = otherTxnCommitted;
 			this.context = context;
@@ -111,27 +107,23 @@ public abstract class SailConcurrencyTest {
 						IRI subject = vf.createIRI("urn:instance-" + txnSize);
 						conn.addStatement(subject, RDFS.LABEL, vf.createLiteral("li" + txnSize), context);
 						conn.addStatement(subject, RDFS.COMMENT, vf.createLiteral("ci" + txnSize), context);
-						txnSize+= 2;
+						txnSize += 2;
 					}
 					logger.info("Uploaded " + txnSize + " statements");
 					if (rollback) {
 						otherTxnCommitted.await();
 						logger.info("Testing rollback of " + txnSize + " statements");
 						conn.rollback();
-					}
-					else {
+					} else {
 						conn.commit();
 						otherTxnCommitted.countDown();
 					}
-				}
-				finally {
+				} finally {
 					conn.close();
 				}
-			}
-			catch (Throwable t) {
+			} catch (Throwable t) {
 				logger.error("error while executing transactions", t);
-			}
-			finally {
+			} finally {
 				completed.countDown();
 			}
 		}
@@ -147,20 +139,17 @@ public abstract class SailConcurrencyTest {
 	}
 
 	/**
-	 * Verifies that two large concurrent transactions in separate contexts do not cause inconsistencies or
-	 * errors. This test may fail intermittently rather than consistently, given its dependency on
-	 * multi-threading.
+	 * Verifies that two large concurrent transactions in separate contexts do not cause inconsistencies or errors. This
+	 * test may fail intermittently rather than consistently, given its dependency on multi-threading.
 	 * 
 	 * @see https://github.com/eclipse/rdf4j/issues/693
 	 */
 	@Test
-	public void testConcurrentAddLargeTxn()
-		throws Exception
-	{
+	public void testConcurrentAddLargeTxn() throws Exception {
 		logger.info("executing two large concurrent transactions");
 		final CountDownLatch runnersDone = new CountDownLatch(2);
 		final CountDownLatch otherTxnCommitted = new CountDownLatch(1);
-		
+
 		final IRI context1 = vf.createIRI("urn:context1");
 		final IRI context2 = vf.createIRI("urn:context2");
 		UploadTransaction runner1 = new UploadTransaction(runnersDone, otherTxnCommitted, context1, false);
@@ -180,7 +169,7 @@ public abstract class SailConcurrencyTest {
 			logger.info("Still waiting for transactions to commit");
 		}
 		final long finish = System.currentTimeMillis();
-		logger.info("committed both txns in " + (finish - start)/1000 + "s");
+		logger.info("committed both txns in " + (finish - start) / 1000 + "s");
 
 		SailConnection conn = store.getConnection();
 		try {
@@ -189,31 +178,28 @@ public abstract class SailConcurrencyTest {
 			logger.debug("size 1 = {}, size 2 = {}", size1, size2);
 			assertEquals("upload into context 1 should have been fully committed", runner1.getSize(), size1);
 			assertEquals("upload into context 2 should have been fully committed", runner2.getSize(), size2);
-		}
-		finally {
+		} finally {
 			conn.close();
 		}
 
 	}
 
 	/**
-	 * Verifies that two large concurrent transactions in separate contexts do not cause inconsistencies or
-	 * errors when one of the transactions rolls back at the end.
+	 * Verifies that two large concurrent transactions in separate contexts do not cause inconsistencies or errors when
+	 * one of the transactions rolls back at the end.
 	 */
 	@Test
-	public void testConcurrentAddLargeTxnRollback()
-		throws Exception
-	{
+	public void testConcurrentAddLargeTxnRollback() throws Exception {
 		logger.info("executing two large concurrent transactions");
 		final CountDownLatch runnersDone = new CountDownLatch(2);
 		final CountDownLatch otherTxnCommitted = new CountDownLatch(1);
-		
+
 		final IRI context1 = vf.createIRI("urn:context1");
 		final IRI context2 = vf.createIRI("urn:context2");
-		
+
 		// transaction into context 1 will commit
 		UploadTransaction runner1 = new UploadTransaction(runnersDone, otherTxnCommitted, context1, false);
-		
+
 		// transaction into context 2 will rollback
 		UploadTransaction runner2 = new UploadTransaction(runnersDone, otherTxnCommitted, context2, true);
 
@@ -231,7 +217,7 @@ public abstract class SailConcurrencyTest {
 			logger.info("Still waiting for transaction to rollback");
 		}
 		final long finish = System.currentTimeMillis();
-		logger.info("completed both txns in " + (finish - start)/1000 + "s");
+		logger.info("completed both txns in " + (finish - start) / 1000 + "s");
 
 		SailConnection conn = store.getConnection();
 		try {
@@ -240,17 +226,14 @@ public abstract class SailConcurrencyTest {
 			logger.debug("size 1 = {}, size 2 = {}", size1, size2);
 			assertEquals("upload into context 1 should have been fully committed", runner1.getSize(), size1);
 			assertEquals("upload into context 2 should have been rolled back", 0, size2);
-		}
-		finally {
+		} finally {
 			conn.close();
 		}
 
 	}
 
 	@Test
-	public void testGetContextIDs()
-		throws Exception
-	{
+	public void testGetContextIDs() throws Exception {
 		// Create one thread which writes statements to the repository, on a
 		// number of named graphs.
 		final Random insertRandomizer = new Random(12345L);
@@ -265,20 +248,16 @@ public abstract class SailConcurrencyTest {
 						while (continueRunning) {
 							connection.begin();
 							for (int i = 0; i < 10; i++) {
-								insertTestStatement(connection,
-										insertRandomizer.nextInt() % MAX_STATEMENT_IDX);
-								removeTestStatement(connection,
-										removeRandomizer.nextInt() % MAX_STATEMENT_IDX);
+								insertTestStatement(connection, insertRandomizer.nextInt() % MAX_STATEMENT_IDX);
+								removeTestStatement(connection, removeRandomizer.nextInt() % MAX_STATEMENT_IDX);
 							}
 							// System.out.print("*");
 							connection.commit();
 						}
-					}
-					finally {
+					} finally {
 						connection.close();
 					}
-				}
-				catch (Throwable t) {
+				} catch (Throwable t) {
 					continueRunning = false;
 					fail("Writer failed", t);
 				}
@@ -294,23 +273,21 @@ public abstract class SailConcurrencyTest {
 					SailConnection connection = store.getConnection();
 					try {
 						while (continueRunning) {
-							CloseableIteration<? extends Resource, SailException> contextIter = connection.getContextIDs();
+							CloseableIteration<? extends Resource, SailException> contextIter = connection
+									.getContextIDs();
 							try {
 								while (contextIter.hasNext()) {
 									Resource context = contextIter.next();
 									assertNotNull(context);
 								}
-							}
-							finally {
+							} finally {
 								contextIter.close();
 							}
 						}
-					}
-					finally {
+					} finally {
 						connection.close();
 					}
-				}
-				catch (Throwable t) {
+				} catch (Throwable t) {
 					continueRunning = false;
 					fail("Reader failed", t);
 				}
@@ -341,8 +318,7 @@ public abstract class SailConcurrencyTest {
 
 		if (hasFailed()) {
 			Assert.fail("Test Failed");
-		}
-		else {
+		} else {
 			logger.info("Test succeeded");
 		}
 	}
@@ -357,17 +333,13 @@ public abstract class SailConcurrencyTest {
 		return m_failed;
 	}
 
-	protected void insertTestStatement(SailConnection connection, int i)
-		throws SailException
-	{
+	protected void insertTestStatement(SailConnection connection, int i) throws SailException {
 		// System.out.print("+");
 		connection.addStatement(vf.createIRI("http://test#s" + i), vf.createIRI("http://test#p" + i),
 				vf.createIRI("http://test#o" + i), vf.createIRI("http://test#context_" + i));
 	}
 
-	protected void removeTestStatement(SailConnection connection, int i)
-		throws SailException
-	{
+	protected void removeTestStatement(SailConnection connection, int i) throws SailException {
 		// System.out.print("-");
 		connection.removeStatements(vf.createIRI("http://test#s" + i), vf.createIRI("http://test#p" + i),
 				vf.createIRI("http://test#o" + i), vf.createIRI("http://test#context_" + i));

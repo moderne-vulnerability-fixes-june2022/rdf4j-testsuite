@@ -31,22 +31,13 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author James Leigh
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-		DeadLockTest.class,
-		DeleteInsertTest.class,
-		LinearTest.class,
-		ModificationTest.class,
-		RemoveIsolationTest.class,
-		SailIsolationLevelTest.class,
-		MonotonicTest.class,
-		SnapshotTest.class,
+@SuiteClasses({ DeadLockTest.class, DeleteInsertTest.class, LinearTest.class, ModificationTest.class,
+		RemoveIsolationTest.class, SailIsolationLevelTest.class, MonotonicTest.class, SnapshotTest.class,
 		SerializableTest.class })
 public abstract class OptimisticIsolationTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -54,9 +45,7 @@ public abstract class OptimisticIsolationTest {
 
 	private static File dataDir;
 
-	public static void setRepositoryFactory(RepositoryFactory factory)
-		throws IOException
-	{
+	public static void setRepositoryFactory(RepositoryFactory factory) throws IOException {
 		if (dataDir != null && dataDir.isDirectory()) {
 			FileUtil.deleteDir(dataDir);
 			dataDir = null;
@@ -64,9 +53,7 @@ public abstract class OptimisticIsolationTest {
 		OptimisticIsolationTest.factory = factory;
 	}
 
-	public static Repository getEmptyInitializedRepository(Class<?> caller)
-		throws RDF4JException, IOException
-	{
+	public static Repository getEmptyInitializedRepository(Class<?> caller) throws RDF4JException, IOException {
 		if (dataDir != null && dataDir.isDirectory()) {
 			FileUtil.deleteDir(dataDir);
 			dataDir = null;
@@ -79,8 +66,7 @@ public abstract class OptimisticIsolationTest {
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;

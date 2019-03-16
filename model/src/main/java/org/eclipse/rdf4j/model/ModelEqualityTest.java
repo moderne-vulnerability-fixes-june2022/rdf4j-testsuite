@@ -31,31 +31,25 @@ public abstract class ModelEqualityTest {
 	public static final String TESTCASES_DIR = "/testcases/model/equality/";
 
 	@Test
-	public void testTest001()
-		throws Exception
-	{
+	public void testTest001() throws Exception {
 		testFilesEqual("test001a.ttl", "test001b.ttl");
 	}
 
 	// TODO find foaf test example that we have a right to use.
-	//	@Test
-	//	public void testFoafExampleAdvanced()
-	//		throws Exception
-	//	{
-	//		testFilesEqual("foaf-example-advanced.rdf", "foaf-example-advanced.rdf");
-	//	}
+	// @Test
+	// public void testFoafExampleAdvanced()
+	// throws Exception
+	// {
+	// testFilesEqual("foaf-example-advanced.rdf", "foaf-example-advanced.rdf");
+	// }
 
 	@Test
-	public void testSparqlGraph11()
-		throws Exception
-	{
+	public void testSparqlGraph11() throws Exception {
 		testFilesEqual("sparql-graph-11.ttl", "sparql-graph-11.ttl");
 	}
 
 	@Test
-	public void testBlankNodeGraphs()
-		throws Exception
-	{
+	public void testBlankNodeGraphs() throws Exception {
 		testFilesEqual("toRdf-0061-out.nq", "toRdf-0061-out.nq");
 	}
 
@@ -77,9 +71,7 @@ public abstract class ModelEqualityTest {
 	// testFilesEqual("photo-data.rdf", "photo-data.rdf");
 	// }
 
-	private void testFilesEqual(String file1, String file2)
-		throws Exception
-	{
+	private void testFilesEqual(String file1, String file2) throws Exception {
 		Set<Statement> model1 = loadModel(file1);
 		Set<Statement> model2 = loadModel(file2);
 
@@ -93,9 +85,7 @@ public abstract class ModelEqualityTest {
 		assertTrue(modelsEqual);
 	}
 
-	private Model loadModel(String fileName)
-		throws Exception
-	{
+	private Model loadModel(String fileName) throws Exception {
 		URL modelURL = this.getClass().getResource(TESTCASES_DIR + fileName);
 		assertNotNull("Test file not found: " + fileName, modelURL);
 
@@ -113,8 +103,7 @@ public abstract class ModelEqualityTest {
 		try {
 			parser.parse(in, modelURL.toString());
 			return model;
-		}
-		finally {
+		} finally {
 			in.close();
 		}
 	}

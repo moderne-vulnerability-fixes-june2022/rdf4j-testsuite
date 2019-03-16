@@ -35,11 +35,9 @@ import org.slf4j.LoggerFactory;
 public abstract class InferencingTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(InferencingTest.class);
-	
+
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -53,9 +51,7 @@ public abstract class InferencingTest {
 	 * Methods *
 	 *---------*/
 
-	public void runTest(String subdir, String testName, boolean isPositiveTest)
-		throws Exception
-	{
+	public void runTest(String subdir, String testName, boolean isPositiveTest) throws Exception {
 		final String name = subdir + "/" + testName;
 		final String inputData = TEST_DIR_PREFIX + "/" + name + "-in.nt";
 		final String outputData = TEST_DIR_PREFIX + "/" + name + "-out.nt";
@@ -79,26 +75,23 @@ public abstract class InferencingTest {
 				con.add(stream, inputData, RDFFormat.NTRIPLES);
 				con.commit();
 
-				entailedStatements = Iterations.addAll(con.getStatements(null, null, null, true),
-						new HashSet<>());
-			}
-			catch (Exception e) {
+				entailedStatements = Iterations.addAll(con.getStatements(null, null, null, true), new HashSet<>());
+			} catch (Exception e) {
 				if (con.isActive()) {
 					con.rollback();
 				}
 				logger.error("exception while uploading input data", e);
 			}
-		}
-		finally {
+		} finally {
 			repository.shutDown();
 		}
 
 		Model expectedStatements;
 
 		// Read output data
-		try (InputStream stream = getClass().getResourceAsStream(outputData))
-		{
-			expectedStatements = Rio.parse(stream, "", Rio.getParserFormatForFileName(outputData).orElse(RDFFormat.NTRIPLES));
+		try (InputStream stream = getClass().getResourceAsStream(outputData)) {
+			expectedStatements = Rio.parse(stream, "",
+					Rio.getParserFormatForFileName(outputData).orElse(RDFFormat.NTRIPLES));
 		}
 
 		// Check whether all expected statements are present in the entailment
@@ -106,24 +99,20 @@ public abstract class InferencingTest {
 		boolean outputEntailed = Models.isSubset(expectedStatements, entailedStatements);
 
 		if (isPositiveTest && !outputEntailed) {
-			Collection<? extends Statement> difference = RepositoryUtil.difference(expectedStatements, entailedStatements);
+			Collection<? extends Statement> difference = RepositoryUtil.difference(expectedStatements,
+					entailedStatements);
 			difference.forEach(System.out::println);
 
-			File dumpFile = dumpStatements(name,
-				difference);
+			File dumpFile = dumpStatements(name, difference);
 
-			fail("Incomplete entailment, difference between expected and entailed dumped to file "
-					+ dumpFile);
-		}
-		else if (!isPositiveTest && outputEntailed) {
+			fail("Incomplete entailment, difference between expected and entailed dumped to file " + dumpFile);
+		} else if (!isPositiveTest && outputEntailed) {
 			File dumpFile = dumpStatements(name, expectedStatements);
 			fail("Erroneous entailment, unexpected statements dumped to file " + dumpFile);
 		}
 	}
 
-	private File dumpStatements(String name, Collection<? extends Statement> statements)
-		throws Exception
-	{
+	private File dumpStatements(String name, Collection<? extends Statement> statements) throws Exception {
 		// Dump results to tmp file for debugging
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		name = name.replace("/", "_");
@@ -148,150 +137,108 @@ public abstract class InferencingTest {
 	 *----------------*/
 
 	@Test
-	public void testSubClassOf001()
-		throws Exception
-	{
-		runTest( "subclassof", "test001", true);
+	public void testSubClassOf001() throws Exception {
+		runTest("subclassof", "test001", true);
 	}
 
 	@Test
-	public void testSubClassOf002()
-		throws Exception
-	{
-		runTest( "subclassof", "test002", true);
+	public void testSubClassOf002() throws Exception {
+		runTest("subclassof", "test002", true);
 	}
 
 	@Test
-	public void testSubClassOf003()
-		throws Exception
-	{
-		runTest( "subclassof", "test003", true);
+	public void testSubClassOf003() throws Exception {
+		runTest("subclassof", "test003", true);
 	}
 
 	@Test
-	public void testSubClassOfError001()
-		throws Exception
-	{
-		runTest( "subclassof", "error001", false);
+	public void testSubClassOfError001() throws Exception {
+		runTest("subclassof", "error001", false);
 	}
 
 	@Test
-	public void testSubPropertyOf001()
-		throws Exception
-	{
-		runTest( "subpropertyof", "test001", true);
+	public void testSubPropertyOf001() throws Exception {
+		runTest("subpropertyof", "test001", true);
 	}
 
 	@Test
-	public void testSubPropertyOf002()
-		throws Exception
-	{
-		runTest( "subpropertyof", "test002", true);
+	public void testSubPropertyOf002() throws Exception {
+		runTest("subpropertyof", "test002", true);
 	}
 
 	@Test
-	public void testSubPropertyOf003()
-		throws Exception
-	{
-		runTest( "subpropertyof", "test003", true);
+	public void testSubPropertyOf003() throws Exception {
+		runTest("subpropertyof", "test003", true);
 	}
 
 	@Test
-	public void testSubPropertyOf004()
-		throws Exception
-	{
-		runTest( "subpropertyof", "test004", true);
+	public void testSubPropertyOf004() throws Exception {
+		runTest("subpropertyof", "test004", true);
 	}
 
 	@Test
-	public void testSubPropertyOfError001()
-		throws Exception
-	{
-		runTest( "subpropertyof", "error001", false);
+	public void testSubPropertyOfError001() throws Exception {
+		runTest("subpropertyof", "error001", false);
 	}
 
 	@Test
-	public void testDomain001()
-		throws Exception
-	{
-		runTest( "domain", "test001", true);
+	public void testDomain001() throws Exception {
+		runTest("domain", "test001", true);
 	}
 
 	@Test
-	public void testDomainError001()
-		throws Exception
-	{
-		runTest( "domain", "error001", false);
+	public void testDomainError001() throws Exception {
+		runTest("domain", "error001", false);
 	}
 
 	@Test
-	public void testRange001()
-		throws Exception
-	{
-		runTest( "range", "test001", true);
+	public void testRange001() throws Exception {
+		runTest("range", "test001", true);
 	}
 
 	@Test
-	public void testRangeError001()
-		throws Exception
-	{
-		runTest( "range", "error001", false);
+	public void testRangeError001() throws Exception {
+		runTest("range", "error001", false);
 	}
 
 	@Test
-	public void testType001()
-		throws Exception
-	{
-		runTest( "type", "test001", true);
+	public void testType001() throws Exception {
+		runTest("type", "test001", true);
 	}
 
 	@Test
-	public void testType002()
-		throws Exception
-	{
-		runTest( "type", "test002", true);
+	public void testType002() throws Exception {
+		runTest("type", "test002", true);
 	}
 
 	@Test
-	public void testType003()
-		throws Exception
-	{
-		runTest( "type", "test003", true);
+	public void testType003() throws Exception {
+		runTest("type", "test003", true);
 	}
 
 	@Test
-	public void testType004()
-		throws Exception
-	{
-		runTest( "type", "test004", true);
+	public void testType004() throws Exception {
+		runTest("type", "test004", true);
 	}
 
 	@Test
-	public void testType005()
-		throws Exception
-	{
-		runTest( "type", "test005", true);
+	public void testType005() throws Exception {
+		runTest("type", "test005", true);
 	}
 
 	@Test
-	public void testType006()
-		throws Exception
-	{
-		runTest( "type", "test006", true);
+	public void testType006() throws Exception {
+		runTest("type", "test006", true);
 	}
 
 	@Test
-	public void testTypeError001()
-		throws Exception
-	{
-		runTest( "type", "error001", false);
+	public void testTypeError001() throws Exception {
+		runTest("type", "error001", false);
 	}
 
 	@Test
-	public void testTypeError002()
-		throws Exception
-	{
-		runTest( "type", "error002", false);
+	public void testTypeError002() throws Exception {
+		runTest("type", "error002", false);
 	}
 
 	/**

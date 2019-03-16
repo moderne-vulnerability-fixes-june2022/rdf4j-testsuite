@@ -51,9 +51,7 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		parser = rdfParserFactory.getParser();
 		vf = SimpleValueFactory.getInstance();
 	}
@@ -64,9 +62,7 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 		writer = null;
 	}
 
-	public void testWrite()
-		throws RepositoryException, RDFParseException, IOException, RDFHandlerException
-	{
+	public void testWrite() throws RepositoryException, RDFParseException, IOException, RDFHandlerException {
 		Repository rep1 = new SailRepository(new MemoryStore());
 		rep1.initialize();
 
@@ -75,12 +71,10 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 		URL ciaScheme = this.getClass().getResource("/cia-factbook/CIA-onto-enhanced.rdf");
 		URL ciaFacts = this.getClass().getResource("/cia-factbook/CIA-facts-enhanced.rdf");
 
-		con1.add(ciaScheme, ciaScheme.toExternalForm(),
-				Rio.getParserFormatForFileName(ciaScheme.toExternalForm()).orElseThrow(
-						Rio.unsupportedFormat(ciaScheme.toExternalForm())));
-		con1.add(ciaFacts, ciaFacts.toExternalForm(),
-				Rio.getParserFormatForFileName(ciaFacts.toExternalForm()).orElseThrow(
-						Rio.unsupportedFormat(ciaFacts.toExternalForm())));
+		con1.add(ciaScheme, ciaScheme.toExternalForm(), Rio.getParserFormatForFileName(ciaScheme.toExternalForm())
+				.orElseThrow(Rio.unsupportedFormat(ciaScheme.toExternalForm())));
+		con1.add(ciaFacts, ciaFacts.toExternalForm(), Rio.getParserFormatForFileName(ciaFacts.toExternalForm())
+				.orElseThrow(Rio.unsupportedFormat(ciaFacts.toExternalForm())));
 
 		StringWriter writer = new StringWriter();
 		RDFWriter rdfWriter = rdfWriterFactory.getWriter(writer);
@@ -101,13 +95,10 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 	}
 
 	@Test
-	public void testReadWrite()
-		throws RDFHandlerException, IOException, RDFParseException
-	{
+	public void testReadWrite() throws RDFHandlerException, IOException, RDFParseException {
 		StatementCollector statementCollector = new StatementCollector();
 		parser.setRDFHandler(statementCollector);
-		parser.parse(this.getClass().getResourceAsStream("/testcases/nquads/test2.nq"),
-				"http://test.base.uri");
+		parser.parse(this.getClass().getResourceAsStream("/testcases/nquads/test2.nq"), "http://test.base.uri");
 
 		Assert.assertEquals(400, statementCollector.getStatements().size());
 
@@ -123,9 +114,7 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 	}
 
 	@Test
-	public void testNoContext()
-		throws RDFHandlerException
-	{
+	public void testNoContext() throws RDFHandlerException {
 		Statement s1 = vf.createStatement(vf.createIRI("http://test.example.org/test/subject/1"),
 				vf.createIRI("http://other.example.com/test/predicate/1"), vf.createLiteral("test literal"));
 
@@ -144,9 +133,7 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 	}
 
 	@Test
-	public void testNoContextAddXSDString()
-		throws RDFHandlerException
-	{
+	public void testNoContextAddXSDString() throws RDFHandlerException {
 		Statement s1 = vf.createStatement(vf.createIRI("http://test.example.org/test/subject/1"),
 				vf.createIRI("http://other.example.com/test/predicate/1"), vf.createLiteral("test literal"));
 
@@ -166,9 +153,7 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 	}
 
 	@Test
-	public void testBlankNodeContext()
-		throws RDFHandlerException
-	{
+	public void testBlankNodeContext() throws RDFHandlerException {
 		Statement s1 = vf.createStatement(vf.createIRI("http://test.example.org/test/subject/1"),
 				vf.createIRI("http://other.example.com/test/predicate/1"), vf.createLiteral("test literal"),
 				vf.createBNode());
@@ -187,9 +172,7 @@ public abstract class AbstractNQuadsWriterTest extends RDFWriterTest {
 	}
 
 	@Test
-	public void testBlankNodeContextAddXSDString()
-		throws RDFHandlerException
-	{
+	public void testBlankNodeContextAddXSDString() throws RDFHandlerException {
 		Statement s1 = vf.createStatement(vf.createIRI("http://test.example.org/test/subject/1"),
 				vf.createIRI("http://other.example.com/test/predicate/1"), vf.createLiteral("test literal"),
 				vf.createBNode());

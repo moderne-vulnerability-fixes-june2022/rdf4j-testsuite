@@ -31,9 +31,7 @@ import org.junit.rules.Timeout;
 public abstract class RepositoryTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -84,9 +82,7 @@ public abstract class RepositoryTest {
 	protected Literal Александър;
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		testRepository = createRepository();
 		testRepository.initialize();
 
@@ -108,9 +104,7 @@ public abstract class RepositoryTest {
 	}
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		testRepository.shutDown();
 	}
 
@@ -119,20 +113,16 @@ public abstract class RepositoryTest {
 	 * 
 	 * @return an uninitialized repository.
 	 */
-	protected abstract Repository createRepository()
-		throws Exception;
+	protected abstract Repository createRepository() throws Exception;
 
 	@Test
-	public void testShutdownFollowedByInit()
-		throws Exception
-	{
+	public void testShutdownFollowedByInit() throws Exception {
 
 		RepositoryConnection conn = testRepository.getConnection();
 		try {
 			conn.add(bob, mbox, mboxBob);
 			assertTrue(conn.hasStatement(bob, mbox, mboxBob, true));
-		}
-		finally {
+		} finally {
 			conn.close();
 		}
 
@@ -143,8 +133,7 @@ public abstract class RepositoryTest {
 		try {
 			conn.add(bob, mbox, mboxBob);
 			assertTrue(conn.hasStatement(bob, mbox, mboxBob, true));
-		}
-		finally {
+		} finally {
 			conn.close();
 		}
 	}
