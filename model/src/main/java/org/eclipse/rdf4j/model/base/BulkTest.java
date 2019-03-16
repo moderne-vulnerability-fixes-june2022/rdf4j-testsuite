@@ -21,14 +21,13 @@ import junit.framework.TestSuite;
 /**
  * A {@link TestCase} that can define both simple and bulk test methods.
  * <p>
- * A <I>simple test method</I> is the type of test traditionally supplied by by {@link TestCase}. To define a
- * simple test, create a public no-argument method whose name starts with "test". You can specify the the name
- * of simple test in the constructor of <code>BulkTest</code>; a subsequent call to {@link TestCase#run} will
- * run that simple test.
+ * A <I>simple test method</I> is the type of test traditionally supplied by by {@link TestCase}. To define a simple
+ * test, create a public no-argument method whose name starts with "test". You can specify the the name of simple test
+ * in the constructor of <code>BulkTest</code>; a subsequent call to {@link TestCase#run} will run that simple test.
  * <p>
- * A <I>bulk test method</I>, on the other hand, returns a new instance of <code>BulkTest</code>, which can
- * itself define new simple and bulk test methods. By using the {@link #makeSuite} method, you can
- * automatically create a hierarchal suite of tests and child bulk tests.
+ * A <I>bulk test method</I>, on the other hand, returns a new instance of <code>BulkTest</code>, which can itself
+ * define new simple and bulk test methods. By using the {@link #makeSuite} method, you can automatically create a
+ * hierarchal suite of tests and child bulk tests.
  * <p>
  * For instance, consider the following two classes:
  *
@@ -80,8 +79,8 @@ import junit.framework.TestSuite;
  *
  * In the above examples, <code>TestSet</code> defines two simple test methods and no bulk test methods;
  * <code>TestHashMap</code> defines one simple test method and two bulk test methods. When
- * <code>makeSuite(TestHashMap.class).run</code> is executed, <I>five</I> simple test methods will be run, in
- * this order:
+ * <code>makeSuite(TestHashMap.class).run</code> is executed, <I>five</I> simple test methods will be run, in this
+ * order:
  * <P>
  * <Ol>
  * <Li>TestHashMap.testClear()
@@ -108,39 +107,35 @@ import junit.framework.TestSuite;
  * </UL>
  * </UL>
  * </UL>
- * A subclass can override a superclass's bulk test by returning <code>null</code> from the bulk test method.
- * If you only want to override specific simple tests within a bulk test, use the {@link #ignoredTests}
- * method.
+ * A subclass can override a superclass's bulk test by returning <code>null</code> from the bulk test method. If you
+ * only want to override specific simple tests within a bulk test, use the {@link #ignoredTests} method.
  * <P>
- * Note that if you want to use the bulk test methods, you <I>must</I> define your <code>suite()</code> method
- * to use {@link #makeSuite}. The ordinary {@link TestSuite} constructor doesn't know how to interpret bulk
- * test methods.
+ * Note that if you want to use the bulk test methods, you <I>must</I> define your <code>suite()</code> method to use
+ * {@link #makeSuite}. The ordinary {@link TestSuite} constructor doesn't know how to interpret bulk test methods.
  *
  * @author Paul Jack
  * @version $Id: BulkTest.java 646780 2008-04-10 12:48:07Z niallp $
  */
 public abstract class BulkTest extends TestCase implements Cloneable {
 
-	// Note:  BulkTest is Cloneable to make it easier to construct 
-	// BulkTest instances for simple test methods that are defined in 
-	// anonymous inner classes.  Basically we don't have to worry about
-	// finding weird constructors.  (And even if we found them, technically
-	// it'd be illegal for anyone but the outer class to invoke them).  
-	// Given one BulkTest instance, we can just clone it and reset the 
-	// method name for every simple test it defines.  
+	// Note: BulkTest is Cloneable to make it easier to construct
+	// BulkTest instances for simple test methods that are defined in
+	// anonymous inner classes. Basically we don't have to worry about
+	// finding weird constructors. (And even if we found them, technically
+	// it'd be illegal for anyone but the outer class to invoke them).
+	// Given one BulkTest instance, we can just clone it and reset the
+	// method name for every simple test it defines.
 
 	/**
-	 * The full name of this bulk test instance. This is the full name that is compared to
-	 * {@link #ignoredTests} to see if this test should be ignored. It's also displayed in the text runner to
-	 * ease debugging.
+	 * The full name of this bulk test instance. This is the full name that is compared to {@link #ignoredTests} to see
+	 * if this test should be ignored. It's also displayed in the text runner to ease debugging.
 	 */
 	String verboseName;
 
 	/**
 	 * Constructs a new <code>BulkTest</code> instance that will run the specified simple test.
 	 *
-	 * @param name
-	 *        the name of the simple test method to run
+	 * @param name the name of the simple test method to run
 	 */
 	public BulkTest(String name) {
 		super(name);
@@ -156,8 +151,7 @@ public abstract class BulkTest extends TestCase implements Cloneable {
 	public Object clone() {
 		try {
 			return super.clone();
-		}
-		catch (CloneNotSupportedException e) {
+		} catch (CloneNotSupportedException e) {
 			throw new Error(); // should never happen
 		}
 	}
@@ -165,12 +159,12 @@ public abstract class BulkTest extends TestCase implements Cloneable {
 	/**
 	 * Returns an array of test names to ignore.
 	 * <P>
-	 * If a test that's defined by this <code>BulkTest</code> or by one of its bulk test methods has a name
-	 * that's in the returned array, then that simple test will not be executed.
+	 * If a test that's defined by this <code>BulkTest</code> or by one of its bulk test methods has a name that's in
+	 * the returned array, then that simple test will not be executed.
 	 * <P>
-	 * A test's name is formed by taking the class name of the root <code>BulkTest</code>, eliminating the
-	 * package name, then appending the names of any bulk test methods that were invoked to get to the simple
-	 * test, and then appending the simple test method name. The method names are delimited by periods:
+	 * A test's name is formed by taking the class name of the root <code>BulkTest</code>, eliminating the package name,
+	 * then appending the names of any bulk test methods that were invoked to get to the simple test, and then appending
+	 * the simple test method name. The method names are delimited by periods:
 	 *
 	 * <pre>
 	 * TestHashMap.bulkTestEntrySet.testClear
@@ -204,17 +198,16 @@ public abstract class BulkTest extends TestCase implements Cloneable {
 	}
 
 	/**
-	 * Returns a {@link TestSuite} for testing all of the simple tests <I>and</I> all the bulk tests defined
-	 * by the given class.
+	 * Returns a {@link TestSuite} for testing all of the simple tests <I>and</I> all the bulk tests defined by the
+	 * given class.
 	 * <P>
-	 * The class is examined for simple and bulk test methods; any child bulk tests are also examined
-	 * recursively; and the results are stored in a hierarchal {@link TestSuite}.
+	 * The class is examined for simple and bulk test methods; any child bulk tests are also examined recursively; and
+	 * the results are stored in a hierarchal {@link TestSuite}.
 	 * <P>
 	 * The given class must be a subclass of <code>BulkTest</code> and must not be abstract.
 	 * <P>
 	 *
-	 * @param c
-	 *        the class to examine for simple and bulk tests
+	 * @param c the class to examine for simple and bulk tests
 	 * @return a {@link TestSuite} containing all the simple and bulk tests defined by that class
 	 */
 	public static TestSuite makeSuite(Class c) {
@@ -251,8 +244,7 @@ class BulkTestSuiteMaker {
 	/**
 	 * Constructor.
 	 *
-	 * @param startingClass
-	 *        the starting class
+	 * @param startingClass the starting class
 	 */
 	public BulkTestSuiteMaker(Class startingClass) {
 		this.startingClass = startingClass;
@@ -279,11 +271,9 @@ class BulkTestSuiteMaker {
 	}
 
 	/**
-	 * Appends all the simple tests and bulk tests defined by the given instance's class to the current
-	 * TestSuite.
+	 * Appends all the simple tests and bulk tests defined by the given instance's class to the current TestSuite.
 	 *
-	 * @param bulk
-	 *        An instance of the class that defines simple and bulk tests for us to append
+	 * @param bulk An instance of the class that defines simple and bulk tests for us to append
 	 */
 	void make(BulkTest bulk) {
 		Class c = bulk.getClass();
@@ -299,14 +289,12 @@ class BulkTestSuiteMaker {
 	/**
 	 * Adds the simple test defined by the given method to the TestSuite.
 	 *
-	 * @param bulk
-	 *        The instance of the class that defined the method (I know it's weird. But the point is, we can
-	 *        clone the instance and not have to worry about constructors.)
-	 * @param m
-	 *        The simple test method
+	 * @param bulk The instance of the class that defined the method (I know it's weird. But the point is, we can clone
+	 *             the instance and not have to worry about constructors.)
+	 * @param m    The simple test method
 	 */
 	void addTest(BulkTest bulk, Method m) {
-		BulkTest bulk2 = (BulkTest)bulk.clone();
+		BulkTest bulk2 = (BulkTest) bulk.clone();
 		bulk2.setName(m.getName());
 		bulk2.verboseName = prefix + "." + m.getName();
 		if (ignored.contains(bulk2.verboseName))
@@ -315,14 +303,12 @@ class BulkTestSuiteMaker {
 	}
 
 	/**
-	 * Adds a whole new suite of tests that are defined by the result of the given bulk test method. In other
-	 * words, the given bulk test method is invoked, and the resulting BulkTest instance is examined for yet
-	 * more simple and bulk tests.
+	 * Adds a whole new suite of tests that are defined by the result of the given bulk test method. In other words, the
+	 * given bulk test method is invoked, and the resulting BulkTest instance is examined for yet more simple and bulk
+	 * tests.
 	 *
-	 * @param bulk
-	 *        The instance of the class that defined the method
-	 * @param m
-	 *        The bulk test method
+	 * @param bulk The instance of the class that defined the method
+	 * @param m    The bulk test method
 	 */
 	void addBulk(BulkTest bulk, Method m) {
 		String verboseName = prefix + "." + m.getName();
@@ -331,15 +317,13 @@ class BulkTestSuiteMaker {
 
 		BulkTest bulk2;
 		try {
-			bulk2 = (BulkTest)m.invoke(bulk, (Object[])null);
+			bulk2 = (BulkTest) m.invoke(bulk, (Object[]) null);
 			if (bulk2 == null)
 				return;
-		}
-		catch (InvocationTargetException ex) {
+		} catch (InvocationTargetException ex) {
 			ex.getTargetException().printStackTrace();
 			throw new Error(); // FIXME;
-		}
-		catch (IllegalAccessException ex) {
+		} catch (IllegalAccessException ex) {
 			ex.printStackTrace();
 			throw new Error(); // FIXME;
 		}
@@ -364,8 +348,7 @@ class BulkTestSuiteMaker {
 	/**
 	 * Returns the base name of the given class.
 	 *
-	 * @param c
-	 *        the class
+	 * @param c the class
 	 * @return the name of that class, minus any package names
 	 */
 	private static String getBaseName(Class c) {
@@ -383,8 +366,7 @@ class BulkTestSuiteMaker {
 	private static Constructor getTestCaseConstructor(Class c) {
 		try {
 			return c.getConstructor(new Class[] { String.class });
-		}
-		catch (NoSuchMethodException e) {
+		} catch (NoSuchMethodException e) {
 			throw new IllegalArgumentException(c + " must provide " + "a (String) constructor");
 		}
 	}
@@ -392,16 +374,13 @@ class BulkTestSuiteMaker {
 	private static BulkTest makeTestCase(Class c, Method m) {
 		Constructor con = getTestCaseConstructor(c);
 		try {
-			return (BulkTest)con.newInstance(new Object[] { m.getName() });
-		}
-		catch (InvocationTargetException e) {
+			return (BulkTest) con.newInstance(new Object[] { m.getName() });
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			throw new RuntimeException(); // FIXME;
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			throw new Error(); // should never occur
-		}
-		catch (InstantiationException e) {
+		} catch (InstantiationException e) {
 			throw new RuntimeException(); // FIXME;
 		}
 	}

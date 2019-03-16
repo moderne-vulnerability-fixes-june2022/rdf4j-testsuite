@@ -115,9 +115,7 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 	 *---------*/
 
 	@Override
-	protected void runTest()
-		throws Exception
-	{
+	protected void runTest() throws Exception {
 		InputStream stream = new URL(queryFileURL).openStream();
 		String query = IOUtil.readString(new InputStreamReader(stream, "UTF-8"));
 		stream.close();
@@ -128,7 +126,7 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 			if (!positiveTest) {
 				boolean dataBlockUpdate = false;
 				if (operation instanceof ParsedUpdate) {
-					for (UpdateExpr updateExpr : ((ParsedUpdate)operation).getUpdateExprs()) {
+					for (UpdateExpr updateExpr : ((ParsedUpdate) operation).getUpdateExprs()) {
 						if (updateExpr instanceof InsertData || updateExpr instanceof DeleteData) {
 							// parsing for these operation happens during actual
 							// execution, so try and execute.
@@ -139,13 +137,11 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 							NotifyingSailConnection conn = store.getConnection();
 							try {
 								conn.begin();
-								SailUpdateExecutor exec = new SailUpdateExecutor(conn,
-										store.getValueFactory(), null);
+								SailUpdateExecutor exec = new SailUpdateExecutor(conn, store.getValueFactory(), null);
 								exec.executeUpdate(updateExpr, null, null, true, -1);
 								conn.rollback();
 								fail("Negative test case should have failed to parse");
-							}
-							catch (SailException e) {
+							} catch (SailException e) {
 								if (!(e.getCause() instanceof RDFParseException)) {
 									logger.error("unexpected error in negative test case", e);
 									fail("unexpected error in negative test case");
@@ -153,8 +149,7 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 								// fall through - a parse exception is expected for a
 								// negative test case
 								conn.rollback();
-							}
-							finally {
+							} finally {
 								conn.close();
 							}
 						}
@@ -164,8 +159,7 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 					fail("Negative test case should have failed to parse");
 				}
 			}
-		}
-		catch (MalformedQueryException e) {
+		} catch (MalformedQueryException e) {
 			if (positiveTest) {
 				e.printStackTrace();
 				fail("Positive test case failed: " + e.getMessage());
@@ -173,12 +167,9 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 		}
 	}
 
-	protected abstract ParsedOperation parseOperation(String operation, String fileURL)
-		throws MalformedQueryException;
+	protected abstract ParsedOperation parseOperation(String operation, String fileURL) throws MalformedQueryException;
 
-	public static Test suite()
-		throws Exception
-	{
+	public static Test suite() throws Exception {
 		return new TestSuite();
 	}
 
@@ -188,22 +179,19 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 				boolean positiveTest);
 	}
 
-	public static Test suite(Factory factory, boolean useRemote)
-		throws Exception
-	{
+	public static Test suite(Factory factory, boolean useRemote) throws Exception {
 		// manifest of W3C Data Access Working Group SPARQL syntax tests
 		final File tmpDir;
 		String host;
 		if (useRemote) {
 			host = "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/";
 			tmpDir = null;
-		}
-		else {
+		} else {
 			URL url = SPARQL11SyntaxTest.class.getResource("/testcases-sparql-1.1-w3c/");
 			if ("jar".equals(url.getProtocol())) {
 				try {
 					tmpDir = FileUtil.createTempDir("sparql-syntax");
-					JarURLConnection con = (JarURLConnection)url.openConnection();
+					JarURLConnection con = (JarURLConnection) url.openConnection();
 					JarFile jar = con.getJarFile();
 					Enumeration<JarEntry> entries = jar.entries();
 					while (entries.hasMoreElements()) {
@@ -223,12 +211,10 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 					}
 					File localFile = new File(tmpDir, con.getEntryName());
 					host = localFile.toURI().toURL().toString();
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 					throw new AssertionError(e);
 				}
-			}
-			else {
+			} else {
 				host = url.toString();
 				tmpDir = null;
 			}
@@ -242,15 +228,13 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 			public void run(TestResult result) {
 				try {
 					super.run(result);
-				}
-				finally {
+				} finally {
 					if (tmpDir != null) {
 						try {
 							FileUtil.deleteDir(tmpDir);
-						}
-						catch (IOException e) {
-							System.err.println("Unable to clean up temporary directory '" + tmpDir + "': "
-									+ e.getMessage());
+						} catch (IOException e) {
+							System.err.println(
+									"Unable to clean up temporary directory '" + tmpDir + "': " + e.getMessage());
 						}
 					}
 				}
@@ -270,8 +254,7 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 		logger.info("Searching for sub-manifests");
 		List<String> subManifestList = new ArrayList<>();
 
-		TupleQueryResult subManifests = con.prepareTupleQuery(QueryLanguage.SPARQL,
-				SUBMANIFEST_QUERY).evaluate();
+		TupleQueryResult subManifests = con.prepareTupleQuery(QueryLanguage.SPARQL, SUBMANIFEST_QUERY).evaluate();
 		while (subManifests.hasNext()) {
 			BindingSet bindings = subManifests.next();
 			subManifestList.add(bindings.getValue("subManifest").toString());
@@ -299,8 +282,8 @@ public abstract class SPARQL11SyntaxTest extends TestCase {
 				String testAction = bindingSet.getValue("Action").toString();
 
 				String type = bindingSet.getValue("Type").toString();
-				boolean positiveTest = type.equals(
-						"http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11")
+				boolean positiveTest = type
+						.equals("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11")
 						|| type.equals(
 								"http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveUpdateSyntaxTest11");
 

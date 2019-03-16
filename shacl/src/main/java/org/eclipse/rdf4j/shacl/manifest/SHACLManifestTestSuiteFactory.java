@@ -50,7 +50,8 @@ import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 /**
- * Functionality for creating a JUnit test suite out of a W3C Working Group-style manifest for SHACL shape constraints testsuite
+ * Functionality for creating a JUnit test suite out of a W3C Working Group-style manifest for SHACL shape constraints
+ * testsuite
  * 
  * @author James Leigh
  */
@@ -74,33 +75,30 @@ public class SHACLManifestTestSuiteFactory {
 
 	public interface TestFactory {
 		String getName();
-		Test createSHACLTest(String testURI, String label, Model shapesGraph, Model dataGraph,
-				boolean failure, boolean conforms);
+
+		Test createSHACLTest(String testURI, String label, Model shapesGraph, Model dataGraph, boolean failure,
+				boolean conforms);
 	}
 
 	/**
 	 * Creates a new {@link TestSuite} for executiong of {@link AbstractSHACLTest} s.
 	 * 
-	 * @param factory
-	 *        a factory class that creates each individual test case.
-	 * @param officialWorkingGroupTests
-	 *        indicates whether to use the official W3C working group tests, or Sesame's own set of tests.
-	 * @param approvedTestsOnly
-	 *        if <code>true</code>, use working group-approved tests only. Has no influence when
-	 *        officialWorkingGroup tests is set to <code>false</code>.
-	 * @param useRemoteTests
-	 *        if set to <code>true</code>, use manifests and tests located at
-	 *        <code>http://www.w3.org/2009/sparql/docs/tests/data-sparql11/</code> , instead of local copies.
-	 * @param excludedSubdirs
-	 *        an (optionally empty) list of subdirectories to exclude from testing. If specified, test cases
-	 *        in one of the supplied subdirs will not be executed. If left empty, all tests will be executed.
+	 * @param factory                   a factory class that creates each individual test case.
+	 * @param officialWorkingGroupTests indicates whether to use the official W3C working group tests, or Sesame's own
+	 *                                  set of tests.
+	 * @param approvedTestsOnly         if <code>true</code>, use working group-approved tests only. Has no influence
+	 *                                  when officialWorkingGroup tests is set to <code>false</code>.
+	 * @param useRemoteTests            if set to <code>true</code>, use manifests and tests located at
+	 *                                  <code>http://www.w3.org/2009/sparql/docs/tests/data-sparql11/</code> , instead
+	 *                                  of local copies.
+	 * @param excludedSubdirs           an (optionally empty) list of subdirectories to exclude from testing. If
+	 *                                  specified, test cases in one of the supplied subdirs will not be executed. If
+	 *                                  left empty, all tests will be executed.
 	 * @return a TestSuite.
 	 * @throws Exception
 	 */
-	public TestSuite createTestSuite(TestFactory factory, boolean officialWorkingGroupTests,
-			boolean approvedTestsOnly, boolean useRemoteTests, String... excludedSubdirs)
-		throws Exception
-	{
+	public TestSuite createTestSuite(TestFactory factory, boolean officialWorkingGroupTests, boolean approvedTestsOnly,
+			boolean useRemoteTests, String... excludedSubdirs) throws Exception {
 		final String manifest = getManifestFile(officialWorkingGroupTests, useRemoteTests);
 
 		TestSuite suite = new TestSuite(factory.getName()) {
@@ -109,15 +107,13 @@ public class SHACLManifestTestSuiteFactory {
 			public void run(TestResult result) {
 				try {
 					super.run(result);
-				}
-				finally {
+				} finally {
 					if (tmpDir != null) {
 						try {
 							FileUtil.deleteDir(tmpDir);
-						}
-						catch (IOException e) {
-							System.err.println("Unable to clean up temporary directory '" + tmpDir + "': "
-									+ e.getMessage());
+						} catch (IOException e) {
+							System.err.println(
+									"Unable to clean up temporary directory '" + tmpDir + "': " + e.getMessage());
 						}
 					}
 				}
@@ -130,11 +126,11 @@ public class SHACLManifestTestSuiteFactory {
 		readTurtle(manifests, new URL(manifest), manifest, excludedSubdirs);
 		for (Value included : manifests.filter(null, vf.createIRI(MF_INCLUDE), null).objects()) {
 			String subManifestFile = included.stringValue();
-			boolean hasEntries = manifests.contains((IRI) included,  vf.createIRI(MF_ENTRIES), null);
+			boolean hasEntries = manifests.contains((IRI) included, vf.createIRI(MF_ENTRIES), null);
 			if (hasEntries && includeSubManifest(subManifestFile, excludedSubdirs)) {
 				TestSuite suiteEntry = createSuiteEntry(subManifestFile, factory, approvedTestsOnly);
 				if (tests.containsKey(suiteEntry.getName())) {
-					for (int i=0,n=suiteEntry.testCount(); i<n; i++) {
+					for (int i = 0, n = suiteEntry.testCount(); i < n; i++) {
 						tests.get(suiteEntry.getName()).addTest(suiteEntry.testAt(i));
 					}
 				} else {
@@ -160,26 +156,23 @@ public class SHACLManifestTestSuiteFactory {
 			try {
 				tmpDir = FileUtil.createTempDir("data-shapes-test-evaluation");
 
-				JarURLConnection con = (JarURLConnection)url.openConnection();
+				JarURLConnection con = (JarURLConnection) url.openConnection();
 				JarFile jar = con.getJarFile();
 
 				ZipUtil.extract(jar, tmpDir);
 
 				File localFile = new File(tmpDir, con.getEntryName());
 				return localFile.toURI().toURL().toString();
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				throw new AssertionError(e);
 			}
-		}
-		else {
+		} else {
 			return url.toString();
 		}
 	}
 
-	private IRI readTurtle(Model manifests, URL url, String baseURI, String...excludedSubdirs)
-		throws IOException, RDFParseException
-	{
+	private IRI readTurtle(Model manifests, URL url, String baseURI, String... excludedSubdirs)
+			throws IOException, RDFParseException {
 		if (baseURI == null) {
 			baseURI = url.toExternalForm();
 		}
@@ -200,12 +193,12 @@ public class SHACLManifestTestSuiteFactory {
 			for (Map.Entry<String, String> e : collection.getNamespaces().entrySet()) {
 				manifests.setNamespace(e.getKey(), e.getValue());
 			}
-		}
-		finally {
+		} finally {
 			in.close();
 		}
 		if (before < manifests.size()) {
-			for (Value included : new LinkedHashSet<>(manifests.filter(manifest, vf.createIRI(MF_INCLUDE), null).objects())) {
+			for (Value included : new LinkedHashSet<>(
+					manifests.filter(manifest, vf.createIRI(MF_INCLUDE), null).objects())) {
 				String subManifestFile = included.stringValue();
 				if (includeSubManifest(subManifestFile, excludedSubdirs)) {
 					readTurtle(manifests, new URL(subManifestFile), subManifestFile, excludedSubdirs);
@@ -218,12 +211,10 @@ public class SHACLManifestTestSuiteFactory {
 	/**
 	 * Verifies if the selected subManifest occurs in the supplied list of excluded subdirs.
 	 * 
-	 * @param subManifestFile
-	 *        the url of a sub-manifest
-	 * @param excludedSubdirs
-	 *        an array of directory names. May be null.
-	 * @return <code>false</code> if the supplied list of excluded subdirs is not empty and contains a match
-	 *         for the supplied sub-manifest, <code>true</code> otherwise.
+	 * @param subManifestFile the url of a sub-manifest
+	 * @param excludedSubdirs an array of directory names. May be null.
+	 * @return <code>false</code> if the supplied list of excluded subdirs is not empty and contains a match for the
+	 *         supplied sub-manifest, <code>true</code> otherwise.
 	 */
 	private boolean includeSubManifest(String subManifestFile, String[] excludedSubdirs) {
 		boolean result = true;
@@ -244,15 +235,13 @@ public class SHACLManifestTestSuiteFactory {
 	}
 
 	private TestSuite createSuiteEntry(String manifestFileURL, TestFactory factory, boolean approvedOnly)
-		throws Exception
-	{
+			throws Exception {
 		logger.info("Building test suite for {}", manifestFileURL);
 
 		// Read manifest and create declared test cases
 		Model model = new LinkedHashModel();
 
 		IRI manifest = readTurtle(model, new URL(manifestFileURL), manifestFileURL);
-
 
 		TestSuite suite = new TestSuite(getManifestName(model, manifest));
 
@@ -271,8 +260,10 @@ public class SHACLManifestTestSuiteFactory {
 
 			logger.debug("found test case : {}", label);
 
-			if (status.stringValue().equals(SHT_APPROVED) || !approvedOnly && status.stringValue().equals(SHT_PROPOSED)) {
-				Test test = factory.createSHACLTest(entry.stringValue(), label, shapesGraph, dataGraph, failure, conforms);
+			if (status.stringValue().equals(SHT_APPROVED)
+					|| !approvedOnly && status.stringValue().equals(SHT_PROPOSED)) {
+				Test test = factory.createSHACLTest(entry.stringValue(), label, shapesGraph, dataGraph, failure,
+						conforms);
 				if (test != null) {
 					suite.addTest(test);
 				}
@@ -284,8 +275,7 @@ public class SHACLManifestTestSuiteFactory {
 	}
 
 	private String getManifestName(Model model, IRI manifest)
-		throws QueryEvaluationException, RepositoryException, MalformedQueryException
-	{
+			throws QueryEvaluationException, RepositoryException, MalformedQueryException {
 		// Try to extract suite name from manifest file
 		String label = Models.objectString(model.filter(manifest, RDFS.LABEL, null)).orElse(null);
 		if (label != null) {
@@ -294,7 +284,7 @@ public class SHACLManifestTestSuiteFactory {
 
 		// Derive name from manifest URL
 		String manifestFileURL = manifest.stringValue();
-		int lastSlashIdx = manifestFileURL .lastIndexOf('/');
+		int lastSlashIdx = manifestFileURL.lastIndexOf('/');
 		int secLastSlashIdx = manifestFileURL.lastIndexOf('/', lastSlashIdx - 1);
 		return manifestFileURL.substring(secLastSlashIdx + 1, lastSlashIdx);
 	}

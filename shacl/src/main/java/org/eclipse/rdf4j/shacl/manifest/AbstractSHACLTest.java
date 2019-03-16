@@ -55,9 +55,8 @@ public abstract class AbstractSHACLTest extends TestCase {
 	 * Constructors *
 	 *--------------*/
 
-	public AbstractSHACLTest(String testURI, String label, Model shapesGraph, Model dataGraph,
-			boolean failure, boolean conforms)
-	{
+	public AbstractSHACLTest(String testURI, String label, Model shapesGraph, Model dataGraph, boolean failure,
+			boolean conforms) {
 		super(label.replaceAll("\\(", " ").replaceAll("\\)", " "));
 
 		this.testURI = testURI;
@@ -108,8 +107,7 @@ public abstract class AbstractSHACLTest extends TestCase {
 		try {
 			upload(dataRep, dataGraph);
 			assertTrue(conforms);
-		}
-		catch (RepositoryException exc) {
+		} catch (RepositoryException exc) {
 			if (conforms || !(exc.getCause() instanceof SailException)) {
 				throw exc;
 			}
@@ -123,14 +121,12 @@ public abstract class AbstractSHACLTest extends TestCase {
 			con.begin();
 			con.add(dataGraph);
 			con.commit();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (con.isActive()) {
 				con.rollback();
 			}
 			throw e;
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 	}

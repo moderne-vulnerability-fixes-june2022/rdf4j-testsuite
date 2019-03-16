@@ -84,8 +84,8 @@ public abstract class ApacheSetTestCase extends AbstractTestSet {
 
 	/**
 	 * Converts the standard list of elements returned by the super class implementation of
-	 * {@link AbstractTestCollection#getFullNonNullElements()} into a set of objects suitable for insertion
-	 * into a {@link Model}.
+	 * {@link AbstractTestCollection#getFullNonNullElements()} into a set of objects suitable for insertion into a
+	 * {@link Model}.
 	 * 
 	 * @return A set of non-null elements that will be returned by {@link #getFullElements()}.
 	 */
@@ -96,8 +96,8 @@ public abstract class ApacheSetTestCase extends AbstractTestSet {
 
 	/**
 	 * Converts the standard list of elements returned by the super class implementation of
-	 * {@link AbstractTestCollection#getFullNonNullElements()} into a set of objects suitable for insertion
-	 * into a {@link Model}.
+	 * {@link AbstractTestCollection#getFullNonNullElements()} into a set of objects suitable for insertion into a
+	 * {@link Model}.
 	 * <p>
 	 * IMPORTANT: These elements must not be present in the results of {@link #getFullNonNullElements()}.
 	 * 
@@ -119,41 +119,39 @@ public abstract class ApacheSetTestCase extends AbstractTestSet {
 	/**
 	 * Creates a URI using the given seed in both the prefix and the suffix of the URI.
 	 * 
-	 * @param seed
-	 *        The object to use as a value to create a {@link IRI}.
+	 * @param seed The object to use as a value to create a {@link IRI}.
 	 * @return A URI based on the value of the seed parameter.
 	 */
 	public IRI createURI(Object seed) {
 		String prefix = "urn:test:" + seed.getClass().getSimpleName() + ":";
 		if (seed instanceof Number)
-			return vf.createIRI(prefix + ((Number)seed).intValue());
+			return vf.createIRI(prefix + ((Number) seed).intValue());
 		if (seed instanceof Character)
-			return vf.createIRI(prefix + ((Character)seed).hashCode());
+			return vf.createIRI(prefix + ((Character) seed).hashCode());
 		return vf.createIRI(prefix + seed.toString());
 	}
 
 	/**
 	 * Creates a literal using the value of the seed.
 	 * 
-	 * @param seed
-	 *        The object to use as a value to create a {@link Literal}.
+	 * @param seed The object to use as a value to create a {@link Literal}.
 	 * @return A literal based on the value of the seed parameter.
 	 */
 	public Literal createLiteral(Object seed) {
 		if (seed instanceof Integer)
-			return vf.createLiteral((Integer)seed);
+			return vf.createLiteral((Integer) seed);
 		if (seed instanceof Double)
-			return vf.createLiteral((Double)seed);
+			return vf.createLiteral((Double) seed);
 		if (seed instanceof Long)
-			return vf.createLiteral((Long)seed);
+			return vf.createLiteral((Long) seed);
 		if (seed instanceof Short)
-			return vf.createLiteral((Short)seed);
+			return vf.createLiteral((Short) seed);
 		if (seed instanceof Byte)
-			return vf.createLiteral((Byte)seed);
+			return vf.createLiteral((Byte) seed);
 		if (seed instanceof Float)
-			return vf.createLiteral((Float)seed);
+			return vf.createLiteral((Float) seed);
 		if (seed instanceof Number)
-			return vf.createLiteral(((Number)seed).intValue());
+			return vf.createLiteral(((Number) seed).intValue());
 		if (seed instanceof Character)
 			return vf.createLiteral(true);
 		return vf.createLiteral(seed.toString());

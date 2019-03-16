@@ -39,10 +39,8 @@ public class NegativeParserTest extends TestCase {
 	 * Constructors *
 	 *--------------*/
 
-	public NegativeParserTest(IRI testUri, String caseURI, String inputURL, String baseURL,
-			RDFParser targetParser, FailureMode failureMode)
-		throws MalformedURLException
-	{
+	public NegativeParserTest(IRI testUri, String caseURI, String inputURL, String baseURL, RDFParser targetParser,
+			FailureMode failureMode) throws MalformedURLException {
 		super(caseURI);
 		this.testUri = testUri;
 		this.inputURL = inputURL;
@@ -77,18 +75,14 @@ public class NegativeParserTest extends TestCase {
 
 			if (failureMode.ignoreFailure()) {
 				this.didIgnoreFailure = true;
-				System.err.println(
-						"Ignoring Negative Parser Test that does not report an expected error: " + inputURL);
-			}
-			else {
+				System.err.println("Ignoring Negative Parser Test that does not report an expected error: " + inputURL);
+			} else {
 				this.didIgnoreFailure = false;
 				fail("Parser parses erroneous data without reporting errors");
 			}
-		}
-		catch (RDFParseException e) {
+		} catch (RDFParseException e) {
 			// This is expected as the input file is incorrect RDF
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			fail("Error: " + e.getMessage());
 		}
 	}

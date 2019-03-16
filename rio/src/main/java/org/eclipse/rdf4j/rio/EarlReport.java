@@ -52,8 +52,8 @@ public class EarlReport {
 	/**
 	 * Helper variable for tests run by Jeen Broekstra
 	 */
-	public static final IRI BROEKSTRA = SimpleValueFactory.getInstance().createIRI(
-			"https://bitbucket.org/jeenbroekstra");
+	public static final IRI BROEKSTRA = SimpleValueFactory.getInstance()
+			.createIRI("https://bitbucket.org/jeenbroekstra");
 
 	protected Repository earlRepository;
 
@@ -67,9 +67,7 @@ public class EarlReport {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void generateReport(TestSuite nextTestSuite, IRI nextAsserterNode, IRI specURI)
-		throws Exception
-	{
+	public void generateReport(TestSuite nextTestSuite, IRI nextAsserterNode, IRI specURI) throws Exception {
 		// IMPORTANT: Set this to whoever is running the tests
 		asserterNode = nextAsserterNode;
 
@@ -101,8 +99,7 @@ public class EarlReport {
 		con.add(projectNode, DOAP.CREATED, vf.createLiteral("2004-03-25", XMLSchema.DATE));
 		con.add(projectNode, DOAP.PROGRAMMING_LANGUAGE, vf.createLiteral("Java"));
 		con.add(projectNode, DOAP.IMPLEMENTS, specURI);
-		con.add(projectNode, DOAP.DOWNLOAD_PAGE,
-				vf.createIRI("http://sourceforge.net/projects/sesame/files/"));
+		con.add(projectNode, DOAP.DOWNLOAD_PAGE, vf.createIRI("http://sourceforge.net/projects/sesame/files/"));
 		con.add(projectNode, DOAP.MAILING_LIST,
 				vf.createIRI("http://lists.sourceforge.net/lists/listinfo/sesame-general"));
 		con.add(projectNode, DOAP.BUG_DATABASE, vf.createIRI("https://openrdf.atlassian.net/browse/SES"));
@@ -136,10 +133,10 @@ public class EarlReport {
 
 		con.commit();
 
-		RDFWriterFactory factory = RDFWriterRegistry.getInstance().get(RDFFormat.TURTLE).orElseThrow(
-				Rio.unsupportedFormat(RDFFormat.TURTLE));
-		File outFile = File.createTempFile("sesame-earl-compliance",
-				"." + RDFFormat.TURTLE.getDefaultFileExtension());
+		RDFWriterFactory factory = RDFWriterRegistry.getInstance()
+				.get(RDFFormat.TURTLE)
+				.orElseThrow(Rio.unsupportedFormat(RDFFormat.TURTLE));
+		File outFile = File.createTempFile("sesame-earl-compliance", "." + RDFFormat.TURTLE.getDefaultFileExtension());
 		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile))) {
 			con.export(factory.getWriter(out));
 		}
@@ -165,13 +162,11 @@ public class EarlReport {
 			IRI testURI = null;
 			boolean didIgnoreFailure = false;
 			if (test instanceof PositiveParserTest) {
-				testURI = ((PositiveParserTest)test).testUri;
-			}
-			else if (test instanceof NegativeParserTest) {
-				testURI = ((NegativeParserTest)test).testUri;
-				didIgnoreFailure = ((NegativeParserTest)test).didIgnoreFailure;
-			}
-			else {
+				testURI = ((PositiveParserTest) test).testUri;
+			} else if (test instanceof NegativeParserTest) {
+				testURI = ((NegativeParserTest) test).testUri;
+				didIgnoreFailure = ((NegativeParserTest) test).didIgnoreFailure;
+			} else {
 				throw new RuntimeException("Unexpected test type: " + test.getClass());
 			}
 			System.out.println("testURI: " + testURI.stringValue());
@@ -188,15 +183,12 @@ public class EarlReport {
 
 				if (didIgnoreFailure) {
 					con.add(resultNode, EARL.OUTCOME, EARL.NOTTESTED);
-				}
-				else if (errorCount > 0 || failureCount > 0) {
+				} else if (errorCount > 0 || failureCount > 0) {
 					con.add(resultNode, EARL.OUTCOME, EARL.FAIL);
-				}
-				else {
+				} else {
 					con.add(resultNode, EARL.OUTCOME, EARL.PASS);
 				}
-			}
-			catch (RepositoryException e) {
+			} catch (RepositoryException e) {
 				throw new RuntimeException(e);
 			}
 		}

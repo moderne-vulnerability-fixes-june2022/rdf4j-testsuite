@@ -30,9 +30,7 @@ import org.junit.Test;
 public abstract class SparqlOrderByTest {
 
 	@BeforeClass
-	public static void setUpClass()
-		throws Exception
-	{
+	public static void setUpClass() throws Exception {
 		System.setProperty("org.eclipse.rdf4j.repository.debug", "true");
 	}
 
@@ -40,9 +38,8 @@ public abstract class SparqlOrderByTest {
 			+ "WHERE { ?x foaf:name ?name }\n" + "ORDER BY ?name\n";
 
 	private String query2 = "PREFIX     :    <http://example.org/ns#>\n"
-			+ "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
-			+ "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n" + "SELECT ?name\n"
-			+ "WHERE { ?x foaf:name ?name ; :empId ?emp }\n" + "ORDER BY DESC(?emp)\n";
+			+ "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n" + "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n"
+			+ "SELECT ?name\n" + "WHERE { ?x foaf:name ?name ; :empId ?emp }\n" + "ORDER BY DESC(?emp)\n";
 
 	private String query3 = "PREFIX     :    <http://example.org/ns#>\n"
 			+ "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n" + "SELECT ?name\n"
@@ -53,31 +50,23 @@ public abstract class SparqlOrderByTest {
 	private RepositoryConnection conn;
 
 	@Test
-	public void testQuery1()
-		throws Exception
-	{
+	public void testQuery1() throws Exception {
 		assertTrue("James Leigh".compareTo("James Leigh Hunt") < 0);
 		assertResult(query1, Arrays.asList("James Leigh", "James Leigh", "James Leigh Hunt", "Megan Leigh"));
 	}
 
 	@Test
-	public void testQuery2()
-		throws Exception
-	{
+	public void testQuery2() throws Exception {
 		assertResult(query2, Arrays.asList("Megan Leigh", "James Leigh", "James Leigh Hunt", "James Leigh"));
 	}
 
 	@Test
-	public void testQuery3()
-		throws Exception
-	{
+	public void testQuery3() throws Exception {
 		assertResult(query3, Arrays.asList("James Leigh", "James Leigh", "James Leigh Hunt", "Megan Leigh"));
 	}
 
 	@Before
-	public void setUp()
-		throws Exception
-	{
+	public void setUp() throws Exception {
 		repository = createRepository();
 		createEmployee("james", "James Leigh", 123);
 		createEmployee("jim", "James Leigh", 244);
@@ -86,29 +75,23 @@ public abstract class SparqlOrderByTest {
 		conn = repository.getConnection();
 	}
 
-	protected Repository createRepository()
-		throws Exception
-	{
+	protected Repository createRepository() throws Exception {
 		Repository repository = newRepository();
 		repository.initialize();
 		RepositoryConnection con = repository.getConnection();
 		try {
 			con.clear();
 			con.clearNamespaces();
-		}
-		finally {
+		} finally {
 			con.close();
 		}
 		return repository;
 	}
 
-	protected abstract Repository newRepository()
-		throws Exception;
+	protected abstract Repository newRepository() throws Exception;
 
 	@After
-	public void tearDown()
-		throws Exception
-	{
+	public void tearDown() throws Exception {
 		conn.close();
 		conn = null;
 
@@ -116,9 +99,7 @@ public abstract class SparqlOrderByTest {
 		repository = null;
 	}
 
-	private void createEmployee(String id, String name, int empId)
-		throws RepositoryException
-	{
+	private void createEmployee(String id, String name, int empId) throws RepositoryException {
 		ValueFactory vf = repository.getValueFactory();
 		String foafName = "http://xmlns.com/foaf/0.1/name";
 		String exEmpId = "http://example.org/ns#empId";
@@ -129,13 +110,12 @@ public abstract class SparqlOrderByTest {
 	}
 
 	private void assertResult(String queryStr, List<String> names)
-		throws RepositoryException, MalformedQueryException, QueryEvaluationException
-	{
+			throws RepositoryException, MalformedQueryException, QueryEvaluationException {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
 		TupleQueryResult result = query.evaluate();
 		for (String name : names) {
 			Value value = result.next().getValue("name");
-			assertEquals(name, ((Literal)value).getLabel());
+			assertEquals(name, ((Literal) value).getLabel());
 		}
 		assertFalse(result.hasNext());
 		result.close();
