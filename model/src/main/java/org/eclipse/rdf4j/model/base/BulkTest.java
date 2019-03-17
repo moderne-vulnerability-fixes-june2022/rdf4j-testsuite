@@ -116,6 +116,7 @@ import junit.framework.TestSuite;
  * @author Paul Jack
  * @version $Id: BulkTest.java 646780 2008-04-10 12:48:07Z niallp $
  */
+@Deprecated
 public abstract class BulkTest extends TestCase implements Cloneable {
 
 	// Note: BulkTest is Cloneable to make it easier to construct

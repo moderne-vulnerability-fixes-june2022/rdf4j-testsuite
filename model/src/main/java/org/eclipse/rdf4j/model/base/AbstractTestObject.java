@@ -34,6 +34,7 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  * @author Anonymous
  */
+@Deprecated
 public abstract class AbstractTestObject extends BulkTest {
 
 	/** Current major release for Collections */

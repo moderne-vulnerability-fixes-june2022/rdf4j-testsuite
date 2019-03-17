@@ -26,6 +26,7 @@ import org.junit.Test;
 /**
  * @author Arjohn Kampman
  */
+@Deprecated
 public abstract class ModelEqualityTest {
 
 	public static final String TESTCASES_DIR = "/testcases/model/equality/";

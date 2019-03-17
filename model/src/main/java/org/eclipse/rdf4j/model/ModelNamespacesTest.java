@@ -30,7 +30,9 @@ import org.junit.Test;
  * An abstract test class to test the handling of namespaces by {@link Model} implementations.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
+ * @deprecated moved to test package of rdf4j-model
  */
+@Deprecated
 public abstract class ModelNamespacesTest {
 
 	private Model testModel;
