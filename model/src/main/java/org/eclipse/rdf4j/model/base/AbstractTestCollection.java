@@ -98,6 +98,7 @@ import java.util.NoSuchElementException;
  * @author Neil O'Toole
  * @author Stephen Colebourne
  */
+@Deprecated
 public abstract class AbstractTestCollection extends AbstractTestObject {
 
 	//

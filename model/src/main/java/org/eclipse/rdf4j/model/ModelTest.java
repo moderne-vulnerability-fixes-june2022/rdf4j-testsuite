@@ -25,6 +25,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+/**
+ * 
+ * @deprecated replaced with ModelCollectionTest in rdf4j-model unit test suite.
+ */
+@Deprecated
 public abstract class ModelTest extends TestCase {
 
 	private static final ValueFactory vf = SimpleValueFactory.getInstance();

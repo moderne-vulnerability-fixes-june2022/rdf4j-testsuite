@@ -27,6 +27,7 @@ import java.util.Set;
  * @version $Revision: 646780 $ $Date: 2008-04-10 13:48:07 +0100 (Thu, 10 Apr 2008) $
  * @author Paul Jack
  */
+@Deprecated
 public abstract class AbstractTestSet extends AbstractTestCollection {
 
 	/**
