@@ -21,6 +21,7 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
  * Extends the Apache Commons Collections test, {@link AbstractTestSet} to enable testing of the OpenRDF Model
  * collection implementations.
  */
+@Deprecated
 public abstract class ApacheSetTestCase extends AbstractTestSet {
 
 	private ValueFactory vf = SimpleValueFactory.getInstance();
