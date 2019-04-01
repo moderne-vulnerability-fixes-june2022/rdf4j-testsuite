@@ -55,8 +55,6 @@
 		<module>serql</module>
 		<module>sparql</module>
 		<module>geosparql</module>
-		<module>store</module>
-		<module>lucene</module>
 		<module>shacl</module>
 		<module>compliance</module>
 		<module>benchmark</module>
