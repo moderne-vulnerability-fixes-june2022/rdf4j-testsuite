@@ -50,9 +50,7 @@
 	</licenses>
 
 	<modules>
-		<module>model</module>
 		<module>rio</module>
-		<module>shacl</module>
 		<module>compliance</module>
 		<module>benchmark</module>
 	</modules>
