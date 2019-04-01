@@ -52,9 +52,6 @@
 	<modules>
 		<module>model</module>
 		<module>rio</module>
-		<module>serql</module>
-		<module>sparql</module>
-		<module>geosparql</module>
 		<module>shacl</module>
 		<module>compliance</module>
 		<module>benchmark</module>
