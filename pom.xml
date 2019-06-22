@@ -50,8 +50,6 @@
 	</licenses>
 
 	<modules>
-		<module>rio</module>
-		<module>compliance</module>
 		<module>benchmark</module>
 	</modules>
 
