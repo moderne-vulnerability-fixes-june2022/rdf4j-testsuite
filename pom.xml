@@ -512,6 +512,7 @@
 									<excludes>
 										<exclude>org.apache.logging.log4j:log4j-api</exclude>
 										<exclude>org.elasticsearch:elasticsearch</exclude>
+										<exclude>javax.xml.bind:jaxb-api</exclude>
 									</excludes>
 								</enforceBytecodeVersion>
 							</rules>
